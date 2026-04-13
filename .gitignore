@@ -1,18 +1,44 @@
-# Python-generated files
+# Python
 __pycache__/
-*.py[oc]
+*.py[cod]
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+
+# Gradio/local app state
+.gradio/
+
+# Environment/secrets
+.env
+.env.*
+!.env.example
+
+# OS noise
+.DS_Store
+
+# Build/dist
 build/
 dist/
-wheels/
-*.egg-info
+*.egg-info/
 
-# Virtual environments
-.venv
-
-# Ignore everything inside data, but keep the folder itself
+# Local data/indexes (RAG artifacts)
 data/*
 !data/.gitkeep
-
-# Ignore everything inside storage
 storage/*
 !storage/.gitkeep
+
+indexes/
+chroma/
+chromadb/
+*.db
+*.sqlite*
