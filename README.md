@@ -1,4 +1,4 @@
-![Retrieval augmented generation (RAG)](Retrieval System.png)
+![Retrieval augmented generation (RAG)](retrieval-system.png)
 
 # Retrieval System (Local-First Production RAG)
 
