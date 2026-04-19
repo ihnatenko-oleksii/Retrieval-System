@@ -4,41 +4,48 @@ from app.vector_store.bm25_store import BM25Store
 from app.retrieval.rewriter import QueryRewriter
 from app.retrieval.reranker import Reranker
 from app.core.config import settings
+from app.core.runtime_config import RetrievalConfig
 import logging
 import re
 
 logger = logging.getLogger(__name__)
 
 class Retriever:
-    def __init__(self, vector_store: VectorStore, bm25_store: BM25Store = None):
+    def __init__(
+        self,
+        vector_store: VectorStore,
+        bm25_store: BM25Store = None,
+        reranker: Optional[Reranker] = None,
+    ):
         self.vector_store = vector_store
         self.bm25_store = bm25_store or BM25Store()
         self.rewriter = QueryRewriter()
-        self.reranker = Reranker()
+        # Allow the caller (e.g. tuning UI) to supply a preloaded reranker so
+        # we don't pay the CrossEncoder load cost on every trial.
+        self.reranker = reranker or Reranker()
 
     def _normalize_scores(self, results: List[Tuple[str, dict, float]], invert: bool = False) -> List[Tuple[str, dict, float]]:
         if not results:
             return []
-            
+
         scores = [dist for _, _, dist in results]
         min_score, max_score = min(scores), max(scores)
-        
+
         normalized = []
         for content, meta, score in results:
             if max_score == min_score:
                 norm_score = 1.0
             else:
                 norm_score = (score - min_score) / (max_score - min_score)
-                
+
             if invert:
                 norm_score = 1.0 - norm_score
-                
+
             normalized.append((content, meta, norm_score))
-            
+
         return normalized
 
     def _extract_acronyms(self, query: str) -> List[str]:
-        # Prefer acronym-style matches like "SOW", "CRD", etc.
         return re.findall(r"\b[A-Z]{2,10}\b", query or "")
 
     def _apply_query_intent_boost(
@@ -64,21 +71,46 @@ class Retriever:
                     else:
                         value[2] = score + 0.15
 
-    def retrieve(self, query: str, top_k: int = None, chat_history: Optional[List[Dict[str, str]]] = None) -> List[Tuple[str, dict, float]]:
-        if top_k is None:
-            top_k = settings.retrieval_top_k
-        initial_k = max(top_k * 6, 20)
+    def retrieve(
+        self,
+        query: str,
+        top_k: int = None,
+        chat_history: Optional[List[Dict[str, str]]] = None,
+        config: Optional[RetrievalConfig] = None,
+    ) -> List[Tuple[str, dict, float]]:
+        # Resolve runtime knobs from `config`, falling back to global settings.
+        if config is None:
+            resolved_top_k = top_k if top_k is not None else settings.retrieval_top_k
+            dense_weight = settings.hybrid_search_weights_dense
+            sparse_weight = settings.hybrid_search_weights_sparse
+            reranker_on = settings.reranker_on
+            rerank_top_n = settings.rerank_top_n
+            query_rewriting_on = settings.query_rewriting_on
+            query_expansion_on = settings.query_expansion_on
+        else:
+            resolved_top_k = top_k if top_k is not None else config.top_k
+            dense_weight = config.dense_weight
+            sparse_weight = config.sparse_weight
+            reranker_on = config.reranker_on
+            rerank_top_n = config.rerank_top_n
+            query_rewriting_on = config.query_rewriting_on
+            query_expansion_on = config.query_expansion_on
 
-        # 1. Rewrite and Expand
-        base_query = self.rewriter.rewrite_query(query, chat_history=chat_history)
-        queries = self.rewriter.expand_query(base_query)
+        initial_k = max(resolved_top_k * 6, 20)
+
+        # 1. Rewrite and expand
+        base_query = self.rewriter.rewrite_query(
+            query,
+            chat_history=chat_history,
+            enabled=query_rewriting_on,
+        )
+        queries = self.rewriter.expand_query(base_query, enabled=query_expansion_on)
 
         # 2. Retrieve for all queries
         dense_results = []
         sparse_results = []
-        
+
         for q in queries:
-            # Dense retrieval
             chroma_res = self.vector_store.query(query_text=q, n_results=initial_k)
             if chroma_res and chroma_res.get("documents") and len(chroma_res["documents"]) > 0:
                 docs = chroma_res["documents"][0]
@@ -87,26 +119,21 @@ class Retriever:
                 for d, m, c in zip(docs, metas, dists):
                     dense_results.append((d, m, c))
 
-            # Sparse retrieval
             bm25_res = self.bm25_store.query(query_text=q, n_results=initial_k)
             sparse_results.extend(bm25_res)
 
-        # 3. Deduplicate and normalize
-        # Chroma distances are often smaller=better (e.g. cosine distance), so invert=True
+        # 3. Normalize
         norm_dense = self._normalize_scores(dense_results, invert=True)
-        
-        # BM25 scores are larger=better, invert=False
         norm_sparse = self._normalize_scores(sparse_results, invert=False)
 
-        # 4. Reciprocal Rank Fusion / Weighted Sum
-        combined_scores: Dict[str, Tuple[str, dict, float]] = {}
-        
-        wd = settings.hybrid_search_weights_dense
-        ws = settings.hybrid_search_weights_sparse
+        # 4. Hybrid fusion (weights are overridable).
+        wd = dense_weight
+        ws = sparse_weight
         if self._extract_acronyms(query):
-            # Acronym lookups (e.g., "SOW") tend to work better with lexical emphasis.
+            # Acronym lookups work better with lexical emphasis.
             wd, ws = 0.35, 0.65
 
+        combined_scores: Dict[str, List] = {}
         for content, meta, score in norm_dense:
             key = content
             if key not in combined_scores:
@@ -119,22 +146,24 @@ class Retriever:
                 combined_scores[key] = [content, meta, 0.0]
             combined_scores[key][2] += score * ws
 
-        # 4b. Intent-aware boost (helps acronym definition lookups).
         self._apply_query_intent_boost(query, combined_scores)
 
-        # Sort by combined score
         final_results = sorted(combined_scores.values(), key=lambda x: x[2], reverse=True)
-        
-        # Take a wider net for reranking if reranker is enabled
-        candidate_count = settings.rerank_top_n * 2 if settings.reranker_on else top_k
+
+        candidate_count = rerank_top_n * 2 if reranker_on else resolved_top_k
         candidates = [(c, m, s) for c, m, s in final_results][:candidate_count]
 
-        # 5. Reranking
-        if settings.reranker_on:
-            reranked = self.reranker.rerank(query, candidates, top_n=top_k)
+        # 5. Optional reranking
+        if reranker_on:
+            reranked = self.reranker.rerank(
+                query,
+                candidates,
+                top_n=resolved_top_k,
+                enabled=True,
+            )
             return reranked
-        
-        return candidates[:top_k]
+
+        return candidates[:resolved_top_k]
 
     def format_context(self, retrieved_chunks: List[Tuple[str, dict, float]]) -> str:
         context_parts = []

@@ -150,5 +150,36 @@ def ui():
     typer.echo("Starting Gradio UI...")
     build_ui().launch()
 
+@app.command()
+def evals_ui():
+    """
+    Run Gradio UI for evaluation metrics and charts.
+    """
+    from app.ui.evals_ui import build_evals_ui
+    typer.echo("Starting Evals UI...")
+    build_evals_ui().launch()
+
+
+@app.command()
+def embeddings_ui():
+    """
+    Run Gradio UI to visualize stored embeddings with t-SNE.
+    """
+    from app.ui.embeddings_ui import build_embeddings_ui
+
+    typer.echo("Starting Embeddings UI...")
+    build_embeddings_ui().launch()
+
+
+@app.command()
+def tuning_ui():
+    """
+    Run Gradio UI that sweeps runtime RAG parameters and finds the best configuration.
+    """
+    from app.ui.tuning_ui import build_tuning_ui
+
+    typer.echo("Starting Tuning UI...")
+    build_tuning_ui().launch()
+
 if __name__ == "__main__":
     app()

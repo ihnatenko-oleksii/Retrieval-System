@@ -42,3 +42,9 @@ chroma/
 chromadb/
 *.db
 *.sqlite*
+
+#cursor
+cursor/
+
+#evals files
+evals-json.jsonl

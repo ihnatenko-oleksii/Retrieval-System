@@ -51,9 +51,18 @@ class VectorStore:
     def query(self, query_text: str, n_results: int = None) -> dict:
         if n_results is None:
             n_results = settings.retrieval_top_k
-            
-        results = self.collection.query(
+
+        # Use pre-computed query embedding so model-specific query prefixes
+        # (e.g. E5 'query: ') are applied instead of the document 'passage: ' one.
+        embed_query = getattr(self.embedding_function, "embed_query", None)
+        if callable(embed_query):
+            query_vector = embed_query(query_text)
+            return self.collection.query(
+                query_embeddings=[query_vector],
+                n_results=n_results,
+            )
+
+        return self.collection.query(
             query_texts=[query_text],
-            n_results=n_results
+            n_results=n_results,
         )
-        return results

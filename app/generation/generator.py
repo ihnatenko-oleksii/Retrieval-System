@@ -22,6 +22,7 @@ Instructions:
 1. Answer the question using ONLY the provided context.
 2. If the answer is not contained in the context, say "I don't know based on the provided context." Do not guess or make up information.
 3. When providing facts, include inline citations referencing the source number, like [1], [2], etc.
+4. If the context's are very different from each other, use one most relevant context to answer the question.
 
 Question:
 {query}

@@ -6,7 +6,14 @@ class Settings(BaseSettings):
     vector_db_path: str = "./storage/chroma"
 
     # Embedding Model
-    embedding_model: str = "all-MiniLM-L6-v2"
+    # Default: multilingual E5 base (~280 MB, 768-d) - strong Polish+English,
+    # good quality/speed tradeoff on Apple Silicon.
+    # Alternatives:
+    #   "intfloat/multilingual-e5-small" -> fastest, lighter (~118 MB, 384-d)
+    #   "BAAI/bge-m3"                    -> best multilingual quality, heavier (~2.3 GB)
+    # IMPORTANT: after changing this value you MUST re-ingest your corpus,
+    # otherwise stored embeddings won't match the new model.
+    embedding_model: str = "intfloat/multilingual-e5-base"
 
     # LLM Model
     llm_model: str = "llama3.2"

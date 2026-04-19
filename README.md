@@ -12,6 +12,23 @@ A modular, local-first RAG application in Python that supports:
 
 This project is designed for practical local use with `Ollama` and persistent local storage.
 
+## What This README Contains
+
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Requirements](#requirements)
+- [Prompt For Your Code Agent](#prompt-for-your-code-agent)
+- [Quick Start](#quick-start)
+- [Recommended Workflow (Best Quality)](#recommended-workflow-best-quality)
+- [CLI Usage](#cli-usage)
+- [FastAPI Endpoints](#fastapi-endpoints)
+- [Configuration (`.env`)](#configuration-env)
+- [Evaluation File Format (JSONL)](#evaluation-file-format-jsonl)
+- [How Retrieval Works](#how-retrieval-works)
+- [Troubleshooting](#troubleshooting)
+- [Extending The System](#extending-the-system)
+- [Notes](#notes)
+
 ## Features
 
 - Ingest and index:
@@ -61,6 +78,33 @@ main.py          # CLI entrypoint
 - [Ollama](https://ollama.com/) installed and running locally
 - One local Ollama model pulled (default: `llama3.2`)
 
+## Prompt For Your Code Agent
+
+Before running this prompt:
+- put your source files (files for RAG) into the `data/` directory
+- run your code agent in this repository root
+
+Use this prompt:
+
+```text
+Set up and run this Retrieval System project end-to-end.
+
+Follow these steps exactly:
+1) Install dependencies:
+   - Run: uv sync
+2) Ensure Ollama model is available:
+   - Run: ollama pull llama3.2
+3) Ingest documents from ./data:
+   - Run: uv run main.py ingest "./data"
+4) Run a quick sanity question:
+   - Run: uv run main.py ask "What is OOP?"
+5) Launch the main UI:
+   - Run: uv run main.py ui
+
+After each step, report success/failure and the key output.
+If a step fails, diagnose and fix it before continuing.
+```
+
 ## Quick Start
 
 ### 1) Install dependencies
@@ -75,18 +119,100 @@ uv sync
 ollama pull llama3.2
 ```
 
-### 3) Ingest your documents
+### 3) Prepare data for better RAG (recommended)
+
+RAG quality depends heavily on source quality. Before ingestion, clean and normalize your data:
+- keep one topic per chunk-sized section
+- remove duplicates and outdated versions
+- expand acronyms on first use
+- use clear headings and stable document titles
+- keep important facts close to the heading that names them
+
+Short prompt for data preparation:
+
+```text
+Rewrite the text to be RAG-ready: keep all facts, remove fluff, expand acronyms once, use clear headings, split into short semantically complete sections, and output clean markdown.
+```
+
+### 4) Ingest your documents
 Put your source documents in `./data`.
 
 ```bash
 uv run main.py ingest "./data"
 ```
 
-### 4) Ask a question
+### 5) Ask a question
 
 ```bash
 uv run main.py ask "What is OOP?"
 ```
+
+## Recommended Workflow (Best Quality)
+
+Your 5-step flow is mostly correct. This is the best-practice version:
+
+1) Preprocess your source data for RAG
+- Yes, this is a good idea and usually gives a big quality boost.
+- Goal: clean structure, consistent terminology, and chunk-friendly sections.
+- Prefer running this on a local/private LLM if documents are sensitive.
+
+Suggested prompt:
+
+```text
+Rewrite this document to be RAG-ready in Markdown.
+Rules:
+- Keep all factual information (do not invent or remove facts).
+- Use clear section headings and short, self-contained paragraphs.
+- Expand acronyms on first use: "ACRONYM (full name)".
+- Remove boilerplate, duplicated lines, and irrelevant fluff.
+- Keep critical entities exact: IDs, URLs, versions, statuses, enum values.
+- If a section mixes topics, split it into separate sections.
+Return only the improved Markdown.
+```
+
+2) Ingest your prepared data
+
+```bash
+uv run main.py ingest "./data"
+```
+
+3) Create `evals-json.jsonl`
+- Also a good step, but do not blindly trust generated evals.
+- Use another LLM to draft cases, then manually review them.
+- Include edge cases and negative cases, and avoid only easy glossary questions.
+
+Suggested prompt:
+
+```text
+You are creating an evaluation dataset for a RAG system.
+Given the documents, generate JSONL lines with schema:
+{"question":"...","expected_keywords":["..."],"expected_source":"..."}
+
+Requirements:
+- Create diverse questions: definitions, process steps, URLs, statuses, technical details.
+- Include both easy and hard questions.
+- expected_source must be the exact relative source path/file used in the corpus.
+- expected_keywords should contain key terms that must appear in a correct answer.
+- Keep questions unambiguous and answerable from one or few sources.
+- Output only valid JSONL (one JSON object per line, no markdown).
+Produce at least 30-100 cases depending on corpus size.
+```
+
+4) Run hyperparameter tuning
+
+```bash
+uv run main.py tuning-ui
+```
+
+Use tuning to optimize retrieval/runtime knobs (`top_k`, hybrid dense/sparse weight, reranker, query rewriting, query expansion, model).
+
+5) Apply the best config in production chat UI
+
+```bash
+uv run main.py ui
+```
+
+Then set the same best values in the sidebar controls and use them for real Q&A.
 
 ## CLI Usage
 
@@ -96,43 +222,57 @@ Show command help:
 uv run main.py --help
 ```
 
-### Ingest
+### Command Reference (each command)
 
-```bash
-uv run main.py ingest "./data/DatasetAboutProgramming"
-```
+- `ingest` - Parse documents, chunk them, and build Chroma + BM25 indexes.
+  ```bash
+  uv run main.py ingest "./data"
+  ```
 
-### Ask (single query)
+- `ask` - Run one-shot QA from terminal.
+  ```bash
+  uv run main.py ask "What is SOLID?" --top-k 5 --model llama3.2
+  ```
 
-```bash
-uv run main.py ask "What is SOLID?" --top-k 5 --model llama3.2
-```
+- `chat` - Interactive terminal chat mode (type `exit`/`quit` to stop).
+  ```bash
+  uv run main.py chat
+  ```
 
-### Chat (multi-turn conversational RAG)
+- `evals` - Run JSONL evaluation in terminal and print metrics.
+  ```bash
+  uv run main.py evals "./evals-json.jsonl" --top-k 5
+  ```
 
-```bash
-uv run main.py chat
-```
+- `ui` - Main Gradio chat UI for day-to-day usage.
+  ```bash
+  uv run main.py ui
+  ```
+  The sidebar includes runtime controls: `top_k`, `dense_weight`, `reranker_on`, `rerank_top_n`, `query_rewriting_on`, `query_expansion_on`, `llm_model`.
 
-Type `exit` or `quit` to stop.
+- `evals-ui` - Gradio dashboard for single-config eval runs + charts.
+  ```bash
+  uv run main.py evals-ui
+  ```
 
-### Run evals
+- `tuning-ui` - Gradio sweep UI to find best runtime hyperparameters.
+  ```bash
+  uv run main.py tuning-ui
+  ```
+  Composite score:
+  ```text
+  composite = 0.6 * keyword_hit_rate + 0.25 * MRR + 0.15 * recall@K
+  ```
 
-```bash
-uv run main.py evals "./data/evals.jsonl" --top-k 5
-```
+- `embeddings-ui` - 2D t-SNE explorer for stored embeddings.
+  ```bash
+  uv run main.py embeddings-ui
+  ```
 
-### Run API
-
-```bash
-uv run main.py api --host 0.0.0.0 --port 8000
-```
-
-### Run UI
-
-```bash
-uv run main.py ui
-```
+- `api` - Start FastAPI server.
+  ```bash
+  uv run main.py api --host 0.0.0.0 --port 8000
+  ```
 
 ## FastAPI Endpoints
 
@@ -149,7 +289,7 @@ Interactive docs:
 
 ```json
 {
-  "query": "What is SOW?",
+  "query": "What is dependency injection?",
   "top_k": 5,
   "model": "llama3.2"
 }
@@ -161,7 +301,10 @@ Create a `.env` file in project root:
 
 ```env
 # Models
-EMBEDDING_MODEL=all-MiniLM-L6-v2
+# Default is multilingual E5 base (~280 MB, strong Polish+English).
+# Alternatives: intfloat/multilingual-e5-small (fastest) or BAAI/bge-m3 (best, heavier).
+# IMPORTANT: after changing this value, re-ingest your corpus.
+EMBEDDING_MODEL=intfloat/multilingual-e5-base
 LLM_MODEL=llama3.2
 
 # Storage
@@ -192,8 +335,8 @@ Config is loaded by `app/core/config.py` via `pydantic-settings`.
 Each line should be a JSON object:
 
 ```json
-{"question":"What is SOW?","expected_keywords":["System Obsługi Wydziałów"],"expected_source":"Słownik - wszystkie nasze systemy.md"}
-{"question":"What is CRD?","expected_keywords":["Centralny Rejestr Dokumentów"],"expected_source":"CRD.md"}
+{"question":"What is dependency injection?","expected_keywords":["dependency injection","inversion of control"],"expected_source":"architecture/dependency-injection.md"}
+{"question":"What does CI stand for?","expected_keywords":["continuous integration"],"expected_source":"glossary.md"}
 ```
 
 Current eval metrics:
@@ -230,16 +373,16 @@ If you still hit a UI issue:
 - rerun: `uv run main.py ui`
 - share the latest traceback from terminal
 
-### 3) Acronym definitions (example: "SOW") not found
+### 3) Acronym definitions not found
 
 Checklist:
 - Re-ingest after data/code changes:
   ```bash
-  uv run main.py ingest "./data/CCF Obsidian copy"
+  uv run main.py ingest "./data"
   ```
 - Increase retrieval depth:
   ```bash
-  uv run main.py ask "Co to jest SOW?" --top-k 8
+  uv run main.py ask "What does CI stand for?" --top-k 8
   ```
 - Keep glossary files in supported text formats (`.md`, `.txt`) with clean `ACRONYM - definition` lines.
 

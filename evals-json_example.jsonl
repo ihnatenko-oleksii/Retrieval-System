@@ -1,0 +1,10 @@
+{"question":"What is dependency injection?","expected_keywords":["dependency injection","inversion of control"],"expected_source":"architecture/dependency-injection.md"}
+{"question":"What does CI stand for?","expected_keywords":["continuous integration"],"expected_source":"glossary.md"}
+{"question":"Which command installs project dependencies?","expected_keywords":["uv sync"],"expected_source":"README.md"}
+{"question":"How do you launch the main Gradio UI?","expected_keywords":["uv run main.py ui"],"expected_source":"README.md"}
+{"question":"Which command runs evaluation from the terminal?","expected_keywords":["uv run main.py evals"],"expected_source":"README.md"}
+{"question":"What file stores environment configuration values?","expected_keywords":[".env","configuration"],"expected_source":"README.md"}
+{"question":"What are the two retrieval methods used in this project?","expected_keywords":["ChromaDB","BM25"],"expected_source":"README.md"}
+{"question":"Which command starts the tuning dashboard?","expected_keywords":["uv run main.py tuning-ui"],"expected_source":"README.md"}
+{"question":"What should you do after changing the embedding model?","expected_keywords":["re-ingest","ingest"],"expected_source":"README.md"}
+{"question":"What is the default local LLM model mentioned in setup?","expected_keywords":["llama3.2","Ollama"],"expected_source":"README.md"}
