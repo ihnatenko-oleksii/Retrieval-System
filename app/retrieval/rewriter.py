@@ -6,10 +6,14 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
+DETERMINISTIC_LLM_OPTIONS = {"temperature": 0, "seed": 1729}
+
 
 class QueryRewriter:
     def __init__(self, model_name: str = None):
         self.model_name = model_name or settings.llm_model
+        self._rewrite_cache: dict[tuple[str, str, bool], str] = {}
+        self._expansion_cache: dict[tuple[str, int], list[str]] = {}
 
     def rewrite_query(
         self,
@@ -26,6 +30,9 @@ class QueryRewriter:
         rewriting_enabled = settings.query_rewriting_on if enabled is None else bool(enabled)
         if not rewriting_enabled and not chat_history:
             return query
+        cache_key = (query, repr(chat_history), rewriting_enabled)
+        if cache_key in self._rewrite_cache:
+            return self._rewrite_cache[cache_key]
 
         if chat_history:
             history_text = ""
@@ -48,11 +55,17 @@ Standalone query:"""
             prompt = f"Rewrite the following search query to be clear, highly specific, and optimized for semantic search retrieval. Return ONLY the rewritten query text, without any explanations or formatting.\n\nOriginal query: {query}\n\nRewritten query:"
 
         try:
-            response = ollama.chat(model=self.model_name, messages=[{"role": "user", "content": prompt}])
+            response = ollama.chat(
+                model=self.model_name,
+                messages=[{"role": "user", "content": prompt}],
+                options=DETERMINISTIC_LLM_OPTIONS,
+            )
             rewritten = response.get("message", {}).get("content", "").strip()
             rewritten = rewritten.strip("\"'")
             logger.info(f"Rewrote query: '{query}' -> '{rewritten}'")
-            return rewritten if rewritten else query
+            result = rewritten if rewritten else query
+            self._rewrite_cache[cache_key] = result
+            return result
         except Exception as e:
             logger.error(f"Failed to rewrite query: {e}")
             return query
@@ -71,15 +84,23 @@ Standalone query:"""
         expansion_enabled = settings.query_expansion_on if enabled is None else bool(enabled)
         if not expansion_enabled:
             return [query]
+        cache_key = (query, num_expansions)
+        if cache_key in self._expansion_cache:
+            return self._expansion_cache[cache_key]
 
         prompt = f"Generate {num_expansions} different versions of the following search query to help retrieve more relevant documents. Focus on different keywords, synonyms, or angles of the same intent. Return each query on a new line. Do not include numbering, bullets, or explanations.\n\nOriginal query: {query}\n\nAlternate queries:"
 
         try:
-            response = ollama.chat(model=self.model_name, messages=[{"role": "user", "content": prompt}])
+            response = ollama.chat(
+                model=self.model_name,
+                messages=[{"role": "user", "content": prompt}],
+                options=DETERMINISTIC_LLM_OPTIONS,
+            )
             content = response.get("message", {}).get("content", "").strip()
             expansions = [q.strip("- *\"'") for q in content.split("\n") if q.strip()]
             queries = [query] + expansions[:num_expansions]
             logger.info(f"Expanded query into: {queries}")
+            self._expansion_cache[cache_key] = queries
             return queries
         except Exception as e:
             logger.error(f"Failed to expand query: {e}")

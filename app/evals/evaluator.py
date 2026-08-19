@@ -8,6 +8,7 @@ from app.core.runtime_config import RetrievalConfig
 from app.generation.generator import Generator
 from app.retrieval.reranker import Reranker
 from app.retrieval.retriever import Retriever
+from app.retrieval.rewriter import QueryRewriter
 from app.vector_store.bm25_store import BM25Store
 from app.vector_store.chroma_store import VectorStore
 
@@ -31,6 +32,7 @@ class Evaluator:
         vector_store: VectorStore | None = None,
         bm25_store: BM25Store | None = None,
         reranker: Reranker | None = None,
+        rewriter: QueryRewriter | None = None,
         skip_generation: bool = False,
     ):
         # `config` takes precedence over stand-alone top_k / model_name so the
@@ -46,7 +48,12 @@ class Evaluator:
 
         self.vector_store = vector_store or VectorStore()
         self.bm25_store = bm25_store or BM25Store()
-        self.retriever = Retriever(self.vector_store, self.bm25_store, reranker=reranker)
+        self.retriever = Retriever(
+            self.vector_store,
+            self.bm25_store,
+            reranker=reranker,
+            rewriter=rewriter or QueryRewriter(model_name=effective_model),
+        )
         self.generator = Generator(model_name=effective_model)
 
     def _load_cases(self, jsonl_path: str) -> list[dict[str, Any]]:
@@ -225,6 +232,10 @@ class Evaluator:
             relevant_ranks: list[int] = []
             matched_label_ids: list[str] = []
             gains_by_rank: list[float] = []
+            case_recall = 0.0
+            case_precision = 0.0
+            case_mrr = 0.0
+            case_ndcg = 0.0
             for rank, (_, meta, _) in enumerate(chunks, start=1):
                 if labels is not None:
                     matched_label_id, gain = self._match_label(labels, meta)
@@ -244,27 +255,32 @@ class Evaluator:
             if labels is not None:
                 relevant_label_ids = {label_id for label_id, gain in labels.items() if gain > 0}
                 matched_ids = set(matched_label_ids)
-                metrics[f"recall@{self.top_k}"] += (
+                case_recall = (
                     len(matched_ids & relevant_label_ids) / len(relevant_label_ids) if relevant_label_ids else 0.0
                 )
-                metrics[f"precision@{self.top_k}"] += len(relevant_ranks) / self.top_k
+                case_precision = len(relevant_ranks) / self.top_k
 
                 if first_relevant_rank is not None:
-                    metrics["mrr"] += 1.0 / first_relevant_rank
+                    case_mrr = 1.0 / first_relevant_rank
 
                 ideal_gains = sorted((labels[label_id] for label_id in relevant_label_ids), reverse=True)
                 idcg = self._dcg(ideal_gains[: self.top_k])
-                metrics["ndcg"] += self._dcg(gains_by_rank[: self.top_k]) / idcg if idcg else 0.0
+                case_ndcg = self._dcg(gains_by_rank[: self.top_k]) / idcg if idcg else 0.0
             elif source_hit:
                 # Legacy source-only cases cannot know how many relevant chunks
                 # exist outside the retrieved list. Preserve their historical
                 # binary recall and found-hit nDCG semantics.
-                metrics[f"recall@{self.top_k}"] += 1.0
-                metrics[f"precision@{self.top_k}"] += len(relevant_ranks) / self.top_k
-                metrics["mrr"] += 1.0 / first_relevant_rank
+                case_recall = 1.0
+                case_precision = len(relevant_ranks) / self.top_k
+                case_mrr = 1.0 / first_relevant_rank
                 dcg = sum(1.0 / math.log2(rank + 1) for rank in relevant_ranks)
                 idcg = self._dcg([1.0] * len(relevant_ranks))
-                metrics["ndcg"] += dcg / idcg if idcg else 0.0
+                case_ndcg = dcg / idcg if idcg else 0.0
+
+            metrics[f"recall@{self.top_k}"] += case_recall
+            metrics[f"precision@{self.top_k}"] += case_precision
+            metrics["mrr"] += case_mrr
+            metrics["ndcg"] += case_ndcg
 
             case_keyword_score = None
             if not getattr(self, "skip_generation", False):
@@ -287,6 +303,10 @@ class Evaluator:
                     "retrieved_chunk_ids": " | ".join(retrieved_chunk_ids),
                     "source_hit": source_hit,
                     "first_relevant_rank": first_relevant_rank,
+                    "recall": round(case_recall, 4),
+                    "precision": round(case_precision, 4),
+                    "mrr": round(case_mrr, 4),
+                    "ndcg": round(case_ndcg, 4),
                     "retrieved_sources": " | ".join(retrieved_sources),
                     "keyword_hit_score": round(case_keyword_score, 4) if case_keyword_score is not None else None,
                 }

@@ -1,0 +1,3 @@
+phase,name,status,embedding_model,chunk_size,chunk_overlap,top_k,dense_weight,sparse_weight,fusion_strategy,adaptive_routing,candidate_depth,reranker_on,reranker_model,rerank_candidate_pool,query_rewriting_on,query_expansion_on,elapsed_seconds,seconds_per_case,index_reused,error,recall@5,precision@5,mrr,ndcg
+test,baseline-dense-e5,ok,intfloat/multilingual-e5-base,1000,200,5,1.0,0.0,weighted_linear,False,20,False,,,False,False,1.756,0.0878,True,,0.7475,0.28,0.825,0.7617
+test,bge-m3-hybrid-static+query-rewrite,ok,BAAI/bge-m3,1000,200,5,0.7,0.3,weighted_linear,False,20,False,,,True,False,14.2799,0.714,True,,0.8058,0.31,0.875,0.7999

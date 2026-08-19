@@ -1,0 +1,4 @@
+phase,name,status,embedding_model,chunk_size,chunk_overlap,top_k,dense_weight,sparse_weight,fusion_strategy,adaptive_routing,candidate_depth,reranker_on,reranker_model,rerank_candidate_pool,query_rewriting_on,query_expansion_on,elapsed_seconds,seconds_per_case,index_reused,error,recall@5,precision@5,mrr,ndcg
+dev_llm,bge-m3-hybrid-static+query-rewrite,ok,BAAI/bge-m3,1000,200,5,0.7,0.3,weighted_linear,False,20,False,,,True,False,26.7076,0.6677,True,,0.8183,0.325,0.9313,0.8313
+dev_llm,bge-m3-hybrid-static+query-expansion,ok,BAAI/bge-m3,1000,200,5,0.7,0.3,weighted_linear,False,20,False,,,False,True,56.6945,1.4174,True,,0.8233,0.325,0.9396,0.8176
+dev_llm,bge-m3-hybrid-static+rewrite-and-expansion,ok,BAAI/bge-m3,1000,200,5,0.7,0.3,weighted_linear,False,20,False,,,True,True,66.3367,1.6584,True,,0.7975,0.315,0.9271,0.813

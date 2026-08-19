@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     # Reranking (Phase 2)
     reranker_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
     rerank_top_n: int = 3
+    rerank_candidate_pool: int = 20
     reranker_on: bool = False
 
     # Query Expansion/Rewriting (Phase 2)
@@ -37,6 +38,9 @@ class Settings(BaseSettings):
     # Hybrid Search (Phase 2)
     hybrid_search_weights_dense: float = 0.7
     hybrid_search_weights_sparse: float = 0.3
+    retrieval_candidate_depth: int = 20
+    fusion_strategy: str = "weighted_linear"
+    adaptive_routing: bool = True
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 

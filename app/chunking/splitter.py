@@ -6,9 +6,9 @@ from app.core.models import Chunk, ChunkMetadata, Document
 
 
 class TextSplitter:
-    def __init__(self, chunk_size: int = settings.chunk_size, chunk_overlap: int = settings.chunk_overlap):
-        self.chunk_size = chunk_size
-        self.chunk_overlap = chunk_overlap
+    def __init__(self, chunk_size: int | None = None, chunk_overlap: int | None = None):
+        self.chunk_size = settings.chunk_size if chunk_size is None else chunk_size
+        self.chunk_overlap = settings.chunk_overlap if chunk_overlap is None else chunk_overlap
 
     def split_text(self, text: str) -> list[str]:
         raise NotImplementedError
@@ -35,9 +35,9 @@ class TextSplitter:
 class RecursiveCharacterTextSplitter(TextSplitter):
     def __init__(
         self,
-        chunk_size: int = settings.chunk_size,
-        chunk_overlap: int = settings.chunk_overlap,
-        separators: list[str] = None,
+        chunk_size: int | None = None,
+        chunk_overlap: int | None = None,
+        separators: list[str] | None = None,
     ):
         super().__init__(chunk_size, chunk_overlap)
         self.separators = separators or ["\n\n", "\n", " ", ""]
@@ -103,5 +103,5 @@ class RecursiveCharacterTextSplitter(TextSplitter):
         return self._split_text(text, self.separators)
 
 
-def get_splitter() -> TextSplitter:
-    return RecursiveCharacterTextSplitter()
+def get_splitter(chunk_size: int | None = None, chunk_overlap: int | None = None) -> TextSplitter:
+    return RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)

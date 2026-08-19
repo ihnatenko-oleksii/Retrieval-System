@@ -129,6 +129,10 @@ class TestRetrievalMetrics:
         assert metrics["recall@3"] == 1.0
         assert metrics["precision@3"] == pytest.approx(1 / 3, abs=1e-4)
         assert metrics["mrr"] == pytest.approx(0.5)
+        assert details[0]["recall"] == 1.0
+        assert details[0]["precision"] == pytest.approx(1 / 3, abs=1e-4)
+        assert details[0]["mrr"] == 0.5
+        assert details[0]["ndcg"] == 0.6309
         assert details[0]["first_relevant_rank"] == 2
 
     def test_miss_contributes_zero_to_all_retrieval_metrics(self, tmp_path):

@@ -43,6 +43,6 @@ class PrefixedSentenceTransformerEmbeddingFunction:
         return f"prefixed::{self.model_name}"
 
 
-def get_embedding_function() -> PrefixedSentenceTransformerEmbeddingFunction:
+def get_embedding_function(model_name: str | None = None) -> PrefixedSentenceTransformerEmbeddingFunction:
     """Returns the configured embedding function with model-aware prefixing."""
-    return PrefixedSentenceTransformerEmbeddingFunction(model_name=settings.embedding_model)
+    return PrefixedSentenceTransformerEmbeddingFunction(model_name=model_name or settings.embedding_model)

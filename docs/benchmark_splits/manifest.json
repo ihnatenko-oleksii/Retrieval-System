@@ -1,0 +1,100 @@
+{
+  "protocol_version": 1,
+  "source_eval": "/Users/mac/Development/MyProjects/retrieval_system/docs/benchmark_eval.jsonl",
+  "source_sha256": "e39dbecfb49e798fe94ef64b78f4abd6b0c653694bda301042b4bd6898425163",
+  "seed": 1729,
+  "dev_size": 40,
+  "test_size": 20,
+  "test_frozen": true,
+  "categories": {
+    "ambiguous": {
+      "total": 12,
+      "dev": 8,
+      "test": 4
+    },
+    "exact_terminology": {
+      "total": 12,
+      "dev": 8,
+      "test": 4
+    },
+    "fine_grained": {
+      "total": 12,
+      "dev": 8,
+      "test": 4
+    },
+    "multiple_relevant": {
+      "total": 12,
+      "dev": 8,
+      "test": 4
+    },
+    "paraphrased_semantic": {
+      "total": 12,
+      "dev": 8,
+      "test": 4
+    }
+  },
+  "dev_case_ids": [
+    "exact-01",
+    "exact-02",
+    "exact-06",
+    "exact-07",
+    "exact-08",
+    "exact-10",
+    "exact-11",
+    "exact-12",
+    "semantic-01",
+    "semantic-02",
+    "semantic-03",
+    "semantic-04",
+    "semantic-05",
+    "semantic-06",
+    "semantic-09",
+    "semantic-12",
+    "ambiguous-02",
+    "ambiguous-03",
+    "ambiguous-04",
+    "ambiguous-05",
+    "ambiguous-06",
+    "ambiguous-08",
+    "ambiguous-10",
+    "ambiguous-12",
+    "fine_grained-01",
+    "fine_grained-02",
+    "fine_grained-03",
+    "fine_grained-04",
+    "fine_grained-05",
+    "fine_grained-08",
+    "fine_grained-09",
+    "fine_grained-10",
+    "multi_relevant-01",
+    "multi_relevant-02",
+    "multi_relevant-03",
+    "multi_relevant-04",
+    "multi_relevant-06",
+    "multi_relevant-08",
+    "multi_relevant-11",
+    "multi_relevant-12"
+  ],
+  "test_case_ids": [
+    "exact-03",
+    "exact-04",
+    "exact-05",
+    "exact-09",
+    "semantic-07",
+    "semantic-08",
+    "semantic-10",
+    "semantic-11",
+    "ambiguous-01",
+    "ambiguous-07",
+    "ambiguous-09",
+    "ambiguous-11",
+    "fine_grained-06",
+    "fine_grained-07",
+    "fine_grained-11",
+    "fine_grained-12",
+    "multi_relevant-05",
+    "multi_relevant-07",
+    "multi_relevant-09",
+    "multi_relevant-10"
+  ]
+}

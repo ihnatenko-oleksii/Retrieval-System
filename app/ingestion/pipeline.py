@@ -9,8 +9,8 @@ logger = logging.getLogger(__name__)
 
 
 class IngestionPipeline:
-    def __init__(self):
-        self.splitter = get_splitter()
+    def __init__(self, chunk_size: int | None = None, chunk_overlap: int | None = None):
+        self.splitter = get_splitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
 
     def process_directory(self, directory_path: str) -> list[Chunk]:
         base_dir = os.path.abspath(directory_path)

@@ -60,6 +60,60 @@ class TestNormalizeScores:
         assert all(score == 1.0 for _, _, score in normalized)
 
 
+class TestFusionAndRouting:
+    def test_acronym_extraction_does_not_treat_sentence_initial_word_as_acronym(self):
+        retriever = make_retriever()
+
+        assert retriever._extract_acronyms("What is CI?") == ["CI"]
+
+    def test_explicit_candidate_depth_is_independent_of_final_top_k(self):
+        vector_store = MagicMock()
+        bm25_store = MagicMock()
+        vector_store.query.return_value = {"documents": [[]]}
+        bm25_store.query.return_value = []
+        retriever = make_retriever(vector_store=vector_store, bm25_store=bm25_store)
+
+        retriever.retrieve("q", config=base_config(top_k=5, candidate_depth=75))
+
+        assert vector_store.query.call_args.kwargs["n_results"] == 75
+
+    def test_rrf_fusion_uses_rank_agreement(self):
+        vector_store = MagicMock()
+        bm25_store = MagicMock()
+        meta_a = make_meta("docs/a.md", 0)
+        meta_b = make_meta("docs/b.md", 0)
+        meta_c = make_meta("docs/c.md", 0)
+        vector_store.query.return_value = {
+            "documents": [["dense a", "dense b"]],
+            "metadatas": [[meta_a, meta_b]],
+            "distances": [[0.1, 0.2]],
+        }
+        bm25_store.query.return_value = [
+            ("sparse b", meta_b, 10.0),
+            ("sparse c", meta_c, 9.0),
+        ]
+        retriever = make_retriever(vector_store=vector_store, bm25_store=bm25_store)
+
+        results = retriever.retrieve(
+            "query",
+            config=base_config(
+                top_k=3,
+                fusion_strategy="rrf",
+                adaptive_routing=False,
+                dense_weight=1.0,
+                sparse_weight=1.0,
+            ),
+        )
+
+        assert results[0][1]["file_path"] == "docs/b.md"
+
+    def test_adaptive_weights_uses_raw_query_signals(self):
+        retriever = make_retriever()
+
+        assert retriever._adaptive_weights("What is CI?", 0.7, 0.3) == (0.35, 0.65)
+        assert retriever._adaptive_weights("How does the service handle pagination cursors?", 0.7, 0.3) == (0.8, 0.2)
+
+
 class TestChunkIdentity:
     def test_same_metadata_same_identity(self):
         retriever = make_retriever()
@@ -218,6 +272,32 @@ class TestRerankingSwitch:
         retriever.retrieve("q", config=base_config(reranker_on=False, top_k=3))
 
         reranker.rerank.assert_not_called()
+
+    def test_reranker_receives_explicit_candidate_pool(self):
+        vector_store = MagicMock()
+        bm25_store = MagicMock()
+        reranker = MagicMock()
+        metas = [make_meta(f"docs/{letter}.md", 0) for letter in "abcd"]
+        vector_store.query.return_value = {
+            "documents": [["a", "b", "c", "d"]],
+            "metadatas": [metas],
+            "distances": [[0.1, 0.2, 0.3, 0.4]],
+        }
+        bm25_store.query.return_value = []
+        reranker.rerank.return_value = [("a", metas[0], 1.0), ("b", metas[1], 0.9)]
+
+        retriever = make_retriever(vector_store=vector_store, bm25_store=bm25_store, reranker=reranker)
+        retriever.retrieve(
+            "q",
+            config=base_config(
+                top_k=2,
+                reranker_on=True,
+                rerank_candidate_pool=4,
+                candidate_depth=4,
+            ),
+        )
+
+        assert len(reranker.rerank.call_args.args[1]) == 4
 
 
 class TestQueryRewritingExpansionSwitches:
