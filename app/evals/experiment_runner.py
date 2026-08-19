@@ -21,6 +21,7 @@ DEFAULT_BGE_RERANKER_MODEL = "BAAI/bge-reranker-v2-m3"
 DEFAULT_CHUNK_SIZE = 1000
 DEFAULT_CHUNK_OVERLAP = 200
 DEFAULT_TOP_K = 5
+LLM_REQUEST_TIMEOUT_SECONDS = 30.0
 
 METRICS = ("recall@5", "precision@5", "mrr", "ndcg")
 
@@ -46,6 +47,15 @@ class ExperimentSpec:
     rerank_candidate_pool: int = 20
     query_rewriting_on: bool = False
     query_expansion_on: bool = False
+    rewrite_policy: str = "never"
+    expansion_policy: str = "never"
+    include_original_query: bool = False
+    multi_query_fusion_strategy: str = "weighted_rrf"
+    original_query_weight: float = 1.0
+    rewrite_query_weight: float = 0.7
+    expansion_query_weight: float = 0.5
+    confidence_routing: bool = False
+    confidence_threshold: float = 0.35
     llm_model: str | None = None
 
     def to_retrieval_config(self) -> RetrievalConfig:
@@ -59,6 +69,15 @@ class ExperimentSpec:
             query_expansion_on=self.query_expansion_on,
             llm_model=self.llm_model,
             fusion_strategy=self.fusion_strategy,
+            rewrite_policy=self.rewrite_policy,
+            expansion_policy=self.expansion_policy,
+            include_original_query=self.include_original_query,
+            multi_query_fusion_strategy=self.multi_query_fusion_strategy,
+            original_query_weight=self.original_query_weight,
+            rewrite_query_weight=self.rewrite_query_weight,
+            expansion_query_weight=self.expansion_query_weight,
+            confidence_routing=self.confidence_routing,
+            confidence_threshold=self.confidence_threshold,
             candidate_depth=self.candidate_depth,
             rerank_candidate_pool=self.rerank_candidate_pool,
             adaptive_routing=self.adaptive_routing,
@@ -105,6 +124,7 @@ class ExperimentResult:
     seconds_per_case: float | None
     error: str | None = None
     index_reused: bool = False
+    routing_metrics: dict[str, float] | None = None
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -118,11 +138,26 @@ class ExperimentResult:
             "seconds_per_case": self.seconds_per_case,
             "index_reused": self.index_reused,
             "error": self.error,
+            "routing_metrics": self.routing_metrics or {},
         }
 
 
 def baseline_spec(name: str = "baseline-dense-e5") -> ExperimentSpec:
     return ExperimentSpec(name=name)
+
+
+def previous_final_spec() -> ExperimentSpec:
+    """The Phase 1 final: BGE-M3 static hybrid with replacement rewriting."""
+    return ExperimentSpec(
+        name="previous-final-bge-m3-static+global-rewrite",
+        embedding_model="BAAI/bge-m3",
+        dense_weight=0.7,
+        sparse_weight=0.3,
+        query_rewriting_on=True,
+        rewrite_policy="always",
+        include_original_query=False,
+        multi_query_fusion_strategy="weighted_linear",
+    )
 
 
 def _unique_specs(specs: list[ExperimentSpec]) -> list[ExperimentSpec]:
@@ -207,6 +242,25 @@ def default_retrieval_specs() -> list[ExperimentSpec]:
             )
         )
 
+    specs.extend(
+        [
+            ExperimentSpec(
+                name="bge-m3-hybrid-adaptive",
+                embedding_model="BAAI/bge-m3",
+                dense_weight=0.7,
+                sparse_weight=0.3,
+                adaptive_routing=True,
+            ),
+            ExperimentSpec(
+                name="e5-hybrid-adaptive",
+                embedding_model=DEFAULT_EMBEDDING_MODEL,
+                dense_weight=0.7,
+                sparse_weight=0.3,
+                adaptive_routing=True,
+            ),
+        ]
+    )
+
     for model_name, model_label in (
         (DEFAULT_RERANKER_MODEL, "minilm-reranker"),
         (DEFAULT_BGE_RERANKER_MODEL, "bge-reranker"),
@@ -238,15 +292,75 @@ def default_retrieval_specs() -> list[ExperimentSpec]:
 
 
 def llm_variants(selected: ExperimentSpec) -> list[ExperimentSpec]:
-    """Create the post-retrieval LLM experiments from the DEV winner."""
+    """Create DEV-only all-vs-selective and multi-query LLM experiments."""
     return [
-        replace(selected, name=f"{selected.name}+query-rewrite", query_rewriting_on=True),
-        replace(selected, name=f"{selected.name}+query-expansion", query_expansion_on=True),
         replace(
             selected,
-            name=f"{selected.name}+rewrite-and-expansion",
+            name=f"{selected.name}+rewrite-all-replace",
+            query_rewriting_on=True,
+            rewrite_policy="always",
+            include_original_query=False,
+            multi_query_fusion_strategy="weighted_linear",
+        ),
+        replace(
+            selected,
+            name=f"{selected.name}+rewrite-all-ensemble-linear",
+            query_rewriting_on=True,
+            rewrite_policy="always",
+            include_original_query=True,
+            multi_query_fusion_strategy="weighted_linear",
+        ),
+        replace(
+            selected,
+            name=f"{selected.name}+rewrite-all-ensemble-rrf",
+            query_rewriting_on=True,
+            rewrite_policy="always",
+            include_original_query=True,
+            multi_query_fusion_strategy="rrf",
+        ),
+        replace(
+            selected,
+            name=f"{selected.name}+rewrite-selective-ensemble-linear",
+            query_rewriting_on=True,
+            rewrite_policy="selective",
+            include_original_query=True,
+            multi_query_fusion_strategy="weighted_linear",
+        ),
+        replace(
+            selected,
+            name=f"{selected.name}+rewrite-selective-ensemble-rrf",
+            query_rewriting_on=True,
+            rewrite_policy="selective",
+            include_original_query=True,
+            multi_query_fusion_strategy="weighted_rrf",
+        ),
+        replace(
+            selected,
+            name=f"{selected.name}+expansion-selective-ensemble-rrf",
+            query_expansion_on=True,
+            expansion_policy="selective",
+            include_original_query=True,
+            multi_query_fusion_strategy="weighted_rrf",
+        ),
+        replace(
+            selected,
+            name=f"{selected.name}+rewrite-expansion-selective-ensemble-rrf",
             query_rewriting_on=True,
             query_expansion_on=True,
+            rewrite_policy="selective",
+            expansion_policy="selective",
+            include_original_query=True,
+            multi_query_fusion_strategy="weighted_rrf",
+        ),
+        replace(
+            selected,
+            name=f"{selected.name}+rewrite-selective-confidence-ensemble-rrf",
+            query_rewriting_on=True,
+            rewrite_policy="selective",
+            include_original_query=True,
+            multi_query_fusion_strategy="weighted_rrf",
+            confidence_routing=True,
+            confidence_threshold=0.35,
         ),
     ]
 
@@ -300,6 +414,46 @@ def _category_metrics(details: list[dict[str, Any]], top_k: int) -> dict[str, di
             "cases": len(category_details),
         }
     return output
+
+
+def _routing_metrics(details: list[dict[str, Any]]) -> dict[str, float]:
+    """Summarize query routing without exposing benchmark labels to retrieval."""
+    case_count = len(details)
+    if not case_count:
+        return {
+            "cases": 0.0,
+            "rewrite_count": 0.0,
+            "rewrite_rate_percent": 0.0,
+            "expansion_count": 0.0,
+            "expansion_rate_percent": 0.0,
+            "confidence_trigger_count": 0.0,
+            "average_confidence": 0.0,
+            "average_query_variant_count": 0.0,
+        }
+    confidence_values = [
+        float(detail["confidence_score"])
+        for detail in details
+        if detail.get("confidence_score") is not None
+    ]
+    return {
+        "cases": float(case_count),
+        "rewrite_count": float(sum(bool(detail.get("rewrite_applied")) for detail in details)),
+        "rewrite_rate_percent": round(
+            sum(bool(detail.get("rewrite_applied")) for detail in details) / case_count * 100,
+            4,
+        ),
+        "expansion_count": float(sum(bool(detail.get("expansion_applied")) for detail in details)),
+        "expansion_rate_percent": round(
+            sum(bool(detail.get("expansion_applied")) for detail in details) / case_count * 100,
+            4,
+        ),
+        "confidence_trigger_count": float(sum(bool(detail.get("confidence_triggered")) for detail in details)),
+        "average_confidence": round(sum(confidence_values) / len(confidence_values), 4) if confidence_values else 0.0,
+        "average_query_variant_count": round(
+            sum(float(detail.get("query_variant_count", 1)) for detail in details) / case_count,
+            4,
+        ),
+    }
 
 
 def _corpus_fingerprint(corpus_dir: Path) -> str:
@@ -479,13 +633,31 @@ class ExperimentRunner:
 
         model_name = spec.llm_model or settings.llm_model
         if model_name not in self._rewriter_cache:
-            self._rewriter_cache[model_name] = QueryRewriter(model_name=model_name)
+            self._rewriter_cache[model_name] = QueryRewriter(
+                model_name=model_name,
+                timeout_seconds=LLM_REQUEST_TIMEOUT_SECONDS,
+                strict=True,
+            )
         return self._rewriter_cache[model_name]
 
     def run_one(self, spec: ExperimentSpec, eval_path: Path, phase: str) -> ExperimentResult:
         cases = load_jsonl(eval_path)
         started = time.perf_counter()
         index_reused = False
+        if (spec.query_rewriting_on or spec.query_expansion_on) and not _ollama_available():
+            elapsed = round(time.perf_counter() - started, 4)
+            return ExperimentResult(
+                phase=phase,
+                spec=spec,
+                status="error",
+                metrics={},
+                category_metrics={},
+                elapsed_seconds=elapsed,
+                seconds_per_case=None,
+                error="Ollama unavailable at http://localhost:11434/api/tags",
+                index_reused=False,
+                routing_metrics={},
+            )
         try:
             index, index_reused = self._get_index(spec, cases)
             from app.evals.evaluator import Evaluator
@@ -511,6 +683,7 @@ class ExperimentRunner:
                 elapsed_seconds=elapsed,
                 seconds_per_case=round(elapsed / len(cases), 4) if cases else None,
                 index_reused=index_reused,
+                routing_metrics=_routing_metrics(details),
             )
         except InvalidChunkMapping as exc:
             elapsed = round(time.perf_counter() - started, 4)
@@ -524,6 +697,7 @@ class ExperimentRunner:
                 seconds_per_case=None,
                 error=str(exc),
                 index_reused=index_reused,
+                routing_metrics={},
             )
         except Exception as exc:  # Record failed configurations without losing the matrix.
             elapsed = round(time.perf_counter() - started, 4)
@@ -537,6 +711,7 @@ class ExperimentRunner:
                 seconds_per_case=None,
                 error=f"{type(exc).__name__}: {exc}",
                 index_reused=index_reused,
+                routing_metrics={},
             )
 
     def run_phase(self, specs: list[ExperimentSpec], eval_path: Path, phase: str) -> list[ExperimentResult]:
@@ -572,12 +747,19 @@ def _flatten_result(result: ExperimentResult) -> dict[str, Any]:
         "rerank_candidate_pool": result.spec.rerank_candidate_pool if result.spec.reranker_on else "",
         "query_rewriting_on": result.spec.query_rewriting_on,
         "query_expansion_on": result.spec.query_expansion_on,
+        "rewrite_policy": result.spec.rewrite_policy,
+        "expansion_policy": result.spec.expansion_policy,
+        "include_original_query": result.spec.include_original_query,
+        "multi_query_fusion_strategy": result.spec.multi_query_fusion_strategy,
+        "confidence_routing": result.spec.confidence_routing,
+        "confidence_threshold": result.spec.confidence_threshold,
         "elapsed_seconds": result.elapsed_seconds,
         "seconds_per_case": result.seconds_per_case,
         "index_reused": result.index_reused,
         "error": result.error or "",
     }
     row.update({metric: result.metrics.get(metric, "") for metric in METRICS})
+    row.update({key: value for key, value in (result.routing_metrics or {}).items()})
     return row
 
 
@@ -644,6 +826,7 @@ def write_final_comparison(
     split: BenchmarkSplit,
     dev_results: list[ExperimentResult] | None = None,
     llm_results: list[ExperimentResult] | None = None,
+    previous_final: ExperimentResult | None = None,
 ) -> dict[str, Any]:
     output_dir.mkdir(parents=True, exist_ok=True)
     relative = {
@@ -656,8 +839,16 @@ def write_final_comparison(
         "test_frozen": split.manifest.get("test_frozen") is True,
         "test_case_count": len(split.test_cases),
         "baseline": baseline.as_dict(),
+        "previous_final": previous_final.as_dict() if previous_final is not None else None,
         "final": final.as_dict(),
+        "new_final": final.as_dict(),
         "relative_improvement_percent": relative,
+        "previous_final_relative_improvement_percent": {
+            metric: relative_improvement(baseline.metrics, previous_final.metrics, metric)
+            for metric in METRICS
+        }
+        if previous_final is not None
+        else None,
         "dev_selection": {
             "selected": final.spec.name,
             "ranking": [
@@ -680,23 +871,37 @@ def write_final_comparison(
         "## Configuration",
         "",
         f"- Baseline: `{baseline.spec.name}` — `{baseline.spec.embedding_model}`, dense-only, no reranking, rewriting, or expansion.",
-        f"- Final: `{final.spec.name}` — `{final.spec.embedding_model}`, chunk `{final.spec.chunk_size}/{final.spec.chunk_overlap}`, "
+    ]
+    if previous_final is not None:
+        lines.append(
+            f"- Previous final: `{previous_final.spec.name}` — `{previous_final.spec.embedding_model}`, chunk `"
+            f"{previous_final.spec.chunk_size}/{previous_final.spec.chunk_overlap}`, fusion `"
+            f"{previous_final.spec.fusion_strategy}`, weights `{previous_final.spec.dense_weight}/{previous_final.spec.sparse_weight}`, "
+            f"global rewrite replacement `{previous_final.spec.query_rewriting_on and not previous_final.spec.include_original_query}`."
+        )
+    lines.extend(
+        [
+        f"- New final: `{final.spec.name}` — `{final.spec.embedding_model}`, chunk `{final.spec.chunk_size}/{final.spec.chunk_overlap}`, "
         f"fusion `{final.spec.fusion_strategy}`, weights `{final.spec.dense_weight}/{final.spec.sparse_weight}`, "
         f"candidate depth `{final.spec.candidate_depth}`, reranking `{final.spec.reranker_on}`, "
-        f"query rewriting `{final.spec.query_rewriting_on}`, query expansion `{final.spec.query_expansion_on}`.",
+        f"query rewriting `{final.spec.query_rewriting_on}` (`{final.spec.rewrite_policy}`), query expansion "
+        f"`{final.spec.query_expansion_on}` (`{final.spec.expansion_policy}`), original preserved `{final.spec.include_original_query}`, "
+        f"stage-2 fusion `{final.spec.multi_query_fusion_strategy}`, confidence routing `{final.spec.confidence_routing}`.",
         "",
         "## TEST metrics",
         "",
         "| Configuration | Recall@5 | Precision@5 | MRR | nDCG | Seconds |",
         "|---|---:|---:|---:|---:|---:|",
         f"| Baseline | {baseline.metrics.get('recall@5', '-')} | {baseline.metrics.get('precision@5', '-')} | {baseline.metrics.get('mrr', '-')} | {baseline.metrics.get('ndcg', '-')} | {baseline.elapsed_seconds} |",
-        f"| Final | {final.metrics.get('recall@5', '-')} | {final.metrics.get('precision@5', '-')} | {final.metrics.get('mrr', '-')} | {final.metrics.get('ndcg', '-')} | {final.elapsed_seconds} |",
+        *([f"| Previous final | {previous_final.metrics.get('recall@5', '-')} | {previous_final.metrics.get('precision@5', '-')} | {previous_final.metrics.get('mrr', '-')} | {previous_final.metrics.get('ndcg', '-')} | {previous_final.elapsed_seconds} |"] if previous_final is not None else []),
+        f"| New final | {final.metrics.get('recall@5', '-')} | {final.metrics.get('precision@5', '-')} | {final.metrics.get('mrr', '-')} | {final.metrics.get('ndcg', '-')} | {final.elapsed_seconds} |",
         "",
         "## Relative improvement",
         "",
         "| Metric | `(new - baseline) / baseline * 100` |",
         "|---|---:|",
-    ]
+        ]
+    )
     for metric in METRICS:
         lines.append(f"| {metric} | {relative[metric] if relative[metric] is not None else '-'}% |")
 
@@ -754,10 +959,56 @@ def write_final_comparison(
             f"{result.metrics.get('ndcg', '-')} | {f'{delta}%' if delta is not None else '-'} | {result.metrics.get('mrr', '-')} |"
         )
 
+    routing_description = (
+        "The deterministic gate inspects raw-query acronyms, quoted terms, numeric status codes, "
+        "identifiers, precision markers, pronouns, ambiguity phrases, and question length. "
+        "Protected lexical/precision signals skip optional LLM variants; only query text can trigger "
+        "selective rewrite or expansion. Stage 1 fuses dense/BM25 per query, then stage 2 can fuse "
+        "original, rewrite, and expansion rankings with weighted linear, RRF, or weighted RRF. "
+        "Adaptive dense/BM25 routing uses lexical signals to favor sparse retrieval, long semantic "
+        "questions to favor dense retrieval, and the configured mix otherwise."
+    )
+    route_metrics = final.routing_metrics or {}
+    previous_route_metrics = (previous_final.routing_metrics or {}) if previous_final is not None else {}
+    lines.extend(
+        [
+            "",
+            "## Query routing and generalized failure modes",
+            "",
+            routing_description,
+            "",
+            f"- New-final TEST rewrite rate: {route_metrics.get('rewrite_rate_percent', 0.0)}%; expansion rate: {route_metrics.get('expansion_rate_percent', 0.0)}%; confidence-triggered rewrites: {route_metrics.get('confidence_trigger_count', 0.0)}.",
+            *([f"- Previous-final TEST rewrite rate: {previous_route_metrics.get('rewrite_rate_percent', 0.0)}%."] if previous_final is not None else []),
+        ]
+    )
+    replacement_result = dev_by_name.get("bge-m3-hybrid-adaptive+rewrite-all-replace")
+    ensemble_result = dev_by_name.get("bge-m3-hybrid-adaptive+rewrite-all-ensemble-rrf")
+    expansion_result = dev_by_name.get("bge-m3-hybrid-adaptive+expansion-selective-ensemble-rrf")
+    if replacement_result is not None and ensemble_result is not None:
+        lines.append(
+            f"- Rewrite replacement drift was measured as a general failure mode: DEV nDCG was {replacement_result.metrics.get('ndcg', '-')} for replacement versus {ensemble_result.metrics.get('ndcg', '-')} when the original query was retained and fused by rank."
+        )
+    if expansion_result is not None:
+        lines.append(
+            f"- Query-expansion ensemble retrieval introduced measurable noise on this benchmark: the selective expansion ensemble reached DEV nDCG {expansion_result.metrics.get('ndcg', '-')} and MRR {expansion_result.metrics.get('mrr', '-')}, below the selected adaptive route."
+        )
+    lines.extend(
+        [
+            "- Chunk-boundary changes were rejected when labeled chunk content no longer matched the canonical 1000/200 mapping; no invalid-label score entered selection.",
+            "- BGE cross-encoder reranker candidates were recorded as unavailable because the offline cache lacked model weights; no silent fallback score was used.",
+        ]
+    )
+    payload["query_routing"] = {
+        "description": routing_description,
+        "selected_new_final": final.spec.name,
+        "new_final_routing_metrics": route_metrics,
+        "previous_final_routing_metrics": previous_route_metrics if previous_final is not None else None,
+    }
+
     cv_bullet = (
         f"Improved retrieval nDCG by {relative['ndcg']}% ({baseline.metrics.get('ndcg')} to {final.metrics.get('ndcg')}) "
         f"and MRR by {relative['mrr']}% ({baseline.metrics.get('mrr')} to {final.metrics.get('mrr')}) on a frozen {len(split.test_cases)}-query TEST set, "
-        f"selecting {final.spec.embedding_model} with {final.spec.fusion_strategy} dense/BM25 fusion "
+        f"selecting {final.spec.embedding_model} with query-adaptive {final.spec.fusion_strategy} dense/BM25 fusion "
         f"({final.spec.dense_weight}/{final.spec.sparse_weight}) from a {len(split.dev_cases)}-query DEV split; "
         f"latency was {final.seconds_per_case}s/query versus {baseline.seconds_per_case}s/query for the dense baseline."
     )
@@ -773,22 +1024,26 @@ def write_final_comparison(
         )
     lines.extend(["", "## Recommended CV bullet", "", f"> {cv_bullet}"])
 
-    categories = sorted(set(baseline.category_metrics) | set(final.category_metrics))
+    category_sets = [set(baseline.category_metrics), set(final.category_metrics)]
+    if previous_final is not None:
+        category_sets.append(set(previous_final.category_metrics))
+    categories = sorted(set().union(*category_sets))
     lines.extend(
         [
             "",
             "## Category breakdown",
             "",
-            "| Category | Baseline nDCG | Final nDCG | Baseline MRR | Final MRR | Cases |",
-            "|---|---:|---:|---:|---:|---:|",
+            "| Category | Baseline nDCG | Previous final nDCG | New final nDCG | Baseline MRR | Previous final MRR | New final MRR | Cases |",
+            "|---|---:|---:|---:|---:|---:|---:|---:|",
         ]
     )
     for category in categories:
         baseline_category = baseline.category_metrics.get(category, {})
+        previous_category = previous_final.category_metrics.get(category, {}) if previous_final is not None else {}
         final_category = final.category_metrics.get(category, {})
         lines.append(
-            f"| {category} | {baseline_category.get('ndcg', '-')} | {final_category.get('ndcg', '-')} | "
-            f"{baseline_category.get('mrr', '-')} | {final_category.get('mrr', '-')} | "
+            f"| {category} | {baseline_category.get('ndcg', '-')} | {previous_category.get('ndcg', '-')} | {final_category.get('ndcg', '-')} | "
+            f"{baseline_category.get('mrr', '-')} | {previous_category.get('mrr', '-')} | {final_category.get('mrr', '-')} | "
             f"{final_category.get('cases', baseline_category.get('cases', '-'))} |"
         )
 
@@ -805,7 +1060,7 @@ def write_final_comparison(
 
     failed_results = [
         result
-        for result in [*(dev_results or []), *(llm_results or [])]
+        for result in [baseline, *( [previous_final] if previous_final is not None else []), final, *(dev_results or []), *(llm_results or [])]
         if result.status != "ok"
     ]
     if failed_results:
@@ -827,7 +1082,8 @@ def write_final_comparison(
             "## Runtime tradeoff",
             "",
             f"- Baseline: {baseline.elapsed_seconds}s total ({baseline.seconds_per_case}s/case).",
-            f"- Final: {final.elapsed_seconds}s total ({final.seconds_per_case}s/case).",
+            *([f"- Previous final: {previous_final.elapsed_seconds}s total ({previous_final.seconds_per_case}s/case), rewrite rate {(previous_final.routing_metrics or {}).get('rewrite_rate_percent', 0.0)}%."] if previous_final is not None else []),
+            f"- New final: {final.elapsed_seconds}s total ({final.seconds_per_case}s/case), rewrite rate {(final.routing_metrics or {}).get('rewrite_rate_percent', 0.0)}%, expansion rate {(final.routing_metrics or {}).get('expansion_rate_percent', 0.0)}%.",
             "",
             "The final selection was made from DEV results only; this TEST comparison is not fed back into selection.",
         ]
@@ -850,6 +1106,19 @@ def write_final_comparison(
                 **{f"relative_{metric}_percent": "" for metric in METRICS},
             }
         )
+        if previous_final is not None:
+            previous_relative = {
+                metric: relative_improvement(baseline.metrics, previous_final.metrics, metric)
+                for metric in METRICS
+            }
+            writer.writerow(
+                {
+                    "configuration": previous_final.spec.name,
+                    **{metric: previous_final.metrics.get(metric, "") for metric in METRICS},
+                    "elapsed_seconds": previous_final.elapsed_seconds,
+                    **{f"relative_{metric}_percent": previous_relative[metric] for metric in METRICS},
+                }
+            )
         writer.writerow(
             {
                 "configuration": final.spec.name,
@@ -878,14 +1147,19 @@ def run_protocol(
 
     dev_results = runner.run_phase(default_retrieval_specs(), split_dir / "dev.jsonl", "dev")
     write_phase_artifacts(dev_results, output_dir, "dev", command=command, split=split)
-    ranked = rank_dev_results(dev_results)
+    control_names = {baseline_spec().name, previous_final_spec().name}
+    new_candidates = [result for result in dev_results if result.spec.name not in control_names]
+    ranked = rank_dev_results(new_candidates)
     if not ranked:
-        raise RuntimeError("No retrieval configuration completed successfully on DEV")
+        raise RuntimeError("No new retrieval configuration completed successfully on DEV")
     selected = ranked[0].spec
 
     llm_results: list[ExperimentResult] = []
     if include_llm:
-        llm_specs = [replace(spec, llm_model=llm_model) for spec in llm_variants(selected)]
+        llm_specs = [
+            replace(previous_final_spec(), llm_model=llm_model),
+            *[replace(spec, llm_model=llm_model) for spec in llm_variants(selected)],
+        ]
         if _ollama_available():
             llm_results = runner.run_phase(llm_specs, split_dir / "dev.jsonl", "dev_llm")
         else:
@@ -903,7 +1177,9 @@ def run_protocol(
                 for spec in llm_specs
             ]
         write_phase_artifacts(llm_results, output_dir, "dev_llm", command=command, split=split)
-        llm_ranked = rank_dev_results(llm_results)
+        llm_ranked = rank_dev_results(
+            [result for result in llm_results if result.spec.name != previous_final_spec().name]
+        )
         selected_result = ranked[0]
         if llm_ranked and (
             llm_ranked[0].metrics.get("ndcg", 0.0),
@@ -915,10 +1191,19 @@ def run_protocol(
             selected = llm_ranked[0].spec
 
     baseline = baseline_spec()
-    test_results = runner.run_phase([baseline, selected], split_dir / "test.jsonl", "test")
+    previous_final = (
+        replace(previous_final_spec(), llm_model=llm_model)
+        if include_llm
+        else previous_final_spec()
+    )
+    test_specs = [baseline, selected]
+    if include_llm:
+        test_specs = [baseline, previous_final, selected]
+    test_results = runner.run_phase(test_specs, split_dir / "test.jsonl", "test")
     write_phase_artifacts(test_results, output_dir, "test", command=command, split=split)
     test_by_name = {result.spec.name: result for result in test_results}
     baseline_result = test_by_name[baseline.name]
+    previous_final_result = test_by_name.get(previous_final.name)
     final_result = test_by_name[selected.name]
     final_payload = write_final_comparison(
         baseline_result,
@@ -928,6 +1213,7 @@ def run_protocol(
         split=split,
         dev_results=dev_results,
         llm_results=llm_results,
+        previous_final=previous_final_result,
     )
     return {
         "split": split,

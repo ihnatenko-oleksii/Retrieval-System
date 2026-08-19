@@ -34,6 +34,15 @@ class Settings(BaseSettings):
     # Query Expansion/Rewriting (Phase 2)
     query_rewriting_on: bool = False
     query_expansion_on: bool = False
+    rewrite_policy: str = "always"
+    expansion_policy: str = "always"
+    include_original_query: bool = False
+    multi_query_fusion_strategy: str = "weighted_rrf"
+    original_query_weight: float = 1.0
+    rewrite_query_weight: float = 0.7
+    expansion_query_weight: float = 0.5
+    confidence_routing: bool = False
+    confidence_threshold: float = 0.35
 
     # Hybrid Search (Phase 2)
     hybrid_search_weights_dense: float = 0.7

@@ -8,9 +8,11 @@ from app.evals.experiment_runner import (
     ExperimentSpec,
     InvalidChunkMapping,
     _category_metrics,
+    _routing_metrics,
     _validate_chunk_labels,
     baseline_spec,
     default_retrieval_specs,
+    llm_variants,
     rank_dev_results,
     relative_improvement,
     write_final_comparison,
@@ -60,6 +62,14 @@ class TestExperimentMatrix:
         assert baseline_spec().query_rewriting_on is False
         assert baseline_spec().query_expansion_on is False
 
+    def test_llm_matrix_contains_selective_original_preserving_and_confidence_variants(self):
+        variants = llm_variants(ExperimentSpec("bge-base", embedding_model="BAAI/bge-m3"))
+
+        assert any(spec.rewrite_policy == "selective" and spec.include_original_query for spec in variants)
+        assert any(spec.query_expansion_on and spec.expansion_policy == "selective" for spec in variants)
+        assert any(spec.confidence_routing for spec in variants)
+        assert {spec.multi_query_fusion_strategy for spec in variants} >= {"weighted_linear", "rrf", "weighted_rrf"}
+
     def test_chunk_sweep_rejects_same_id_with_changed_content(self):
         cases = [{"id": "case-1", "category": "exact", "relevance": {"a.md::0": 3}}]
         candidate = [make_chunk("new chunk boundaries", "a.md", 0)]
@@ -104,6 +114,19 @@ class TestExperimentArtifacts:
             "cases": 2,
         }
 
+    def test_routing_metrics_report_rewrite_rate_and_latency_inputs(self):
+        metrics = _routing_metrics(
+            [
+                {"rewrite_applied": True, "expansion_applied": False, "confidence_score": 0.2, "confidence_triggered": True, "query_variant_count": 2},
+                {"rewrite_applied": False, "expansion_applied": True, "confidence_score": 0.8, "confidence_triggered": False, "query_variant_count": 3},
+            ]
+        )
+
+        assert metrics["rewrite_rate_percent"] == 50.0
+        assert metrics["expansion_rate_percent"] == 50.0
+        assert metrics["confidence_trigger_count"] == 1.0
+        assert metrics["average_query_variant_count"] == 2.5
+
     def test_writers_emit_machine_and_human_readable_outputs(self, tmp_path):
         split = make_split()
         baseline = make_result(baseline_spec(), ndcg=0.8, mrr=0.8)
@@ -127,6 +150,30 @@ class TestExperimentArtifacts:
         assert payload["relative_improvement_percent"]["ndcg"] == 12.5
         assert "Improved retrieval nDCG" in payload["recommended_cv_bullet"]
         assert json.loads((tmp_path / "final_test_results.json").read_text())["test_frozen"] is True
+
+    def test_final_writer_emits_three_way_frozen_test_comparison(self, tmp_path):
+        split = make_split()
+        baseline = make_result(baseline_spec(), ndcg=0.8, mrr=0.8)
+        previous = make_result(ExperimentSpec("previous"), ndcg=0.85, mrr=0.85, phase="test")
+        new = make_result(ExperimentSpec("new"), ndcg=0.9, mrr=0.9, phase="test")
+
+        payload = write_final_comparison(
+            replace_result_phase(baseline, "test"),
+            new,
+            tmp_path,
+            command="uv run command",
+            split=split,
+            previous_final=previous,
+        )
+
+        assert payload["previous_final"]["name"] == "previous"
+        assert payload["new_final"]["name"] == "new"
+        csv_text = (tmp_path / "final_test_results.csv").read_text()
+        assert csv_text.count("\n") == 4
+        report = (tmp_path / "final_test_report.md").read_text()
+        assert "| Previous final |" in report
+        assert "| New final |" in report
+        assert "Query routing and generalized failure modes" in report
 
 
 def replace_result_phase(result: ExperimentResult, phase: str) -> ExperimentResult:

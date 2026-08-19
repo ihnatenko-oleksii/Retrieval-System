@@ -18,6 +18,7 @@ def make_evaluator(top_k=3, skip_generation=False) -> Evaluator:
 class FakeRetriever:
     def __init__(self, chunks):
         self.chunks = chunks
+        self.last_trace = {}
 
     def retrieve(self, question, top_k=None, config=None):
         return self.chunks
@@ -179,6 +180,26 @@ class TestRetrievalMetrics:
         assert metrics["mrr"] == pytest.approx(0.5)
         assert 0.0 < metrics["ndcg"] < 1.0
         assert details[0]["relevant_chunk_ids"] == "a.md::0 | b.md::0"
+
+    def test_case_details_expose_query_routing_trace_for_analysis(self, tmp_path):
+        evaluator = make_evaluator(top_k=3)
+        meta_hit = make_meta("a.md", 0, file_name="a.md")
+        evaluator.retriever = FakeRetriever([("t1", meta_hit, 0.9)])
+        evaluator.retriever.last_trace = {
+            "rewrite_applied": True,
+            "expansion_applied": False,
+            "query_variant_count": 2,
+            "confidence_score": 0.2,
+            "confidence_triggered": True,
+        }
+        evaluator.generator = FakeGenerator("answer")
+
+        jsonl = write_jsonl(tmp_path, [{"question": "q", "expected_source": "a.md", "expected_keywords": []}])
+        _, details = evaluator.evaluate_cases(jsonl)
+
+        assert details[0]["rewrite_applied"] is True
+        assert details[0]["query_variant_count"] == 2
+        assert details[0]["confidence_triggered"] is True
 
 
 class TestKeywordHitRate:

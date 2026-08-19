@@ -3,6 +3,7 @@ import re
 
 from app.core.config import settings
 from app.core.runtime_config import RetrievalConfig
+from app.retrieval.query_router import QueryDecision, QueryGate
 from app.retrieval.reranker import Reranker
 from app.retrieval.rewriter import QueryRewriter
 from app.vector_store.bm25_store import BM25Store
@@ -18,10 +19,13 @@ class Retriever:
         bm25_store: BM25Store | None = None,
         reranker: Reranker | None = None,
         rewriter: QueryRewriter | None = None,
+        query_gate: QueryGate | None = None,
     ):
         self.vector_store = vector_store
         self.bm25_store = bm25_store or BM25Store()
         self.rewriter = rewriter or QueryRewriter()
+        self.query_gate = query_gate or QueryGate()
+        self.last_trace: dict[str, object] = {}
         # Allow the caller (e.g. tuning UI) to supply a preloaded reranker so
         # we don't pay the CrossEncoder load cost on every trial.
         self.reranker = reranker or Reranker()
@@ -152,6 +156,130 @@ class Retriever:
 
         return sorted(combined_scores.values(), key=lambda value: value[2], reverse=True)
 
+    def _fuse_query_variants(
+        self,
+        streams: list[tuple[str, list[tuple[str, dict, float]], float]],
+        *,
+        strategy: str,
+        rrf_k: int,
+    ) -> list[list]:
+        """Fuse already-fused query rankings as a separate second stage."""
+        if not streams:
+            return []
+        if len(streams) == 1:
+            return [list(result) for result in streams[0][1]]
+
+        combined_scores: dict[tuple, list] = {}
+        if strategy == "weighted_linear":
+            normalized_streams = [
+                (label, self._normalize_scores(results), weight)
+                for label, results, weight in streams
+            ]
+            for _, results, weight in normalized_streams:
+                for content, meta, score in results:
+                    key = self._chunk_identity(meta, content)
+                    if key not in combined_scores:
+                        combined_scores[key] = [content, meta, 0.0]
+                    combined_scores[key][2] += score * weight
+        else:
+            weighted = strategy == "weighted_rrf"
+            for _, results, weight in streams:
+                effective_weight = weight if weighted else 1.0
+                for rank, (content, meta, _) in enumerate(results, start=1):
+                    key = self._chunk_identity(meta, content)
+                    if key not in combined_scores:
+                        combined_scores[key] = [content, meta, 0.0]
+                    combined_scores[key][2] += effective_weight / (rrf_k + rank)
+
+        return sorted(combined_scores.values(), key=lambda value: value[2], reverse=True)
+
+    def _retrieve_single_query(
+        self,
+        query: str,
+        *,
+        resolved_top_k: int,
+        dense_weight: float,
+        sparse_weight: float,
+        fusion_strategy: str,
+        candidate_depth: int,
+        adaptive_routing: bool,
+        raw_query: str,
+        rrf_k: int,
+    ) -> tuple[list[list], list[tuple[str, dict, float]], list[tuple[str, dict, float]]]:
+        """Run stage 1 dense/sparse retrieval for one query variant."""
+        initial_k = max(resolved_top_k, candidate_depth)
+        effective_dense_weight, effective_sparse_weight = dense_weight, sparse_weight
+        if adaptive_routing:
+            effective_dense_weight, effective_sparse_weight = self._adaptive_weights(
+                raw_query,
+                dense_weight,
+                sparse_weight,
+            )
+
+        dense_results: list[tuple[str, dict, float]] = []
+        sparse_results: list[tuple[str, dict, float]] = []
+        if effective_dense_weight > 0:
+            chroma_res = self.vector_store.query(query_text=query, n_results=initial_k)
+            if chroma_res and chroma_res.get("documents") and len(chroma_res["documents"]) > 0:
+                docs = chroma_res["documents"][0]
+                metas = chroma_res["metadatas"][0] if chroma_res.get("metadatas") else [{}] * len(docs)
+                dists = chroma_res["distances"][0] if chroma_res.get("distances") else [0.0] * len(docs)
+                for content, meta, distance in zip(docs, metas, dists, strict=True):
+                    dense_results.append((content, meta, distance))
+
+        if effective_sparse_weight > 0:
+            sparse_results = self.bm25_store.query(query_text=query, n_results=initial_k)
+
+        final_results = self._fuse_results(
+            dense_results,
+            sparse_results,
+            dense_weight=effective_dense_weight,
+            sparse_weight=effective_sparse_weight,
+            strategy=fusion_strategy,
+            rrf_k=rrf_k,
+        )
+        if adaptive_routing and effective_sparse_weight > 0:
+            combined_scores = {
+                self._chunk_identity(meta, content): [content, meta, score]
+                for content, meta, score in final_results
+            }
+            self._apply_query_intent_boost(raw_query, combined_scores)
+            final_results = sorted(combined_scores.values(), key=lambda value: value[2], reverse=True)
+        return final_results, dense_results, sparse_results
+
+    @staticmethod
+    def _confidence_score(
+        results: list[list],
+        dense_results: list[tuple[str, dict, float]],
+        sparse_results: list[tuple[str, dict, float]],
+        chunk_identity,
+    ) -> float:
+        """Estimate confidence from score separation and backend agreement."""
+        if not results:
+            return 0.0
+        if len(results) == 1:
+            separation = 0.25
+        else:
+            top_score = float(results[0][2])
+            second_score = float(results[1][2])
+            separation = min(1.0, max(0.0, top_score - second_score) * 5.0)
+
+        if dense_results and sparse_results:
+            dense_top = chunk_identity(dense_results[0][1], dense_results[0][0])
+            sparse_top = chunk_identity(sparse_results[0][1], sparse_results[0][0])
+            agreement = 1.0 if dense_top == sparse_top else 0.0
+        else:
+            agreement = 0.25
+        return round(0.5 * separation + 0.5 * agreement, 4)
+
+    @staticmethod
+    def _policy_enabled(enabled: bool, policy: str, decision: QueryDecision, variant: str) -> bool:
+        if not enabled or policy == "never":
+            return False
+        if policy == "always":
+            return True
+        return decision.should_rewrite if variant == "rewrite" else decision.should_expand
+
     def retrieve(
         self,
         query: str,
@@ -170,6 +298,15 @@ class Retriever:
             query_rewriting_on = settings.query_rewriting_on
             query_expansion_on = settings.query_expansion_on
             fusion_strategy = settings.fusion_strategy
+            rewrite_policy = settings.rewrite_policy
+            expansion_policy = settings.expansion_policy
+            include_original_query = settings.include_original_query
+            multi_query_fusion_strategy = settings.multi_query_fusion_strategy
+            original_query_weight = settings.original_query_weight
+            rewrite_query_weight = settings.rewrite_query_weight
+            expansion_query_weight = settings.expansion_query_weight
+            confidence_routing = settings.confidence_routing
+            confidence_threshold = settings.confidence_threshold
             candidate_depth = settings.retrieval_candidate_depth
             adaptive_routing = settings.adaptive_routing
             rrf_k = 60
@@ -183,60 +320,152 @@ class Retriever:
             query_rewriting_on = config.query_rewriting_on
             query_expansion_on = config.query_expansion_on
             fusion_strategy = config.fusion_strategy
+            rewrite_policy = config.rewrite_policy
+            expansion_policy = config.expansion_policy
+            include_original_query = config.include_original_query
+            multi_query_fusion_strategy = config.multi_query_fusion_strategy
+            original_query_weight = config.original_query_weight
+            rewrite_query_weight = config.rewrite_query_weight
+            expansion_query_weight = config.expansion_query_weight
+            confidence_routing = config.confidence_routing
+            confidence_threshold = config.confidence_threshold
             candidate_depth = config.candidate_depth or max(resolved_top_k * 6, 20)
             adaptive_routing = config.adaptive_routing
             rrf_k = config.rrf_k
 
         if resolved_top_k < 1:
             raise ValueError("top_k must be at least 1")
-        initial_k = max(resolved_top_k, candidate_depth)
 
-        # 1. Rewrite and expand. The adaptive router below only sees the raw
-        # query, so it cannot accidentally use benchmark category or case IDs.
-        base_query = self.rewriter.rewrite_query(
-            query,
-            chat_history=chat_history,
-            enabled=query_rewriting_on,
+        decision = self.query_gate.decide(query)
+        rewrite_requested = self._policy_enabled(
+            query_rewriting_on,
+            rewrite_policy,
+            decision,
+            "rewrite",
         )
-        queries = self.rewriter.expand_query(base_query, enabled=query_expansion_on)
+        expansion_requested = self._policy_enabled(
+            query_expansion_on,
+            expansion_policy,
+            decision,
+            "expansion",
+        )
+        potential_variant = rewrite_requested or expansion_requested
+        # Legacy expansion already returned the original query alongside its
+        # generated variants; retain that behavior unless a rewrite is the
+        # explicit replacement-only control.
+        include_original_effective = include_original_query or (expansion_requested and not rewrite_requested)
+        need_original = include_original_effective or confidence_routing or not potential_variant
+        original_results: list[list] = []
+        original_dense: list[tuple[str, dict, float]] = []
+        original_sparse: list[tuple[str, dict, float]] = []
+        if need_original:
+            original_results, original_dense, original_sparse = self._retrieve_single_query(
+                query,
+                resolved_top_k=resolved_top_k,
+                dense_weight=dense_weight,
+                sparse_weight=sparse_weight,
+                fusion_strategy=fusion_strategy,
+                candidate_depth=candidate_depth,
+                adaptive_routing=adaptive_routing,
+                raw_query=query,
+                rrf_k=rrf_k,
+            )
 
-        # 2. Retrieve for all queries.
-        dense_results = []
-        sparse_results = []
-        if adaptive_routing:
-            dense_weight, sparse_weight = self._adaptive_weights(query, dense_weight, sparse_weight)
+        confidence_score = None
+        confidence_triggered = False
+        if confidence_routing and need_original:
+            confidence_score = self._confidence_score(
+                original_results,
+                original_dense,
+                original_sparse,
+                self._chunk_identity,
+            )
+            if confidence_score < confidence_threshold and not decision.protected_signals:
+                if query_rewriting_on and rewrite_policy == "selective":
+                    rewrite_requested = True
+                    confidence_triggered = True
+                if query_expansion_on and expansion_policy == "selective":
+                    expansion_requested = True
+                    confidence_triggered = True
 
-        for q in queries:
-            if dense_weight > 0:
-                chroma_res = self.vector_store.query(query_text=q, n_results=initial_k)
-                if chroma_res and chroma_res.get("documents") and len(chroma_res["documents"]) > 0:
-                    docs = chroma_res["documents"][0]
-                    metas = chroma_res["metadatas"][0] if chroma_res.get("metadatas") else [{}] * len(docs)
-                    dists = chroma_res["distances"][0] if chroma_res.get("distances") else [0.0] * len(docs)
-                    for d, m, c in zip(docs, metas, dists, strict=True):
-                        dense_results.append((d, m, c))
+        streams: list[tuple[str, list[tuple[str, dict, float]], float]] = []
+        if include_original_effective or not (rewrite_requested or expansion_requested):
+            streams.append(("original", original_results, original_query_weight))
 
-            if sparse_weight > 0:
-                bm25_res = self.bm25_store.query(query_text=q, n_results=initial_k)
-                sparse_results.extend(bm25_res)
+        rewrite_applied = False
+        expansion_applied = False
+        if rewrite_requested:
+            rewritten_query = self.rewriter.rewrite_query(
+                query,
+                chat_history=chat_history,
+                enabled=True,
+            )
+            rewrite_applied = True
+            if rewritten_query and rewritten_query != query:
+                rewritten_results, _, _ = self._retrieve_single_query(
+                    rewritten_query,
+                    resolved_top_k=resolved_top_k,
+                    dense_weight=dense_weight,
+                    sparse_weight=sparse_weight,
+                    fusion_strategy=fusion_strategy,
+                    candidate_depth=candidate_depth,
+                    adaptive_routing=adaptive_routing,
+                    raw_query=query,
+                    rrf_k=rrf_k,
+                )
+                streams.append(("rewrite", rewritten_results, rewrite_query_weight))
 
-        # 3. Fuse and optionally apply the existing acronym intent boost only
-        # for adaptive routing; static hybrid remains a true static control.
-        final_results = self._fuse_results(
-            dense_results,
-            sparse_results,
-            dense_weight=dense_weight,
-            sparse_weight=sparse_weight,
-            strategy=fusion_strategy,
+        if expansion_requested:
+            expansion_queries = self.rewriter.expand_query(query, enabled=True)
+            expansion_applied = True
+            for expansion_query in expansion_queries:
+                if not expansion_query or expansion_query == query:
+                    continue
+                expanded_results, _, _ = self._retrieve_single_query(
+                    expansion_query,
+                    resolved_top_k=resolved_top_k,
+                    dense_weight=dense_weight,
+                    sparse_weight=sparse_weight,
+                    fusion_strategy=fusion_strategy,
+                    candidate_depth=candidate_depth,
+                    adaptive_routing=adaptive_routing,
+                    raw_query=query,
+                    rrf_k=rrf_k,
+                )
+                streams.append(("expansion", expanded_results, expansion_query_weight))
+
+        if not streams:
+            # A failed/empty LLM response must never erase the original result.
+            if not original_results:
+                original_results, _, _ = self._retrieve_single_query(
+                    query,
+                    resolved_top_k=resolved_top_k,
+                    dense_weight=dense_weight,
+                    sparse_weight=sparse_weight,
+                    fusion_strategy=fusion_strategy,
+                    candidate_depth=candidate_depth,
+                    adaptive_routing=adaptive_routing,
+                    raw_query=query,
+                    rrf_k=rrf_k,
+                )
+            streams.append(("original", original_results, original_query_weight))
+        final_results = self._fuse_query_variants(
+            streams,
+            strategy=multi_query_fusion_strategy,
             rrf_k=rrf_k,
         )
-        if adaptive_routing and sparse_weight > 0:
-            combined_scores = {
-                self._chunk_identity(meta, content): [content, meta, score]
-                for content, meta, score in final_results
-            }
-            self._apply_query_intent_boost(query, combined_scores)
-            final_results = sorted(combined_scores.values(), key=lambda value: value[2], reverse=True)
+        self.last_trace = {
+            "rewrite_applied": rewrite_applied,
+            "expansion_applied": expansion_applied,
+            "query_variant_count": len(streams),
+            "query_variant_labels": [label for label, _, _ in streams],
+            "gate_should_rewrite": decision.should_rewrite,
+            "gate_should_expand": decision.should_expand,
+            "gate_protected_signals": decision.protected_signals,
+            "gate_reasons": decision.reasons,
+            "confidence_score": confidence_score,
+            "confidence_triggered": confidence_triggered,
+        }
 
         # 4. Rerank only the requested candidate pool, always returning the
         # final top_k. Legacy configs without the new field retain the old

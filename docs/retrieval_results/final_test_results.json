@@ -23,6 +23,15 @@
       "rerank_candidate_pool": 20,
       "query_rewriting_on": false,
       "query_expansion_on": false,
+      "rewrite_policy": "never",
+      "expansion_policy": "never",
+      "include_original_query": false,
+      "multi_query_fusion_strategy": "weighted_rrf",
+      "original_query_weight": 1.0,
+      "rewrite_query_weight": 0.7,
+      "expansion_query_weight": 0.5,
+      "confidence_routing": false,
+      "confidence_threshold": 0.35,
       "llm_model": null
     },
     "metrics": {
@@ -68,17 +77,27 @@
         "cases": 4
       }
     },
-    "elapsed_seconds": 1.756,
-    "seconds_per_case": 0.0878,
+    "elapsed_seconds": 1.2157,
+    "seconds_per_case": 0.0608,
     "index_reused": true,
-    "error": null
+    "error": null,
+    "routing_metrics": {
+      "cases": 20.0,
+      "rewrite_count": 0.0,
+      "rewrite_rate_percent": 0.0,
+      "expansion_count": 0.0,
+      "expansion_rate_percent": 0.0,
+      "confidence_trigger_count": 0.0,
+      "average_confidence": 0.0,
+      "average_query_variant_count": 1.0
+    }
   },
-  "final": {
+  "previous_final": {
     "phase": "test",
-    "name": "bge-m3-hybrid-static+query-rewrite",
+    "name": "previous-final-bge-m3-static+global-rewrite",
     "status": "ok",
     "parameters": {
-      "name": "bge-m3-hybrid-static+query-rewrite",
+      "name": "previous-final-bge-m3-static+global-rewrite",
       "embedding_model": "BAAI/bge-m3",
       "chunk_size": 1000,
       "chunk_overlap": 200,
@@ -93,6 +112,15 @@
       "rerank_candidate_pool": 20,
       "query_rewriting_on": true,
       "query_expansion_on": false,
+      "rewrite_policy": "always",
+      "expansion_policy": "never",
+      "include_original_query": false,
+      "multi_query_fusion_strategy": "weighted_linear",
+      "original_query_weight": 1.0,
+      "rewrite_query_weight": 0.7,
+      "expansion_query_weight": 0.5,
+      "confidence_routing": false,
+      "confidence_threshold": 0.35,
       "llm_model": "qwen2.5:3b"
     },
     "metrics": {
@@ -138,26 +166,665 @@
         "cases": 4
       }
     },
-    "elapsed_seconds": 14.2799,
-    "seconds_per_case": 0.714,
+    "elapsed_seconds": 10.5795,
+    "seconds_per_case": 0.529,
     "index_reused": true,
-    "error": null
+    "error": null,
+    "routing_metrics": {
+      "cases": 20.0,
+      "rewrite_count": 20.0,
+      "rewrite_rate_percent": 100.0,
+      "expansion_count": 0.0,
+      "expansion_rate_percent": 0.0,
+      "confidence_trigger_count": 0.0,
+      "average_confidence": 0.0,
+      "average_query_variant_count": 1.0
+    }
+  },
+  "final": {
+    "phase": "test",
+    "name": "bge-m3-hybrid-adaptive",
+    "status": "ok",
+    "parameters": {
+      "name": "bge-m3-hybrid-adaptive",
+      "embedding_model": "BAAI/bge-m3",
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "top_k": 5,
+      "dense_weight": 0.7,
+      "sparse_weight": 0.3,
+      "fusion_strategy": "weighted_linear",
+      "adaptive_routing": true,
+      "candidate_depth": 20,
+      "reranker_on": false,
+      "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+      "rerank_candidate_pool": 20,
+      "query_rewriting_on": false,
+      "query_expansion_on": false,
+      "rewrite_policy": "never",
+      "expansion_policy": "never",
+      "include_original_query": false,
+      "multi_query_fusion_strategy": "weighted_rrf",
+      "original_query_weight": 1.0,
+      "rewrite_query_weight": 0.7,
+      "expansion_query_weight": 0.5,
+      "confidence_routing": false,
+      "confidence_threshold": 0.35,
+      "llm_model": null
+    },
+    "metrics": {
+      "recall@5": 0.8058,
+      "precision@5": 0.31,
+      "mrr": 0.9167,
+      "ndcg": 0.8232
+    },
+    "category_metrics": {
+      "ambiguous": {
+        "recall@5": 0.3917,
+        "precision@5": 0.3,
+        "mrr": 0.8333,
+        "ndcg": 0.5567,
+        "cases": 4
+      },
+      "exact_terminology": {
+        "recall@5": 1.0,
+        "precision@5": 0.2,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "cases": 4
+      },
+      "fine_grained": {
+        "recall@5": 1.0,
+        "precision@5": 0.3,
+        "mrr": 1.0,
+        "ndcg": 0.9734,
+        "cases": 4
+      },
+      "multiple_relevant": {
+        "recall@5": 0.8875,
+        "precision@5": 0.55,
+        "mrr": 1.0,
+        "ndcg": 0.853,
+        "cases": 4
+      },
+      "paraphrased_semantic": {
+        "recall@5": 0.75,
+        "precision@5": 0.2,
+        "mrr": 0.75,
+        "ndcg": 0.7331,
+        "cases": 4
+      }
+    },
+    "elapsed_seconds": 1.6765,
+    "seconds_per_case": 0.0838,
+    "index_reused": true,
+    "error": null,
+    "routing_metrics": {
+      "cases": 20.0,
+      "rewrite_count": 0.0,
+      "rewrite_rate_percent": 0.0,
+      "expansion_count": 0.0,
+      "expansion_rate_percent": 0.0,
+      "confidence_trigger_count": 0.0,
+      "average_confidence": 0.0,
+      "average_query_variant_count": 1.0
+    }
+  },
+  "new_final": {
+    "phase": "test",
+    "name": "bge-m3-hybrid-adaptive",
+    "status": "ok",
+    "parameters": {
+      "name": "bge-m3-hybrid-adaptive",
+      "embedding_model": "BAAI/bge-m3",
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "top_k": 5,
+      "dense_weight": 0.7,
+      "sparse_weight": 0.3,
+      "fusion_strategy": "weighted_linear",
+      "adaptive_routing": true,
+      "candidate_depth": 20,
+      "reranker_on": false,
+      "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+      "rerank_candidate_pool": 20,
+      "query_rewriting_on": false,
+      "query_expansion_on": false,
+      "rewrite_policy": "never",
+      "expansion_policy": "never",
+      "include_original_query": false,
+      "multi_query_fusion_strategy": "weighted_rrf",
+      "original_query_weight": 1.0,
+      "rewrite_query_weight": 0.7,
+      "expansion_query_weight": 0.5,
+      "confidence_routing": false,
+      "confidence_threshold": 0.35,
+      "llm_model": null
+    },
+    "metrics": {
+      "recall@5": 0.8058,
+      "precision@5": 0.31,
+      "mrr": 0.9167,
+      "ndcg": 0.8232
+    },
+    "category_metrics": {
+      "ambiguous": {
+        "recall@5": 0.3917,
+        "precision@5": 0.3,
+        "mrr": 0.8333,
+        "ndcg": 0.5567,
+        "cases": 4
+      },
+      "exact_terminology": {
+        "recall@5": 1.0,
+        "precision@5": 0.2,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "cases": 4
+      },
+      "fine_grained": {
+        "recall@5": 1.0,
+        "precision@5": 0.3,
+        "mrr": 1.0,
+        "ndcg": 0.9734,
+        "cases": 4
+      },
+      "multiple_relevant": {
+        "recall@5": 0.8875,
+        "precision@5": 0.55,
+        "mrr": 1.0,
+        "ndcg": 0.853,
+        "cases": 4
+      },
+      "paraphrased_semantic": {
+        "recall@5": 0.75,
+        "precision@5": 0.2,
+        "mrr": 0.75,
+        "ndcg": 0.7331,
+        "cases": 4
+      }
+    },
+    "elapsed_seconds": 1.6765,
+    "seconds_per_case": 0.0838,
+    "index_reused": true,
+    "error": null,
+    "routing_metrics": {
+      "cases": 20.0,
+      "rewrite_count": 0.0,
+      "rewrite_rate_percent": 0.0,
+      "expansion_count": 0.0,
+      "expansion_rate_percent": 0.0,
+      "confidence_trigger_count": 0.0,
+      "average_confidence": 0.0,
+      "average_query_variant_count": 1.0
+    }
   },
   "relative_improvement_percent": {
+    "recall@5": 7.7993,
+    "precision@5": 10.7143,
+    "mrr": 11.1152,
+    "ndcg": 8.074
+  },
+  "previous_final_relative_improvement_percent": {
     "recall@5": 7.7993,
     "precision@5": 10.7143,
     "mrr": 6.0606,
     "ndcg": 5.0151
   },
   "dev_selection": {
-    "selected": "bge-m3-hybrid-static+query-rewrite",
+    "selected": "bge-m3-hybrid-adaptive",
     "ranking": [
       {
-        "phase": "dev_llm",
-        "name": "bge-m3-hybrid-static+query-rewrite",
+        "phase": "dev",
+        "name": "bge-m3-hybrid-adaptive",
         "status": "ok",
         "parameters": {
-          "name": "bge-m3-hybrid-static+query-rewrite",
+          "name": "bge-m3-hybrid-adaptive",
+          "embedding_model": "BAAI/bge-m3",
+          "chunk_size": 1000,
+          "chunk_overlap": 200,
+          "top_k": 5,
+          "dense_weight": 0.7,
+          "sparse_weight": 0.3,
+          "fusion_strategy": "weighted_linear",
+          "adaptive_routing": true,
+          "candidate_depth": 20,
+          "reranker_on": false,
+          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+          "rerank_candidate_pool": 20,
+          "query_rewriting_on": false,
+          "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
+          "llm_model": null
+        },
+        "metrics": {
+          "recall@5": 0.8371,
+          "precision@5": 0.325,
+          "mrr": 0.9238,
+          "ndcg": 0.8345
+        },
+        "category_metrics": {
+          "ambiguous": {
+            "recall@5": 0.4896,
+            "precision@5": 0.35,
+            "mrr": 0.7812,
+            "ndcg": 0.5506,
+            "cases": 8
+          },
+          "exact_terminology": {
+            "recall@5": 0.9375,
+            "precision@5": 0.225,
+            "mrr": 0.9,
+            "ndcg": 0.8923,
+            "cases": 8
+          },
+          "fine_grained": {
+            "recall@5": 1.0,
+            "precision@5": 0.325,
+            "mrr": 1.0,
+            "ndcg": 0.9506,
+            "cases": 8
+          },
+          "multiple_relevant": {
+            "recall@5": 0.7583,
+            "precision@5": 0.525,
+            "mrr": 0.9375,
+            "ndcg": 0.7792,
+            "cases": 8
+          },
+          "paraphrased_semantic": {
+            "recall@5": 1.0,
+            "precision@5": 0.2,
+            "mrr": 1.0,
+            "ndcg": 1.0,
+            "cases": 8
+          }
+        },
+        "elapsed_seconds": 0.0041,
+        "seconds_per_case": 0.0001,
+        "index_reused": true,
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
+      },
+      {
+        "phase": "dev_llm",
+        "name": "bge-m3-hybrid-adaptive+rewrite-all-ensemble-rrf",
+        "status": "ok",
+        "parameters": {
+          "name": "bge-m3-hybrid-adaptive+rewrite-all-ensemble-rrf",
+          "embedding_model": "BAAI/bge-m3",
+          "chunk_size": 1000,
+          "chunk_overlap": 200,
+          "top_k": 5,
+          "dense_weight": 0.7,
+          "sparse_weight": 0.3,
+          "fusion_strategy": "weighted_linear",
+          "adaptive_routing": true,
+          "candidate_depth": 20,
+          "reranker_on": false,
+          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+          "rerank_candidate_pool": 20,
+          "query_rewriting_on": true,
+          "query_expansion_on": false,
+          "rewrite_policy": "always",
+          "expansion_policy": "never",
+          "include_original_query": true,
+          "multi_query_fusion_strategy": "rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
+          "llm_model": "qwen2.5:3b"
+        },
+        "metrics": {
+          "recall@5": 0.8371,
+          "precision@5": 0.325,
+          "mrr": 0.9225,
+          "ndcg": 0.8345
+        },
+        "category_metrics": {
+          "ambiguous": {
+            "recall@5": 0.4896,
+            "precision@5": 0.35,
+            "mrr": 0.775,
+            "ndcg": 0.5501,
+            "cases": 8
+          },
+          "exact_terminology": {
+            "recall@5": 0.9375,
+            "precision@5": 0.225,
+            "mrr": 0.9,
+            "ndcg": 0.8923,
+            "cases": 8
+          },
+          "fine_grained": {
+            "recall@5": 1.0,
+            "precision@5": 0.325,
+            "mrr": 1.0,
+            "ndcg": 0.9524,
+            "cases": 8
+          },
+          "multiple_relevant": {
+            "recall@5": 0.7583,
+            "precision@5": 0.525,
+            "mrr": 0.9375,
+            "ndcg": 0.7779,
+            "cases": 8
+          },
+          "paraphrased_semantic": {
+            "recall@5": 1.0,
+            "precision@5": 0.2,
+            "mrr": 1.0,
+            "ndcg": 1.0,
+            "cases": 8
+          }
+        },
+        "elapsed_seconds": 0.0076,
+        "seconds_per_case": 0.0002,
+        "index_reused": true,
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 40.0,
+          "rewrite_rate_percent": 100.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 2.0
+        }
+      },
+      {
+        "phase": "dev_llm",
+        "name": "bge-m3-hybrid-adaptive+rewrite-selective-ensemble-linear",
+        "status": "ok",
+        "parameters": {
+          "name": "bge-m3-hybrid-adaptive+rewrite-selective-ensemble-linear",
+          "embedding_model": "BAAI/bge-m3",
+          "chunk_size": 1000,
+          "chunk_overlap": 200,
+          "top_k": 5,
+          "dense_weight": 0.7,
+          "sparse_weight": 0.3,
+          "fusion_strategy": "weighted_linear",
+          "adaptive_routing": true,
+          "candidate_depth": 20,
+          "reranker_on": false,
+          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+          "rerank_candidate_pool": 20,
+          "query_rewriting_on": true,
+          "query_expansion_on": false,
+          "rewrite_policy": "selective",
+          "expansion_policy": "never",
+          "include_original_query": true,
+          "multi_query_fusion_strategy": "weighted_linear",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
+          "llm_model": "qwen2.5:3b"
+        },
+        "metrics": {
+          "recall@5": 0.8371,
+          "precision@5": 0.325,
+          "mrr": 0.9225,
+          "ndcg": 0.8342
+        },
+        "category_metrics": {
+          "ambiguous": {
+            "recall@5": 0.4896,
+            "precision@5": 0.35,
+            "mrr": 0.775,
+            "ndcg": 0.5501,
+            "cases": 8
+          },
+          "exact_terminology": {
+            "recall@5": 0.9375,
+            "precision@5": 0.225,
+            "mrr": 0.9,
+            "ndcg": 0.8923,
+            "cases": 8
+          },
+          "fine_grained": {
+            "recall@5": 1.0,
+            "precision@5": 0.325,
+            "mrr": 1.0,
+            "ndcg": 0.9506,
+            "cases": 8
+          },
+          "multiple_relevant": {
+            "recall@5": 0.7583,
+            "precision@5": 0.525,
+            "mrr": 0.9375,
+            "ndcg": 0.7779,
+            "cases": 8
+          },
+          "paraphrased_semantic": {
+            "recall@5": 1.0,
+            "precision@5": 0.2,
+            "mrr": 1.0,
+            "ndcg": 1.0,
+            "cases": 8
+          }
+        },
+        "elapsed_seconds": 0.0059,
+        "seconds_per_case": 0.0001,
+        "index_reused": true,
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 21.0,
+          "rewrite_rate_percent": 52.5,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.525
+        }
+      },
+      {
+        "phase": "dev_llm",
+        "name": "bge-m3-hybrid-adaptive+rewrite-selective-ensemble-rrf",
+        "status": "ok",
+        "parameters": {
+          "name": "bge-m3-hybrid-adaptive+rewrite-selective-ensemble-rrf",
+          "embedding_model": "BAAI/bge-m3",
+          "chunk_size": 1000,
+          "chunk_overlap": 200,
+          "top_k": 5,
+          "dense_weight": 0.7,
+          "sparse_weight": 0.3,
+          "fusion_strategy": "weighted_linear",
+          "adaptive_routing": true,
+          "candidate_depth": 20,
+          "reranker_on": false,
+          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+          "rerank_candidate_pool": 20,
+          "query_rewriting_on": true,
+          "query_expansion_on": false,
+          "rewrite_policy": "selective",
+          "expansion_policy": "never",
+          "include_original_query": true,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
+          "llm_model": "qwen2.5:3b"
+        },
+        "metrics": {
+          "recall@5": 0.8371,
+          "precision@5": 0.325,
+          "mrr": 0.9225,
+          "ndcg": 0.8342
+        },
+        "category_metrics": {
+          "ambiguous": {
+            "recall@5": 0.4896,
+            "precision@5": 0.35,
+            "mrr": 0.775,
+            "ndcg": 0.5501,
+            "cases": 8
+          },
+          "exact_terminology": {
+            "recall@5": 0.9375,
+            "precision@5": 0.225,
+            "mrr": 0.9,
+            "ndcg": 0.8923,
+            "cases": 8
+          },
+          "fine_grained": {
+            "recall@5": 1.0,
+            "precision@5": 0.325,
+            "mrr": 1.0,
+            "ndcg": 0.9506,
+            "cases": 8
+          },
+          "multiple_relevant": {
+            "recall@5": 0.7583,
+            "precision@5": 0.525,
+            "mrr": 0.9375,
+            "ndcg": 0.7779,
+            "cases": 8
+          },
+          "paraphrased_semantic": {
+            "recall@5": 1.0,
+            "precision@5": 0.2,
+            "mrr": 1.0,
+            "ndcg": 1.0,
+            "cases": 8
+          }
+        },
+        "elapsed_seconds": 0.0082,
+        "seconds_per_case": 0.0002,
+        "index_reused": true,
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 21.0,
+          "rewrite_rate_percent": 52.5,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.525
+        }
+      },
+      {
+        "phase": "dev_llm",
+        "name": "bge-m3-hybrid-adaptive+rewrite-selective-confidence-ensemble-rrf",
+        "status": "ok",
+        "parameters": {
+          "name": "bge-m3-hybrid-adaptive+rewrite-selective-confidence-ensemble-rrf",
+          "embedding_model": "BAAI/bge-m3",
+          "chunk_size": 1000,
+          "chunk_overlap": 200,
+          "top_k": 5,
+          "dense_weight": 0.7,
+          "sparse_weight": 0.3,
+          "fusion_strategy": "weighted_linear",
+          "adaptive_routing": true,
+          "candidate_depth": 20,
+          "reranker_on": false,
+          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+          "rerank_candidate_pool": 20,
+          "query_rewriting_on": true,
+          "query_expansion_on": false,
+          "rewrite_policy": "selective",
+          "expansion_policy": "never",
+          "include_original_query": true,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": true,
+          "confidence_threshold": 0.35,
+          "llm_model": "qwen2.5:3b"
+        },
+        "metrics": {
+          "recall@5": 0.8371,
+          "precision@5": 0.325,
+          "mrr": 0.9225,
+          "ndcg": 0.8342
+        },
+        "category_metrics": {
+          "ambiguous": {
+            "recall@5": 0.4896,
+            "precision@5": 0.35,
+            "mrr": 0.775,
+            "ndcg": 0.5501,
+            "cases": 8
+          },
+          "exact_terminology": {
+            "recall@5": 0.9375,
+            "precision@5": 0.225,
+            "mrr": 0.9,
+            "ndcg": 0.8923,
+            "cases": 8
+          },
+          "fine_grained": {
+            "recall@5": 1.0,
+            "precision@5": 0.325,
+            "mrr": 1.0,
+            "ndcg": 0.9506,
+            "cases": 8
+          },
+          "multiple_relevant": {
+            "recall@5": 0.7583,
+            "precision@5": 0.525,
+            "mrr": 0.9375,
+            "ndcg": 0.7779,
+            "cases": 8
+          },
+          "paraphrased_semantic": {
+            "recall@5": 1.0,
+            "precision@5": 0.2,
+            "mrr": 1.0,
+            "ndcg": 1.0,
+            "cases": 8
+          }
+        },
+        "elapsed_seconds": 0.0091,
+        "seconds_per_case": 0.0002,
+        "index_reused": true,
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 21.0,
+          "rewrite_rate_percent": 52.5,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 7.0,
+          "average_confidence": 0.6574,
+          "average_query_variant_count": 1.525
+        }
+      },
+      {
+        "phase": "dev_llm",
+        "name": "previous-final-bge-m3-static+global-rewrite",
+        "status": "ok",
+        "parameters": {
+          "name": "previous-final-bge-m3-static+global-rewrite",
           "embedding_model": "BAAI/bge-m3",
           "chunk_size": 1000,
           "chunk_overlap": 200,
@@ -172,6 +839,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": true,
           "query_expansion_on": false,
+          "rewrite_policy": "always",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_linear",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": "qwen2.5:3b"
         },
         "metrics": {
@@ -217,10 +893,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 26.7076,
-        "seconds_per_case": 0.6677,
+        "elapsed_seconds": 21.2937,
+        "seconds_per_case": 0.5323,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 40.0,
+          "rewrite_rate_percent": 100.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -242,6 +928,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -287,10 +982,109 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 0.0088,
+        "elapsed_seconds": 0.0096,
         "seconds_per_case": 0.0002,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
+      },
+      {
+        "phase": "dev_llm",
+        "name": "bge-m3-hybrid-adaptive+rewrite-all-ensemble-linear",
+        "status": "ok",
+        "parameters": {
+          "name": "bge-m3-hybrid-adaptive+rewrite-all-ensemble-linear",
+          "embedding_model": "BAAI/bge-m3",
+          "chunk_size": 1000,
+          "chunk_overlap": 200,
+          "top_k": 5,
+          "dense_weight": 0.7,
+          "sparse_weight": 0.3,
+          "fusion_strategy": "weighted_linear",
+          "adaptive_routing": true,
+          "candidate_depth": 20,
+          "reranker_on": false,
+          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+          "rerank_candidate_pool": 20,
+          "query_rewriting_on": true,
+          "query_expansion_on": false,
+          "rewrite_policy": "always",
+          "expansion_policy": "never",
+          "include_original_query": true,
+          "multi_query_fusion_strategy": "weighted_linear",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
+          "llm_model": "qwen2.5:3b"
+        },
+        "metrics": {
+          "recall@5": 0.8121,
+          "precision@5": 0.32,
+          "mrr": 0.905,
+          "ndcg": 0.825
+        },
+        "category_metrics": {
+          "ambiguous": {
+            "recall@5": 0.4896,
+            "precision@5": 0.35,
+            "mrr": 0.775,
+            "ndcg": 0.5528,
+            "cases": 8
+          },
+          "exact_terminology": {
+            "recall@5": 0.8125,
+            "precision@5": 0.2,
+            "mrr": 0.875,
+            "ndcg": 0.8647,
+            "cases": 8
+          },
+          "fine_grained": {
+            "recall@5": 1.0,
+            "precision@5": 0.325,
+            "mrr": 1.0,
+            "ndcg": 0.9524,
+            "cases": 8
+          },
+          "multiple_relevant": {
+            "recall@5": 0.7583,
+            "precision@5": 0.525,
+            "mrr": 0.875,
+            "ndcg": 0.7552,
+            "cases": 8
+          },
+          "paraphrased_semantic": {
+            "recall@5": 1.0,
+            "precision@5": 0.2,
+            "mrr": 1.0,
+            "ndcg": 1.0,
+            "cases": 8
+          }
+        },
+        "elapsed_seconds": 0.0087,
+        "seconds_per_case": 0.0002,
+        "index_reused": true,
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 40.0,
+          "rewrite_rate_percent": 100.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 2.0
+        }
       },
       {
         "phase": "dev",
@@ -312,6 +1106,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -357,10 +1160,109 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 0.0091,
-        "seconds_per_case": 0.0002,
+        "elapsed_seconds": 0.0037,
+        "seconds_per_case": 0.0001,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
+      },
+      {
+        "phase": "dev",
+        "name": "e5-hybrid-adaptive",
+        "status": "ok",
+        "parameters": {
+          "name": "e5-hybrid-adaptive",
+          "embedding_model": "intfloat/multilingual-e5-base",
+          "chunk_size": 1000,
+          "chunk_overlap": 200,
+          "top_k": 5,
+          "dense_weight": 0.7,
+          "sparse_weight": 0.3,
+          "fusion_strategy": "weighted_linear",
+          "adaptive_routing": true,
+          "candidate_depth": 20,
+          "reranker_on": false,
+          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+          "rerank_candidate_pool": 20,
+          "query_rewriting_on": false,
+          "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
+          "llm_model": null
+        },
+        "metrics": {
+          "recall@5": 0.8308,
+          "precision@5": 0.335,
+          "mrr": 0.9425,
+          "ndcg": 0.8243
+        },
+        "category_metrics": {
+          "ambiguous": {
+            "recall@5": 0.5833,
+            "precision@5": 0.425,
+            "mrr": 0.9375,
+            "ndcg": 0.5975,
+            "cases": 8
+          },
+          "exact_terminology": {
+            "recall@5": 0.9375,
+            "precision@5": 0.225,
+            "mrr": 0.9,
+            "ndcg": 0.913,
+            "cases": 8
+          },
+          "fine_grained": {
+            "recall@5": 1.0,
+            "precision@5": 0.325,
+            "mrr": 1.0,
+            "ndcg": 0.9561,
+            "cases": 8
+          },
+          "multiple_relevant": {
+            "recall@5": 0.7583,
+            "precision@5": 0.525,
+            "mrr": 1.0,
+            "ndcg": 0.7802,
+            "cases": 8
+          },
+          "paraphrased_semantic": {
+            "recall@5": 0.875,
+            "precision@5": 0.175,
+            "mrr": 0.875,
+            "ndcg": 0.875,
+            "cases": 8
+          }
+        },
+        "elapsed_seconds": 0.0037,
+        "seconds_per_case": 0.0001,
+        "index_reused": true,
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -382,6 +1284,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -427,10 +1338,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 0.0012,
-        "seconds_per_case": 0.0,
+        "elapsed_seconds": 0.0023,
+        "seconds_per_case": 0.0001,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -452,6 +1373,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -497,10 +1427,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 0.0013,
-        "seconds_per_case": 0.0,
+        "elapsed_seconds": 0.0024,
+        "seconds_per_case": 0.0001,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -522,6 +1462,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -567,10 +1516,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 9.0167,
-        "seconds_per_case": 0.2254,
+        "elapsed_seconds": 7.3753,
+        "seconds_per_case": 0.1844,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -592,6 +1551,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -637,220 +1605,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 1.3552,
-        "seconds_per_case": 0.0339,
+        "elapsed_seconds": 1.0546,
+        "seconds_per_case": 0.0264,
         "index_reused": true,
-        "error": null
-      },
-      {
-        "phase": "dev_llm",
-        "name": "bge-m3-hybrid-static+query-expansion",
-        "status": "ok",
-        "parameters": {
-          "name": "bge-m3-hybrid-static+query-expansion",
-          "embedding_model": "BAAI/bge-m3",
-          "chunk_size": 1000,
-          "chunk_overlap": 200,
-          "top_k": 5,
-          "dense_weight": 0.7,
-          "sparse_weight": 0.3,
-          "fusion_strategy": "weighted_linear",
-          "adaptive_routing": false,
-          "candidate_depth": 20,
-          "reranker_on": false,
-          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
-          "rerank_candidate_pool": 20,
-          "query_rewriting_on": false,
-          "query_expansion_on": true,
-          "llm_model": "qwen2.5:3b"
-        },
-        "metrics": {
-          "recall@5": 0.8233,
-          "precision@5": 0.325,
-          "mrr": 0.9396,
-          "ndcg": 0.8176
-        },
-        "category_metrics": {
-          "ambiguous": {
-            "recall@5": 0.5208,
-            "precision@5": 0.375,
-            "mrr": 0.9167,
-            "ndcg": 0.5758,
-            "cases": 8
-          },
-          "exact_terminology": {
-            "recall@5": 0.9375,
-            "precision@5": 0.225,
-            "mrr": 0.9062,
-            "ndcg": 0.9185,
-            "cases": 8
-          },
-          "fine_grained": {
-            "recall@5": 0.875,
-            "precision@5": 0.275,
-            "mrr": 1.0,
-            "ndcg": 0.8569,
-            "cases": 8
-          },
-          "multiple_relevant": {
-            "recall@5": 0.7833,
-            "precision@5": 0.55,
-            "mrr": 0.9375,
-            "ndcg": 0.7829,
-            "cases": 8
-          },
-          "paraphrased_semantic": {
-            "recall@5": 1.0,
-            "precision@5": 0.2,
-            "mrr": 0.9375,
-            "ndcg": 0.9539,
-            "cases": 8
-          }
-        },
-        "elapsed_seconds": 56.6945,
-        "seconds_per_case": 1.4174,
-        "index_reused": true,
-        "error": null
-      },
-      {
-        "phase": "dev",
-        "name": "linear-static-d0.7-s0.3",
-        "status": "ok",
-        "parameters": {
-          "name": "linear-static-d0.7-s0.3",
-          "embedding_model": "intfloat/multilingual-e5-base",
-          "chunk_size": 1000,
-          "chunk_overlap": 200,
-          "top_k": 5,
-          "dense_weight": 0.7,
-          "sparse_weight": 0.3,
-          "fusion_strategy": "weighted_linear",
-          "adaptive_routing": false,
-          "candidate_depth": 20,
-          "reranker_on": false,
-          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
-          "rerank_candidate_pool": 20,
-          "query_rewriting_on": false,
-          "query_expansion_on": false,
-          "llm_model": null
-        },
-        "metrics": {
-          "recall@5": 0.8162,
-          "precision@5": 0.325,
-          "mrr": 0.9425,
-          "ndcg": 0.8159
-        },
-        "category_metrics": {
-          "ambiguous": {
-            "recall@5": 0.5833,
-            "precision@5": 0.425,
-            "mrr": 0.9375,
-            "ndcg": 0.5975,
-            "cases": 8
-          },
-          "exact_terminology": {
-            "recall@5": 0.9375,
-            "precision@5": 0.225,
-            "mrr": 0.9,
-            "ndcg": 0.8923,
-            "cases": 8
-          },
-          "fine_grained": {
-            "recall@5": 1.0,
-            "precision@5": 0.325,
-            "mrr": 1.0,
-            "ndcg": 0.9561,
-            "cases": 8
-          },
-          "multiple_relevant": {
-            "recall@5": 0.6854,
-            "precision@5": 0.475,
-            "mrr": 1.0,
-            "ndcg": 0.7589,
-            "cases": 8
-          },
-          "paraphrased_semantic": {
-            "recall@5": 0.875,
-            "precision@5": 0.175,
-            "mrr": 0.875,
-            "ndcg": 0.875,
-            "cases": 8
-          }
-        },
-        "elapsed_seconds": 0.0012,
-        "seconds_per_case": 0.0,
-        "index_reused": true,
-        "error": null
-      },
-      {
-        "phase": "dev",
-        "name": "e5-base-hybrid-static",
-        "status": "ok",
-        "parameters": {
-          "name": "e5-base-hybrid-static",
-          "embedding_model": "intfloat/multilingual-e5-base",
-          "chunk_size": 1000,
-          "chunk_overlap": 200,
-          "top_k": 5,
-          "dense_weight": 0.7,
-          "sparse_weight": 0.3,
-          "fusion_strategy": "weighted_linear",
-          "adaptive_routing": false,
-          "candidate_depth": 20,
-          "reranker_on": false,
-          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
-          "rerank_candidate_pool": 20,
-          "query_rewriting_on": false,
-          "query_expansion_on": false,
-          "llm_model": null
-        },
-        "metrics": {
-          "recall@5": 0.8162,
-          "precision@5": 0.325,
-          "mrr": 0.9425,
-          "ndcg": 0.8159
-        },
-        "category_metrics": {
-          "ambiguous": {
-            "recall@5": 0.5833,
-            "precision@5": 0.425,
-            "mrr": 0.9375,
-            "ndcg": 0.5975,
-            "cases": 8
-          },
-          "exact_terminology": {
-            "recall@5": 0.9375,
-            "precision@5": 0.225,
-            "mrr": 0.9,
-            "ndcg": 0.8923,
-            "cases": 8
-          },
-          "fine_grained": {
-            "recall@5": 1.0,
-            "precision@5": 0.325,
-            "mrr": 1.0,
-            "ndcg": 0.9561,
-            "cases": 8
-          },
-          "multiple_relevant": {
-            "recall@5": 0.6854,
-            "precision@5": 0.475,
-            "mrr": 1.0,
-            "ndcg": 0.7589,
-            "cases": 8
-          },
-          "paraphrased_semantic": {
-            "recall@5": 0.875,
-            "precision@5": 0.175,
-            "mrr": 0.875,
-            "ndcg": 0.875,
-            "cases": 8
-          }
-        },
-        "elapsed_seconds": 0.0014,
-        "seconds_per_case": 0.0,
-        "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -872,6 +1640,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -917,10 +1694,198 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 0.0017,
-        "seconds_per_case": 0.0,
+        "elapsed_seconds": 0.0022,
+        "seconds_per_case": 0.0001,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
+      },
+      {
+        "phase": "dev",
+        "name": "linear-static-d0.7-s0.3",
+        "status": "ok",
+        "parameters": {
+          "name": "linear-static-d0.7-s0.3",
+          "embedding_model": "intfloat/multilingual-e5-base",
+          "chunk_size": 1000,
+          "chunk_overlap": 200,
+          "top_k": 5,
+          "dense_weight": 0.7,
+          "sparse_weight": 0.3,
+          "fusion_strategy": "weighted_linear",
+          "adaptive_routing": false,
+          "candidate_depth": 20,
+          "reranker_on": false,
+          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+          "rerank_candidate_pool": 20,
+          "query_rewriting_on": false,
+          "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
+          "llm_model": null
+        },
+        "metrics": {
+          "recall@5": 0.8162,
+          "precision@5": 0.325,
+          "mrr": 0.9425,
+          "ndcg": 0.8159
+        },
+        "category_metrics": {
+          "ambiguous": {
+            "recall@5": 0.5833,
+            "precision@5": 0.425,
+            "mrr": 0.9375,
+            "ndcg": 0.5975,
+            "cases": 8
+          },
+          "exact_terminology": {
+            "recall@5": 0.9375,
+            "precision@5": 0.225,
+            "mrr": 0.9,
+            "ndcg": 0.8923,
+            "cases": 8
+          },
+          "fine_grained": {
+            "recall@5": 1.0,
+            "precision@5": 0.325,
+            "mrr": 1.0,
+            "ndcg": 0.9561,
+            "cases": 8
+          },
+          "multiple_relevant": {
+            "recall@5": 0.6854,
+            "precision@5": 0.475,
+            "mrr": 1.0,
+            "ndcg": 0.7589,
+            "cases": 8
+          },
+          "paraphrased_semantic": {
+            "recall@5": 0.875,
+            "precision@5": 0.175,
+            "mrr": 0.875,
+            "ndcg": 0.875,
+            "cases": 8
+          }
+        },
+        "elapsed_seconds": 0.0024,
+        "seconds_per_case": 0.0001,
+        "index_reused": true,
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
+      },
+      {
+        "phase": "dev",
+        "name": "e5-base-hybrid-static",
+        "status": "ok",
+        "parameters": {
+          "name": "e5-base-hybrid-static",
+          "embedding_model": "intfloat/multilingual-e5-base",
+          "chunk_size": 1000,
+          "chunk_overlap": 200,
+          "top_k": 5,
+          "dense_weight": 0.7,
+          "sparse_weight": 0.3,
+          "fusion_strategy": "weighted_linear",
+          "adaptive_routing": false,
+          "candidate_depth": 20,
+          "reranker_on": false,
+          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+          "rerank_candidate_pool": 20,
+          "query_rewriting_on": false,
+          "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
+          "llm_model": null
+        },
+        "metrics": {
+          "recall@5": 0.8162,
+          "precision@5": 0.325,
+          "mrr": 0.9425,
+          "ndcg": 0.8159
+        },
+        "category_metrics": {
+          "ambiguous": {
+            "recall@5": 0.5833,
+            "precision@5": 0.425,
+            "mrr": 0.9375,
+            "ndcg": 0.5975,
+            "cases": 8
+          },
+          "exact_terminology": {
+            "recall@5": 0.9375,
+            "precision@5": 0.225,
+            "mrr": 0.9,
+            "ndcg": 0.8923,
+            "cases": 8
+          },
+          "fine_grained": {
+            "recall@5": 1.0,
+            "precision@5": 0.325,
+            "mrr": 1.0,
+            "ndcg": 0.9561,
+            "cases": 8
+          },
+          "multiple_relevant": {
+            "recall@5": 0.6854,
+            "precision@5": 0.475,
+            "mrr": 1.0,
+            "ndcg": 0.7589,
+            "cases": 8
+          },
+          "paraphrased_semantic": {
+            "recall@5": 0.875,
+            "precision@5": 0.175,
+            "mrr": 0.875,
+            "ndcg": 0.875,
+            "cases": 8
+          }
+        },
+        "elapsed_seconds": 0.0024,
+        "seconds_per_case": 0.0001,
+        "index_reused": true,
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -942,6 +1907,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -987,10 +1961,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 0.0019,
-        "seconds_per_case": 0.0,
+        "elapsed_seconds": 0.0024,
+        "seconds_per_case": 0.0001,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -1012,6 +1996,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -1057,80 +2050,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 1.4987,
-        "seconds_per_case": 0.0375,
+        "elapsed_seconds": 1.0786,
+        "seconds_per_case": 0.027,
         "index_reused": true,
-        "error": null
-      },
-      {
-        "phase": "dev_llm",
-        "name": "bge-m3-hybrid-static+rewrite-and-expansion",
-        "status": "ok",
-        "parameters": {
-          "name": "bge-m3-hybrid-static+rewrite-and-expansion",
-          "embedding_model": "BAAI/bge-m3",
-          "chunk_size": 1000,
-          "chunk_overlap": 200,
-          "top_k": 5,
-          "dense_weight": 0.7,
-          "sparse_weight": 0.3,
-          "fusion_strategy": "weighted_linear",
-          "adaptive_routing": false,
-          "candidate_depth": 20,
-          "reranker_on": false,
-          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
-          "rerank_candidate_pool": 20,
-          "query_rewriting_on": true,
-          "query_expansion_on": true,
-          "llm_model": "qwen2.5:3b"
-        },
-        "metrics": {
-          "recall@5": 0.7975,
-          "precision@5": 0.315,
-          "mrr": 0.9271,
-          "ndcg": 0.813
-        },
-        "category_metrics": {
-          "ambiguous": {
-            "recall@5": 0.5208,
-            "precision@5": 0.375,
-            "mrr": 0.9062,
-            "ndcg": 0.5996,
-            "cases": 8
-          },
-          "exact_terminology": {
-            "recall@5": 0.8125,
-            "precision@5": 0.2,
-            "mrr": 0.875,
-            "ndcg": 0.8647,
-            "cases": 8
-          },
-          "fine_grained": {
-            "recall@5": 0.9375,
-            "precision@5": 0.3,
-            "mrr": 1.0,
-            "ndcg": 0.8627,
-            "cases": 8
-          },
-          "multiple_relevant": {
-            "recall@5": 0.7167,
-            "precision@5": 0.5,
-            "mrr": 0.8542,
-            "ndcg": 0.7383,
-            "cases": 8
-          },
-          "paraphrased_semantic": {
-            "recall@5": 1.0,
-            "precision@5": 0.2,
-            "mrr": 1.0,
-            "ndcg": 1.0,
-            "cases": 8
-          }
-        },
-        "elapsed_seconds": 66.3367,
-        "seconds_per_case": 1.6584,
-        "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -1152,6 +2085,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -1197,10 +2139,109 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 1.2076,
-        "seconds_per_case": 0.0302,
+        "elapsed_seconds": 1.1411,
+        "seconds_per_case": 0.0285,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
+      },
+      {
+        "phase": "dev_llm",
+        "name": "bge-m3-hybrid-adaptive+rewrite-all-replace",
+        "status": "ok",
+        "parameters": {
+          "name": "bge-m3-hybrid-adaptive+rewrite-all-replace",
+          "embedding_model": "BAAI/bge-m3",
+          "chunk_size": 1000,
+          "chunk_overlap": 200,
+          "top_k": 5,
+          "dense_weight": 0.7,
+          "sparse_weight": 0.3,
+          "fusion_strategy": "weighted_linear",
+          "adaptive_routing": true,
+          "candidate_depth": 20,
+          "reranker_on": false,
+          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+          "rerank_candidate_pool": 20,
+          "query_rewriting_on": true,
+          "query_expansion_on": false,
+          "rewrite_policy": "always",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_linear",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
+          "llm_model": "qwen2.5:3b"
+        },
+        "metrics": {
+          "recall@5": 0.8037,
+          "precision@5": 0.315,
+          "mrr": 0.8938,
+          "ndcg": 0.8115
+        },
+        "category_metrics": {
+          "ambiguous": {
+            "recall@5": 0.4896,
+            "precision@5": 0.35,
+            "mrr": 0.7812,
+            "ndcg": 0.5551,
+            "cases": 8
+          },
+          "exact_terminology": {
+            "recall@5": 0.8125,
+            "precision@5": 0.2,
+            "mrr": 0.8125,
+            "ndcg": 0.8224,
+            "cases": 8
+          },
+          "fine_grained": {
+            "recall@5": 1.0,
+            "precision@5": 0.325,
+            "mrr": 1.0,
+            "ndcg": 0.9455,
+            "cases": 8
+          },
+          "multiple_relevant": {
+            "recall@5": 0.7167,
+            "precision@5": 0.5,
+            "mrr": 0.875,
+            "ndcg": 0.7345,
+            "cases": 8
+          },
+          "paraphrased_semantic": {
+            "recall@5": 1.0,
+            "precision@5": 0.2,
+            "mrr": 1.0,
+            "ndcg": 1.0,
+            "cases": 8
+          }
+        },
+        "elapsed_seconds": 0.0071,
+        "seconds_per_case": 0.0002,
+        "index_reused": true,
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 40.0,
+          "rewrite_rate_percent": 100.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -1222,6 +2263,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -1267,10 +2317,198 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 1.318,
-        "seconds_per_case": 0.033,
+        "elapsed_seconds": 1.1686,
+        "seconds_per_case": 0.0292,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
+      },
+      {
+        "phase": "dev_llm",
+        "name": "bge-m3-hybrid-adaptive+rewrite-expansion-selective-ensemble-rrf",
+        "status": "ok",
+        "parameters": {
+          "name": "bge-m3-hybrid-adaptive+rewrite-expansion-selective-ensemble-rrf",
+          "embedding_model": "BAAI/bge-m3",
+          "chunk_size": 1000,
+          "chunk_overlap": 200,
+          "top_k": 5,
+          "dense_weight": 0.7,
+          "sparse_weight": 0.3,
+          "fusion_strategy": "weighted_linear",
+          "adaptive_routing": true,
+          "candidate_depth": 20,
+          "reranker_on": false,
+          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+          "rerank_candidate_pool": 20,
+          "query_rewriting_on": true,
+          "query_expansion_on": true,
+          "rewrite_policy": "selective",
+          "expansion_policy": "selective",
+          "include_original_query": true,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
+          "llm_model": "qwen2.5:3b"
+        },
+        "metrics": {
+          "recall@5": 0.8308,
+          "precision@5": 0.32,
+          "mrr": 0.9037,
+          "ndcg": 0.8095
+        },
+        "category_metrics": {
+          "ambiguous": {
+            "recall@5": 0.4583,
+            "precision@5": 0.325,
+            "mrr": 0.6813,
+            "ndcg": 0.424,
+            "cases": 8
+          },
+          "exact_terminology": {
+            "recall@5": 0.9375,
+            "precision@5": 0.225,
+            "mrr": 0.9,
+            "ndcg": 0.8923,
+            "cases": 8
+          },
+          "fine_grained": {
+            "recall@5": 1.0,
+            "precision@5": 0.325,
+            "mrr": 1.0,
+            "ndcg": 0.9506,
+            "cases": 8
+          },
+          "multiple_relevant": {
+            "recall@5": 0.7583,
+            "precision@5": 0.525,
+            "mrr": 0.9375,
+            "ndcg": 0.7805,
+            "cases": 8
+          },
+          "paraphrased_semantic": {
+            "recall@5": 1.0,
+            "precision@5": 0.2,
+            "mrr": 1.0,
+            "ndcg": 1.0,
+            "cases": 8
+          }
+        },
+        "elapsed_seconds": 0.0116,
+        "seconds_per_case": 0.0003,
+        "index_reused": true,
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 21.0,
+          "rewrite_rate_percent": 52.5,
+          "expansion_count": 21.0,
+          "expansion_rate_percent": 52.5,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 2.575
+        }
+      },
+      {
+        "phase": "dev_llm",
+        "name": "bge-m3-hybrid-adaptive+expansion-selective-ensemble-rrf",
+        "status": "ok",
+        "parameters": {
+          "name": "bge-m3-hybrid-adaptive+expansion-selective-ensemble-rrf",
+          "embedding_model": "BAAI/bge-m3",
+          "chunk_size": 1000,
+          "chunk_overlap": 200,
+          "top_k": 5,
+          "dense_weight": 0.7,
+          "sparse_weight": 0.3,
+          "fusion_strategy": "weighted_linear",
+          "adaptive_routing": true,
+          "candidate_depth": 20,
+          "reranker_on": false,
+          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+          "rerank_candidate_pool": 20,
+          "query_rewriting_on": false,
+          "query_expansion_on": true,
+          "rewrite_policy": "never",
+          "expansion_policy": "selective",
+          "include_original_query": true,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
+          "llm_model": "qwen2.5:3b"
+        },
+        "metrics": {
+          "recall@5": 0.8379,
+          "precision@5": 0.325,
+          "mrr": 0.8863,
+          "ndcg": 0.8049
+        },
+        "category_metrics": {
+          "ambiguous": {
+            "recall@5": 0.4271,
+            "precision@5": 0.3,
+            "mrr": 0.6562,
+            "ndcg": 0.4106,
+            "cases": 8
+          },
+          "exact_terminology": {
+            "recall@5": 0.9375,
+            "precision@5": 0.225,
+            "mrr": 0.9,
+            "ndcg": 0.8923,
+            "cases": 8
+          },
+          "fine_grained": {
+            "recall@5": 1.0,
+            "precision@5": 0.325,
+            "mrr": 1.0,
+            "ndcg": 0.9506,
+            "cases": 8
+          },
+          "multiple_relevant": {
+            "recall@5": 0.825,
+            "precision@5": 0.575,
+            "mrr": 0.9375,
+            "ndcg": 0.8173,
+            "cases": 8
+          },
+          "paraphrased_semantic": {
+            "recall@5": 1.0,
+            "precision@5": 0.2,
+            "mrr": 0.9375,
+            "ndcg": 0.9539,
+            "cases": 8
+          }
+        },
+        "elapsed_seconds": 22.8339,
+        "seconds_per_case": 0.5708,
+        "index_reused": true,
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 21.0,
+          "expansion_rate_percent": 52.5,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 2.05
+        }
       },
       {
         "phase": "dev",
@@ -1292,6 +2530,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -1337,10 +2584,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 0.0016,
+        "elapsed_seconds": 0.0018,
         "seconds_per_case": 0.0,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -1362,6 +2619,15 @@
           "rerank_candidate_pool": 10,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -1407,10 +2673,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 4.693,
-        "seconds_per_case": 0.1173,
+        "elapsed_seconds": 2.7256,
+        "seconds_per_case": 0.0681,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -1432,6 +2708,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -1477,10 +2762,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 0.0016,
-        "seconds_per_case": 0.0,
+        "elapsed_seconds": 0.0021,
+        "seconds_per_case": 0.0001,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -1502,6 +2797,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -1547,10 +2851,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 4.3469,
-        "seconds_per_case": 0.1087,
+        "elapsed_seconds": 2.9466,
+        "seconds_per_case": 0.0737,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -1572,6 +2886,15 @@
           "rerank_candidate_pool": 30,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -1617,10 +2940,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 6.5512,
-        "seconds_per_case": 0.1638,
+        "elapsed_seconds": 4.1247,
+        "seconds_per_case": 0.1031,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -1642,6 +2975,15 @@
           "rerank_candidate_pool": 50,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -1687,10 +3029,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 5.8831,
-        "seconds_per_case": 0.1471,
+        "elapsed_seconds": 4.2496,
+        "seconds_per_case": 0.1062,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -1712,6 +3064,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -1757,10 +3118,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 0.0025,
-        "seconds_per_case": 0.0001,
+        "elapsed_seconds": 0.0019,
+        "seconds_per_case": 0.0,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -1782,6 +3153,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -1827,80 +3207,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 0.009,
+        "elapsed_seconds": 0.0073,
         "seconds_per_case": 0.0002,
         "index_reused": true,
-        "error": null
-      },
-      {
-        "phase": "dev",
-        "name": "e5-base-dense",
-        "status": "ok",
-        "parameters": {
-          "name": "e5-base-dense",
-          "embedding_model": "intfloat/multilingual-e5-base",
-          "chunk_size": 1000,
-          "chunk_overlap": 200,
-          "top_k": 5,
-          "dense_weight": 1.0,
-          "sparse_weight": 0.0,
-          "fusion_strategy": "weighted_linear",
-          "adaptive_routing": false,
-          "candidate_depth": 20,
-          "reranker_on": false,
-          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
-          "rerank_candidate_pool": 20,
-          "query_rewriting_on": false,
-          "query_expansion_on": false,
-          "llm_model": null
-        },
-        "metrics": {
-          "recall@5": 0.81,
-          "precision@5": 0.32,
-          "mrr": 0.905,
-          "ndcg": 0.7748
-        },
-        "category_metrics": {
-          "ambiguous": {
-            "recall@5": 0.5521,
-            "precision@5": 0.4,
-            "mrr": 0.9375,
-            "ndcg": 0.5531,
-            "cases": 8
-          },
-          "exact_terminology": {
-            "recall@5": 0.9375,
-            "precision@5": 0.225,
-            "mrr": 0.9,
-            "ndcg": 0.9075,
-            "cases": 8
-          },
-          "fine_grained": {
-            "recall@5": 1.0,
-            "precision@5": 0.325,
-            "mrr": 1.0,
-            "ndcg": 0.9271,
-            "cases": 8
-          },
-          "multiple_relevant": {
-            "recall@5": 0.6854,
-            "precision@5": 0.475,
-            "mrr": 0.9375,
-            "ndcg": 0.7038,
-            "cases": 8
-          },
-          "paraphrased_semantic": {
-            "recall@5": 0.875,
-            "precision@5": 0.175,
-            "mrr": 0.75,
-            "ndcg": 0.7827,
-            "cases": 8
-          }
-        },
-        "elapsed_seconds": 0.0025,
-        "seconds_per_case": 0.0001,
-        "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -1922,6 +3242,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -1967,10 +3296,109 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 0.0026,
+        "elapsed_seconds": 0.0022,
         "seconds_per_case": 0.0001,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
+      },
+      {
+        "phase": "dev",
+        "name": "e5-base-dense",
+        "status": "ok",
+        "parameters": {
+          "name": "e5-base-dense",
+          "embedding_model": "intfloat/multilingual-e5-base",
+          "chunk_size": 1000,
+          "chunk_overlap": 200,
+          "top_k": 5,
+          "dense_weight": 1.0,
+          "sparse_weight": 0.0,
+          "fusion_strategy": "weighted_linear",
+          "adaptive_routing": false,
+          "candidate_depth": 20,
+          "reranker_on": false,
+          "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+          "rerank_candidate_pool": 20,
+          "query_rewriting_on": false,
+          "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
+          "llm_model": null
+        },
+        "metrics": {
+          "recall@5": 0.81,
+          "precision@5": 0.32,
+          "mrr": 0.905,
+          "ndcg": 0.7748
+        },
+        "category_metrics": {
+          "ambiguous": {
+            "recall@5": 0.5521,
+            "precision@5": 0.4,
+            "mrr": 0.9375,
+            "ndcg": 0.5531,
+            "cases": 8
+          },
+          "exact_terminology": {
+            "recall@5": 0.9375,
+            "precision@5": 0.225,
+            "mrr": 0.9,
+            "ndcg": 0.9075,
+            "cases": 8
+          },
+          "fine_grained": {
+            "recall@5": 1.0,
+            "precision@5": 0.325,
+            "mrr": 1.0,
+            "ndcg": 0.9271,
+            "cases": 8
+          },
+          "multiple_relevant": {
+            "recall@5": 0.6854,
+            "precision@5": 0.475,
+            "mrr": 0.9375,
+            "ndcg": 0.7038,
+            "cases": 8
+          },
+          "paraphrased_semantic": {
+            "recall@5": 0.875,
+            "precision@5": 0.175,
+            "mrr": 0.75,
+            "ndcg": 0.7827,
+            "cases": 8
+          }
+        },
+        "elapsed_seconds": 0.0023,
+        "seconds_per_case": 0.0001,
+        "index_reused": true,
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -1992,6 +3420,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -2037,10 +3474,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 8.9384,
-        "seconds_per_case": 0.2235,
+        "elapsed_seconds": 6.3175,
+        "seconds_per_case": 0.1579,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -2062,6 +3509,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -2107,10 +3563,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 0.0014,
-        "seconds_per_case": 0.0,
+        "elapsed_seconds": 0.0021,
+        "seconds_per_case": 0.0001,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -2132,6 +3598,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -2177,10 +3652,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 0.0019,
-        "seconds_per_case": 0.0,
+        "elapsed_seconds": 0.0024,
+        "seconds_per_case": 0.0001,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -2202,6 +3687,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -2247,10 +3741,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 0.0015,
-        "seconds_per_case": 0.0,
+        "elapsed_seconds": 0.002,
+        "seconds_per_case": 0.0001,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -2272,6 +3776,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -2317,10 +3830,20 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 0.0015,
-        "seconds_per_case": 0.0,
+        "elapsed_seconds": 0.002,
+        "seconds_per_case": 0.0001,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       },
       {
         "phase": "dev",
@@ -2342,6 +3865,15 @@
           "rerank_candidate_pool": 20,
           "query_rewriting_on": false,
           "query_expansion_on": false,
+          "rewrite_policy": "never",
+          "expansion_policy": "never",
+          "include_original_query": false,
+          "multi_query_fusion_strategy": "weighted_rrf",
+          "original_query_weight": 1.0,
+          "rewrite_query_weight": 0.7,
+          "expansion_query_weight": 0.5,
+          "confidence_routing": false,
+          "confidence_threshold": 0.35,
           "llm_model": null
         },
         "metrics": {
@@ -2387,12 +3919,46 @@
             "cases": 8
           }
         },
-        "elapsed_seconds": 0.0085,
-        "seconds_per_case": 0.0002,
+        "elapsed_seconds": 0.0017,
+        "seconds_per_case": 0.0,
         "index_reused": true,
-        "error": null
+        "error": null,
+        "routing_metrics": {
+          "cases": 40.0,
+          "rewrite_count": 0.0,
+          "rewrite_rate_percent": 0.0,
+          "expansion_count": 0.0,
+          "expansion_rate_percent": 0.0,
+          "confidence_trigger_count": 0.0,
+          "average_confidence": 0.0,
+          "average_query_variant_count": 1.0
+        }
       }
     ]
   },
-  "recommended_cv_bullet": "Improved retrieval nDCG by 5.0151% (0.7617 to 0.7999) and MRR by 6.0606% (0.825 to 0.875) on a frozen 20-query TEST set, selecting BAAI/bge-m3 with weighted_linear dense/BM25 fusion (0.7/0.3) plus query rewriting from a 40-query DEV split; latency was 0.714s/query versus 0.0878s/query for the dense baseline."
+  "query_routing": {
+    "description": "The deterministic gate inspects raw-query acronyms, quoted terms, numeric status codes, identifiers, precision markers, pronouns, ambiguity phrases, and question length. Protected lexical/precision signals skip optional LLM variants; only query text can trigger selective rewrite or expansion. Stage 1 fuses dense/BM25 per query, then stage 2 can fuse original, rewrite, and expansion rankings with weighted linear, RRF, or weighted RRF. Adaptive dense/BM25 routing uses lexical signals to favor sparse retrieval, long semantic questions to favor dense retrieval, and the configured mix otherwise.",
+    "selected_new_final": "bge-m3-hybrid-adaptive",
+    "new_final_routing_metrics": {
+      "cases": 20.0,
+      "rewrite_count": 0.0,
+      "rewrite_rate_percent": 0.0,
+      "expansion_count": 0.0,
+      "expansion_rate_percent": 0.0,
+      "confidence_trigger_count": 0.0,
+      "average_confidence": 0.0,
+      "average_query_variant_count": 1.0
+    },
+    "previous_final_routing_metrics": {
+      "cases": 20.0,
+      "rewrite_count": 20.0,
+      "rewrite_rate_percent": 100.0,
+      "expansion_count": 0.0,
+      "expansion_rate_percent": 0.0,
+      "confidence_trigger_count": 0.0,
+      "average_confidence": 0.0,
+      "average_query_variant_count": 1.0
+    }
+  },
+  "recommended_cv_bullet": "Improved retrieval nDCG by 8.074% (0.7617 to 0.8232) and MRR by 11.1152% (0.825 to 0.9167) on a frozen 20-query TEST set, selecting BAAI/bge-m3 with query-adaptive weighted_linear dense/BM25 fusion (0.7/0.3) from a 40-query DEV split; latency was 0.0838s/query versus 0.0608s/query for the dense baseline."
 }

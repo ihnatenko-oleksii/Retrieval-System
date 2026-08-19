@@ -1,3 +1,4 @@
 configuration,recall@5,precision@5,mrr,ndcg,elapsed_seconds,relative_recall@5_percent,relative_precision@5_percent,relative_mrr_percent,relative_ndcg_percent
-baseline-dense-e5,0.7475,0.28,0.825,0.7617,1.756,,,,
-bge-m3-hybrid-static+query-rewrite,0.8058,0.31,0.875,0.7999,14.2799,7.7993,10.7143,6.0606,5.0151
+baseline-dense-e5,0.7475,0.28,0.825,0.7617,1.2157,,,,
+previous-final-bge-m3-static+global-rewrite,0.8058,0.31,0.875,0.7999,10.5795,7.7993,10.7143,6.0606,5.0151
+bge-m3-hybrid-adaptive,0.8058,0.31,0.9167,0.8232,1.6765,7.7993,10.7143,11.1152,8.074

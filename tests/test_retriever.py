@@ -113,6 +113,150 @@ class TestFusionAndRouting:
         assert retriever._adaptive_weights("What is CI?", 0.7, 0.3) == (0.35, 0.65)
         assert retriever._adaptive_weights("How does the service handle pagination cursors?", 0.7, 0.3) == (0.8, 0.2)
 
+    def test_selective_policy_skips_rewrite_for_protected_query(self):
+        vector_store = MagicMock()
+        bm25_store = MagicMock()
+        rewriter = MagicMock()
+        meta = make_meta("docs/events.md", 0)
+        vector_store.query.return_value = {
+            "documents": [["event identity"]],
+            "metadatas": [[meta]],
+            "distances": [[0.1]],
+        }
+        bm25_store.query.return_value = []
+        retriever = Retriever(
+            vector_store=vector_store,
+            bm25_store=bm25_store,
+            reranker=MagicMock(),
+            rewriter=rewriter,
+        )
+
+        retriever.retrieve(
+            'What is "X-Atlas-Event-Id"?',
+            config=base_config(
+                query_rewriting_on=True,
+                rewrite_policy="selective",
+                include_original_query=True,
+                dense_weight=1.0,
+                sparse_weight=0.0,
+            ),
+        )
+
+        rewriter.rewrite_query.assert_not_called()
+        assert retriever.last_trace["rewrite_applied"] is False
+
+    def test_original_and_rewrite_are_fused_in_a_second_rank_stage(self):
+        vector_store = MagicMock()
+        bm25_store = MagicMock()
+        rewriter = MagicMock()
+        meta_a = make_meta("docs/a.md", 0)
+        meta_b = make_meta("docs/b.md", 0)
+        meta_c = make_meta("docs/c.md", 0)
+
+        def dense_query(*, query_text, n_results):
+            if query_text == "original query":
+                docs = ["a", "b"]
+                metas = [meta_a, meta_b]
+            else:
+                docs = ["b", "c"]
+                metas = [meta_b, meta_c]
+            return {
+                "documents": [docs],
+                "metadatas": [metas],
+                "distances": [[0.1, 0.2]],
+            }
+
+        vector_store.query.side_effect = dense_query
+        bm25_store.query.return_value = []
+        rewriter.rewrite_query.return_value = "rewritten query"
+        retriever = Retriever(
+            vector_store=vector_store,
+            bm25_store=bm25_store,
+            reranker=MagicMock(),
+            rewriter=rewriter,
+        )
+
+        results = retriever.retrieve(
+            "original query",
+            config=base_config(
+                query_rewriting_on=True,
+                rewrite_policy="always",
+                include_original_query=True,
+                multi_query_fusion_strategy="weighted_rrf",
+                dense_weight=1.0,
+                sparse_weight=0.0,
+                candidate_depth=2,
+            ),
+        )
+
+        assert [meta["file_path"] for _, meta, _ in results] == ["docs/b.md", "docs/a.md", "docs/c.md"]
+        assert [call.kwargs["query_text"] for call in vector_store.query.call_args_list] == [
+            "original query",
+            "rewritten query",
+        ]
+        assert retriever.last_trace["query_variant_labels"] == ["original", "rewrite"]
+
+    def test_low_confidence_can_trigger_selective_rewrite_after_cheap_retrieval(self):
+        vector_store = MagicMock()
+        bm25_store = MagicMock()
+        rewriter = MagicMock()
+        meta = make_meta("docs/uncertain.md", 0)
+        vector_store.query.return_value = {
+            "documents": [["weak match"]],
+            "metadatas": [[meta]],
+            "distances": [[0.7]],
+        }
+        bm25_store.query.return_value = []
+        rewriter.rewrite_query.return_value = "more specific query"
+        retriever = Retriever(
+            vector_store=vector_store,
+            bm25_store=bm25_store,
+            reranker=MagicMock(),
+            rewriter=rewriter,
+        )
+
+        retriever.retrieve(
+            "short query",
+            config=base_config(
+                query_rewriting_on=True,
+                rewrite_policy="selective",
+                include_original_query=True,
+                confidence_routing=True,
+                confidence_threshold=0.9,
+                dense_weight=1.0,
+                sparse_weight=0.0,
+            ),
+        )
+
+        rewriter.rewrite_query.assert_called_once()
+        assert retriever.last_trace["confidence_triggered"] is True
+
+    def test_empty_or_unchanged_rewrite_falls_back_to_original_results(self):
+        vector_store = MagicMock()
+        bm25_store = MagicMock()
+        rewriter = MagicMock()
+        meta = make_meta("docs/original.md", 0)
+        vector_store.query.return_value = {
+            "documents": [["original hit"]],
+            "metadatas": [[meta]],
+            "distances": [[0.1]],
+        }
+        bm25_store.query.return_value = []
+        rewriter.rewrite_query.return_value = "original query"
+        retriever = Retriever(
+            vector_store=vector_store,
+            bm25_store=bm25_store,
+            reranker=MagicMock(),
+            rewriter=rewriter,
+        )
+
+        results = retriever.retrieve(
+            "original query",
+            config=base_config(query_rewriting_on=True, rewrite_policy="always", include_original_query=False, dense_weight=1.0, sparse_weight=0.0),
+        )
+
+        assert results[0][0] == "original hit"
+
 
 class TestChunkIdentity:
     def test_same_metadata_same_identity(self):

@@ -226,6 +226,7 @@ class Evaluator:
             expected_sources = self._expected_sources(case)
 
             chunks = self.retriever.retrieve(question, top_k=self.top_k, config=self.config)
+            routing_trace = getattr(self.retriever, "last_trace", {}) or {}
             retrieved_sources = [chunk[1].get("file_name", "") for chunk in chunks]
             retrieved_chunk_ids = [self.chunk_id_for_metadata(chunk[1]) for chunk in chunks]
 
@@ -309,6 +310,12 @@ class Evaluator:
                     "ndcg": round(case_ndcg, 4),
                     "retrieved_sources": " | ".join(retrieved_sources),
                     "keyword_hit_score": round(case_keyword_score, 4) if case_keyword_score is not None else None,
+                    "rewrite_applied": bool(routing_trace.get("rewrite_applied", False)),
+                    "expansion_applied": bool(routing_trace.get("expansion_applied", False)),
+                    "query_variant_count": int(routing_trace.get("query_variant_count", 1)),
+                    "confidence_score": routing_trace.get("confidence_score"),
+                    "confidence_triggered": bool(routing_trace.get("confidence_triggered", False)),
+                    "gate_reasons": " | ".join(str(reason) for reason in routing_trace.get("gate_reasons", ())),
                 }
             )
 

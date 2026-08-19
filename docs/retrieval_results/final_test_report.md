@@ -6,14 +6,16 @@ Frozen TEST cases: 20.
 ## Configuration
 
 - Baseline: `baseline-dense-e5` — `intfloat/multilingual-e5-base`, dense-only, no reranking, rewriting, or expansion.
-- Final: `bge-m3-hybrid-static+query-rewrite` — `BAAI/bge-m3`, chunk `1000/200`, fusion `weighted_linear`, weights `0.7/0.3`, candidate depth `20`, reranking `False`, query rewriting `True`, query expansion `False`.
+- Previous final: `previous-final-bge-m3-static+global-rewrite` — `BAAI/bge-m3`, chunk `1000/200`, fusion `weighted_linear`, weights `0.7/0.3`, global rewrite replacement `True`.
+- New final: `bge-m3-hybrid-adaptive` — `BAAI/bge-m3`, chunk `1000/200`, fusion `weighted_linear`, weights `0.7/0.3`, candidate depth `20`, reranking `False`, query rewriting `False` (`never`), query expansion `False` (`never`), original preserved `False`, stage-2 fusion `weighted_rrf`, confidence routing `False`.
 
 ## TEST metrics
 
 | Configuration | Recall@5 | Precision@5 | MRR | nDCG | Seconds |
 |---|---:|---:|---:|---:|---:|
-| Baseline | 0.7475 | 0.28 | 0.825 | 0.7617 | 1.756 |
-| Final | 0.8058 | 0.31 | 0.875 | 0.7999 | 14.2799 |
+| Baseline | 0.7475 | 0.28 | 0.825 | 0.7617 | 1.2157 |
+| Previous final | 0.8058 | 0.31 | 0.875 | 0.7999 | 10.5795 |
+| New final | 0.8058 | 0.31 | 0.9167 | 0.8232 | 1.6765 |
 
 ## Relative improvement
 
@@ -21,8 +23,8 @@ Frozen TEST cases: 20.
 |---|---:|
 | recall@5 | 7.7993% |
 | precision@5 | 10.7143% |
-| mrr | 6.0606% |
-| ndcg | 5.0151% |
+| mrr | 11.1152% |
+| ndcg | 8.074% |
 
 ## Effect of major optimizations (DEV)
 
@@ -47,26 +49,43 @@ Selection and deltas in this section use DEV only; TEST values are never used fo
 | Chunk 600/100 | hybrid-chunks-600-100 | invalid_label_mapping | - | - | - |
 | Chunk 800/150 | hybrid-chunks-800-150 | invalid_label_mapping | - | - | - |
 | Chunk 1200/200 | hybrid-chunks-1200-200 | invalid_label_mapping | - | - | - |
-| LLM query-rewrite | bge-m3-hybrid-static+query-rewrite | ok | 0.8313 | 7.2922% | 0.9313 |
-| LLM query-expansion | bge-m3-hybrid-static+query-expansion | ok | 0.8176 | 5.524% | 0.9396 |
-| LLM rewrite-and-expansion | bge-m3-hybrid-static+rewrite-and-expansion | ok | 0.813 | 4.9303% | 0.9271 |
+| LLM global-rewrite | previous-final-bge-m3-static+global-rewrite | ok | 0.8313 | 7.2922% | 0.9313 |
+| LLM rewrite-all-replace | bge-m3-hybrid-adaptive+rewrite-all-replace | ok | 0.8115 | 4.7367% | 0.8938 |
+| LLM rewrite-all-ensemble-linear | bge-m3-hybrid-adaptive+rewrite-all-ensemble-linear | ok | 0.825 | 6.4791% | 0.905 |
+| LLM rewrite-all-ensemble-rrf | bge-m3-hybrid-adaptive+rewrite-all-ensemble-rrf | ok | 0.8345 | 7.7052% | 0.9225 |
+| LLM rewrite-selective-ensemble-linear | bge-m3-hybrid-adaptive+rewrite-selective-ensemble-linear | ok | 0.8342 | 7.6665% | 0.9225 |
+| LLM rewrite-selective-ensemble-rrf | bge-m3-hybrid-adaptive+rewrite-selective-ensemble-rrf | ok | 0.8342 | 7.6665% | 0.9225 |
+| LLM expansion-selective-ensemble-rrf | bge-m3-hybrid-adaptive+expansion-selective-ensemble-rrf | ok | 0.8049 | 3.8849% | 0.8863 |
+| LLM rewrite-expansion-selective-ensemble-rrf | bge-m3-hybrid-adaptive+rewrite-expansion-selective-ensemble-rrf | ok | 0.8095 | 4.4786% | 0.9037 |
+| LLM rewrite-selective-confidence-ensemble-rrf | bge-m3-hybrid-adaptive+rewrite-selective-confidence-ensemble-rrf | ok | 0.8342 | 7.6665% | 0.9225 |
+
+## Query routing and generalized failure modes
+
+The deterministic gate inspects raw-query acronyms, quoted terms, numeric status codes, identifiers, precision markers, pronouns, ambiguity phrases, and question length. Protected lexical/precision signals skip optional LLM variants; only query text can trigger selective rewrite or expansion. Stage 1 fuses dense/BM25 per query, then stage 2 can fuse original, rewrite, and expansion rankings with weighted linear, RRF, or weighted RRF. Adaptive dense/BM25 routing uses lexical signals to favor sparse retrieval, long semantic questions to favor dense retrieval, and the configured mix otherwise.
+
+- New-final TEST rewrite rate: 0.0%; expansion rate: 0.0%; confidence-triggered rewrites: 0.0.
+- Previous-final TEST rewrite rate: 100.0%.
+- Rewrite replacement drift was measured as a general failure mode: DEV nDCG was 0.8115 for replacement versus 0.8345 when the original query was retained and fused by rank.
+- Query-expansion ensemble retrieval introduced measurable noise on this benchmark: the selective expansion ensemble reached DEV nDCG 0.8049 and MRR 0.8863, below the selected adaptive route.
+- Chunk-boundary changes were rejected when labeled chunk content no longer matched the canonical 1000/200 mapping; no invalid-label score entered selection.
+- BGE cross-encoder reranker candidates were recorded as unavailable because the offline cache lacked model weights; no silent fallback score was used.
 
 ## Recommended CV bullet
 
-> Improved retrieval nDCG by 5.0151% (0.7617 to 0.7999) and MRR by 6.0606% (0.825 to 0.875) on a frozen 20-query TEST set, selecting BAAI/bge-m3 with weighted_linear dense/BM25 fusion (0.7/0.3) plus query rewriting from a 40-query DEV split; latency was 0.714s/query versus 0.0878s/query for the dense baseline.
+> Improved retrieval nDCG by 8.074% (0.7617 to 0.8232) and MRR by 11.1152% (0.825 to 0.9167) on a frozen 20-query TEST set, selecting BAAI/bge-m3 with query-adaptive weighted_linear dense/BM25 fusion (0.7/0.3) from a 40-query DEV split; latency was 0.0838s/query versus 0.0608s/query for the dense baseline.
 
 ## Category breakdown
 
-| Category | Baseline nDCG | Final nDCG | Baseline MRR | Final MRR | Cases |
-|---|---:|---:|---:|---:|---:|
-| ambiguous | 0.2243 | 0.5078 | 0.375 | 0.75 | 4 |
-| exact_terminology | 1.0 | 1.0 | 1.0 | 1.0 | 4 |
-| fine_grained | 0.9793 | 0.9077 | 1.0 | 0.875 | 4 |
-| multiple_relevant | 0.8965 | 0.8508 | 1.0 | 1.0 | 4 |
-| paraphrased_semantic | 0.7085 | 0.7331 | 0.75 | 0.75 | 4 |
+| Category | Baseline nDCG | Previous final nDCG | New final nDCG | Baseline MRR | Previous final MRR | New final MRR | Cases |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| ambiguous | 0.2243 | 0.5078 | 0.5567 | 0.375 | 0.75 | 0.8333 | 4 |
+| exact_terminology | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 4 |
+| fine_grained | 0.9793 | 0.9077 | 0.9734 | 1.0 | 0.875 | 1.0 | 4 |
+| multiple_relevant | 0.8965 | 0.8508 | 0.853 | 1.0 | 1.0 | 1.0 | 4 |
+| paraphrased_semantic | 0.7085 | 0.7331 | 0.7331 | 0.75 | 0.75 | 0.75 | 4 |
 
 Best final category by nDCG: `exact_terminology` (1.0).
-Worst final category by nDCG: `ambiguous` (0.5078).
+Worst final category by nDCG: `ambiguous` (0.5567).
 
 ## Failed or blocked experiments
 
@@ -83,7 +102,8 @@ Worst final category by nDCG: `ambiguous` (0.5078).
 
 ## Runtime tradeoff
 
-- Baseline: 1.756s total (0.0878s/case).
-- Final: 14.2799s total (0.714s/case).
+- Baseline: 1.2157s total (0.0608s/case).
+- Previous final: 10.5795s total (0.529s/case), rewrite rate 100.0%.
+- New final: 1.6765s total (0.0838s/case), rewrite rate 0.0%, expansion rate 0.0%.
 
 The final selection was made from DEV results only; this TEST comparison is not fed back into selection.

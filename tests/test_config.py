@@ -59,3 +59,25 @@ class TestRetrievalConfigFromSettings:
                 query_expansion_on=False,
                 fusion_strategy="not-a-strategy",
             )
+
+    def test_supports_selective_multi_query_routing_configuration(self):
+        cfg = RetrievalConfig(
+            top_k=5,
+            dense_weight=0.7,
+            sparse_weight=0.3,
+            reranker_on=False,
+            rerank_top_n=5,
+            query_rewriting_on=True,
+            query_expansion_on=True,
+            rewrite_policy="selective",
+            expansion_policy="selective",
+            include_original_query=True,
+            multi_query_fusion_strategy="weighted_rrf",
+            confidence_routing=True,
+        )
+
+        assert cfg.rewrite_policy == "selective"
+        assert cfg.expansion_policy == "selective"
+        assert cfg.include_original_query is True
+        assert cfg.multi_query_fusion_strategy == "weighted_rrf"
+        assert cfg.confidence_routing is True
