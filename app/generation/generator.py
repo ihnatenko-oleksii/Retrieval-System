@@ -1,9 +1,11 @@
-import ollama
 import logging
-from typing import List, Tuple, Optional, Dict
+
+import ollama
+
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
+
 
 class Generator:
     def __init__(self, model_name: str = None):
@@ -49,7 +51,12 @@ Answer:
             return " ".join(parts).strip()
         return str(value)
 
-    def generate_answer(self, query: str, retrieved_chunks: List[Tuple[str, dict, float]], chat_history: Optional[List[Dict[str, str]]] = None) -> dict:
+    def generate_answer(
+        self,
+        query: str,
+        retrieved_chunks: list[tuple[str, dict, float]],
+        chat_history: list[dict[str, str]] | None = None,
+    ) -> dict:
         """
         Generates an answer from the retrieved chunks, taking optional chat_history into account.
         Returns a dictionary with the final answer and metadata.
@@ -58,7 +65,7 @@ Answer:
             return {
                 "final_answer": "No relevant context found to answer the question.",
                 "retrieved_sources": [],
-                "confidence_notes": "Low confidence due to missing context."
+                "confidence_notes": "Low confidence due to missing context.",
             }
 
         # Format context
@@ -67,12 +74,9 @@ Answer:
         for i, (content, meta, dist) in enumerate(retrieved_chunks, start=1):
             source_name = meta.get("file_name", "Unknown Source")
             context_parts.append(f"--- Source [{i}]: {source_name} ---\n{content}\n")
-            sources.append({
-                "source_id": i,
-                "file_name": source_name,
-                "distance": dist,
-                "chunk_index": meta.get("chunk_index")
-            })
+            sources.append(
+                {"source_id": i, "file_name": source_name, "distance": dist, "chunk_index": meta.get("chunk_index")}
+            )
 
         context_text = "\n".join(context_parts)
         prompt = self._build_prompt(query, context_text)
@@ -87,14 +91,11 @@ Answer:
                 content = self._safe_text(msg.get("content"))
                 if role in {"user", "assistant"} and content:
                     messages.append({"role": role, "content": content})
-                
+
         messages.append({"role": "user", "content": prompt})
 
         try:
-            response = ollama.chat(
-                model=self.model_name,
-                messages=messages
-            )
+            response = ollama.chat(model=self.model_name, messages=messages)
             answer = response.get("message", {}).get("content", "")
         except Exception as e:
             logger.error(f"Error during LLM generation: {e}")
@@ -103,5 +104,5 @@ Answer:
         return {
             "final_answer": answer,
             "retrieved_sources": sources,
-            "confidence_notes": "Generated using local LLM with provided context."
+            "confidence_notes": "Generated using local LLM with provided context.",
         }

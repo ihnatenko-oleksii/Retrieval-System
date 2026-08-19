@@ -1,17 +1,18 @@
-import os
 import logging
-from typing import List
-from app.ingestion.loaders import get_loader
+import os
+
 from app.chunking.splitter import get_splitter
-from app.core.models import Document, Chunk
+from app.core.models import Chunk
+from app.ingestion.loaders import get_loader
 
 logger = logging.getLogger(__name__)
+
 
 class IngestionPipeline:
     def __init__(self):
         self.splitter = get_splitter()
 
-    def process_directory(self, directory_path: str) -> List[Chunk]:
+    def process_directory(self, directory_path: str) -> list[Chunk]:
         base_dir = os.path.abspath(directory_path)
         all_chunks = []
         for root, _, files in os.walk(directory_path):
@@ -23,7 +24,7 @@ class IngestionPipeline:
                 if not loader:
                     logger.info(f"Skipping unsupported file: {file_path}")
                     continue
-                
+
                 try:
                     documents = loader.load(file_path)
                     for doc in documents:

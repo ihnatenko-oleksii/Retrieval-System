@@ -1,7 +1,6 @@
 import itertools
 import time
 from pathlib import Path
-from typing import List
 
 import gradio as gr
 import pandas as pd
@@ -26,7 +25,7 @@ MAX_TRIALS_DEFAULT = 48
 AVG_SECONDS_PER_TRIAL_DEFAULT = 62.5
 
 
-def _list_ollama_models() -> List[str]:
+def _list_ollama_models() -> list[str]:
     try:
         import ollama
 
@@ -47,7 +46,7 @@ def _list_ollama_models() -> List[str]:
         return [settings.llm_model]
 
 
-def _parse_int_list(text: str, fallback: List[int]) -> List[int]:
+def _parse_int_list(text: str, fallback: list[int]) -> list[int]:
     if not text:
         return list(fallback)
     values = []
@@ -67,7 +66,7 @@ def _parse_int_list(text: str, fallback: List[int]) -> List[int]:
     return out or list(fallback)
 
 
-def _parse_float_list(text: str, fallback: List[float]) -> List[float]:
+def _parse_float_list(text: str, fallback: list[float]) -> list[float]:
     if not text:
         return list(fallback)
     values = []
@@ -89,7 +88,7 @@ def _parse_float_list(text: str, fallback: List[float]) -> List[float]:
     return out or list(fallback)
 
 
-def _parse_bool_list(selected: List[str]) -> List[bool]:
+def _parse_bool_list(selected: list[str]) -> list[bool]:
     if not selected:
         return [False, True]
     mapping = {"on": True, "off": False, "true": True, "false": False}
@@ -115,10 +114,10 @@ def _format_duration(seconds: float) -> str:
 def estimate_runtime(
     top_k_text: str,
     dense_text: str,
-    reranker_choices: List[str],
-    rewriting_choices: List[str],
-    expansion_choices: List[str],
-    llm_models: List[str],
+    reranker_choices: list[str],
+    rewriting_choices: list[str],
+    expansion_choices: list[str],
+    llm_models: list[str],
     max_trials: int,
     avg_seconds_per_trial: float,
 ) -> str:
@@ -129,14 +128,7 @@ def estimate_runtime(
     expansion_vals = _parse_bool_list(expansion_choices)
     models = list(llm_models) if llm_models else [settings.llm_model]
 
-    total = (
-        len(top_ks)
-        * len(dense_ws)
-        * len(reranker_vals)
-        * len(rewriting_vals)
-        * len(expansion_vals)
-        * len(models)
-    )
+    total = len(top_ks) * len(dense_ws) * len(reranker_vals) * len(rewriting_vals) * len(expansion_vals) * len(models)
 
     est_per_trial = max(1.0, float(avg_seconds_per_trial))
     est_total = total * est_per_trial
@@ -200,8 +192,10 @@ def _top_trials_bar(df: pd.DataFrame) -> go.Figure:
         return _empty_figure("Top trials by composite score")
     top = df.head(10).copy()
     top["label"] = top.apply(
-        lambda r: f"k={r['top_k']} d={r['dense_weight']} rr={int(bool(r['reranker_on']))} "
-                  f"qr={int(bool(r['query_rewriting_on']))} qe={int(bool(r['query_expansion_on']))}",
+        lambda r: (
+            f"k={r['top_k']} d={r['dense_weight']} rr={int(bool(r['reranker_on']))} "
+            f"qr={int(bool(r['query_rewriting_on']))} qe={int(bool(r['query_expansion_on']))}"
+        ),
         axis=1,
     )
     fig = go.Figure(
@@ -266,10 +260,10 @@ def run_sweep(
     jsonl_path: str,
     top_k_text: str,
     dense_text: str,
-    reranker_choices: List[str],
-    rewriting_choices: List[str],
-    expansion_choices: List[str],
-    llm_models: List[str],
+    reranker_choices: list[str],
+    rewriting_choices: list[str],
+    expansion_choices: list[str],
+    llm_models: list[str],
     rerank_top_n: int,
     max_trials: int,
 ):
@@ -290,9 +284,7 @@ def run_sweep(
     expansion_vals = _parse_bool_list(expansion_choices)
     models = list(llm_models) if llm_models else [settings.llm_model]
 
-    combos = list(
-        itertools.product(top_ks, dense_ws, reranker_vals, rewriting_vals, expansion_vals, models)
-    )
+    combos = list(itertools.product(top_ks, dense_ws, reranker_vals, rewriting_vals, expansion_vals, models))
     total = len(combos)
 
     if total == 0:
@@ -322,7 +314,7 @@ def run_sweep(
 
     rows = []
     t0 = time.time()
-    for (top_k, dense_w, rr_on, qr_on, qe_on, model) in combos:
+    for top_k, dense_w, rr_on, qr_on, qe_on, model in combos:
         sparse_w = round(1.0 - float(dense_w), 4)
         cfg = RetrievalConfig(
             top_k=int(top_k),
@@ -351,21 +343,23 @@ def run_sweep(
         kw = float(metrics.get("keyword_hit_rate", 0.0))
         composite = _composite(metrics, int(top_k))
 
-        rows.append({
-            "top_k": int(top_k),
-            "dense_weight": float(dense_w),
-            "sparse_weight": sparse_w,
-            "reranker_on": bool(rr_on),
-            "query_rewriting_on": bool(qr_on),
-            "query_expansion_on": bool(qe_on),
-            "llm_model": model,
-            "composite": composite,
-            "keyword_hit_rate": round(kw, 4),
-            "mrr": round(mrr, 4),
-            "recall": round(recall, 4),
-            "precision": round(precision, 4),
-            "ndcg": round(ndcg, 4),
-        })
+        rows.append(
+            {
+                "top_k": int(top_k),
+                "dense_weight": float(dense_w),
+                "sparse_weight": sparse_w,
+                "reranker_on": bool(rr_on),
+                "query_rewriting_on": bool(qr_on),
+                "query_expansion_on": bool(qe_on),
+                "llm_model": model,
+                "composite": composite,
+                "keyword_hit_rate": round(kw, 4),
+                "mrr": round(mrr, 4),
+                "recall": round(recall, 4),
+                "precision": round(precision, 4),
+                "ndcg": round(ndcg, 4),
+            }
+        )
 
     elapsed = time.time() - t0
     if not rows:
@@ -393,12 +387,9 @@ def build_tuning_ui() -> gr.Blocks:
     with gr.Blocks(theme=gr.themes.Monochrome(), title="RAG Tuning Dashboard") as demo:
         gr.Markdown("## RAG Tuning Dashboard")
         gr.Markdown(
-            "Sweep runtime retrieval parameters across an evals JSONL and pick the best config "
-            "by composite score."
+            "Sweep runtime retrieval parameters across an evals JSONL and pick the best config by composite score."
         )
-        gr.Markdown(
-            f"**Composite** = {W_KEYWORD} * keyword_hit_rate + {W_MRR} * MRR + {W_RECALL} * recall@K"
-        )
+        gr.Markdown(f"**Composite** = {W_KEYWORD} * keyword_hit_rate + {W_MRR} * MRR + {W_RECALL} * recall@K")
 
         with gr.Row():
             jsonl_path = gr.Textbox(

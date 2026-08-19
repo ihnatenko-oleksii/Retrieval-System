@@ -1,4 +1,4 @@
-from typing import List, Sequence
+from collections.abc import Sequence
 
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
 
@@ -27,14 +27,11 @@ class PrefixedSentenceTransformerEmbeddingFunction:
         self._inner = SentenceTransformerEmbeddingFunction(model_name=model_name)
         self._needs_e5_prefix = _is_e5_model(model_name)
 
-    def __call__(self, input: Sequence[str]) -> List[List[float]]:
-        if self._needs_e5_prefix:
-            prepared = [f"passage: {text}" for text in input]
-        else:
-            prepared = list(input)
+    def __call__(self, input: Sequence[str]) -> list[list[float]]:
+        prepared = [f"passage: {text}" for text in input] if self._needs_e5_prefix else list(input)
         return self._inner(prepared)
 
-    def embed_query(self, text: str) -> List[float]:
+    def embed_query(self, text: str) -> list[float]:
         """Encode a single query string with the model-specific query prefix."""
         prepared = f"query: {text}" if self._needs_e5_prefix else text
         vectors = self._inner([prepared])

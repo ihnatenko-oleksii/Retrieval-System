@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-import os
+
 
 class Settings(BaseSettings):
     # Vector Store
@@ -24,11 +24,11 @@ class Settings(BaseSettings):
 
     # Retrieval
     retrieval_top_k: int = 3
-    
+
     # Reranking (Phase 2)
     rerank_top_n: int = 3
     reranker_on: bool = False
-    
+
     # Query Expansion/Rewriting (Phase 2)
     query_rewriting_on: bool = False
     query_expansion_on: bool = False
@@ -37,10 +37,7 @@ class Settings(BaseSettings):
     hybrid_search_weights_dense: float = 0.7
     hybrid_search_weights_sparse: float = 0.3
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-        extra="ignore"
-    )
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+
 
 settings = Settings()

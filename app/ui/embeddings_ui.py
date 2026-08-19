@@ -128,10 +128,7 @@ def build_embedding_plot(
         documents = [documents[i] for i in indices]
         metadatas = [metadatas[i] for i in indices]
 
-    if int(perplexity) <= 0:
-        effective_perplexity = _auto_perplexity(sample_size)
-    else:
-        effective_perplexity = int(perplexity)
+    effective_perplexity = _auto_perplexity(sample_size) if int(perplexity) <= 0 else int(perplexity)
     effective_perplexity = max(1, min(effective_perplexity, sample_size - 1))
 
     # Stabilize t-SNE for high-dimensional sentence embeddings.
