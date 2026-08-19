@@ -1,9 +1,11 @@
-from sentence_transformers import CrossEncoder
-from typing import List, Optional, Tuple
-from app.core.config import settings
 import logging
 
+from sentence_transformers import CrossEncoder
+
+from app.core.config import settings
+
 logger = logging.getLogger(__name__)
+
 
 class Reranker:
     def __init__(self, model_name: str = "cross-encoder/ms-marco-MiniLM-L-6-v2", force_load: bool = False):
@@ -26,10 +28,10 @@ class Reranker:
     def rerank(
         self,
         query: str,
-        retrieved_chunks: List[Tuple[str, dict, float]],
+        retrieved_chunks: list[tuple[str, dict, float]],
         top_n: int = None,
-        enabled: Optional[bool] = None,
-    ) -> List[Tuple[str, dict, float]]:
+        enabled: bool | None = None,
+    ) -> list[tuple[str, dict, float]]:
         rerank_enabled = settings.reranker_on if enabled is None else bool(enabled)
         if not rerank_enabled or not retrieved_chunks:
             return retrieved_chunks[:top_n] if top_n else retrieved_chunks

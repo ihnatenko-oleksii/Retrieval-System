@@ -1,21 +1,22 @@
-from typing import List, Tuple, Dict, Optional
-from app.vector_store.chroma_store import VectorStore
-from app.vector_store.bm25_store import BM25Store
-from app.retrieval.rewriter import QueryRewriter
-from app.retrieval.reranker import Reranker
-from app.core.config import settings
-from app.core.runtime_config import RetrievalConfig
 import logging
 import re
 
+from app.core.config import settings
+from app.core.runtime_config import RetrievalConfig
+from app.retrieval.reranker import Reranker
+from app.retrieval.rewriter import QueryRewriter
+from app.vector_store.bm25_store import BM25Store
+from app.vector_store.chroma_store import VectorStore
+
 logger = logging.getLogger(__name__)
+
 
 class Retriever:
     def __init__(
         self,
         vector_store: VectorStore,
         bm25_store: BM25Store = None,
-        reranker: Optional[Reranker] = None,
+        reranker: Reranker | None = None,
     ):
         self.vector_store = vector_store
         self.bm25_store = bm25_store or BM25Store()
@@ -24,7 +25,9 @@ class Retriever:
         # we don't pay the CrossEncoder load cost on every trial.
         self.reranker = reranker or Reranker()
 
-    def _normalize_scores(self, results: List[Tuple[str, dict, float]], invert: bool = False) -> List[Tuple[str, dict, float]]:
+    def _normalize_scores(
+        self, results: list[tuple[str, dict, float]], invert: bool = False
+    ) -> list[tuple[str, dict, float]]:
         if not results:
             return []
 
@@ -33,10 +36,7 @@ class Retriever:
 
         normalized = []
         for content, meta, score in results:
-            if max_score == min_score:
-                norm_score = 1.0
-            else:
-                norm_score = (score - min_score) / (max_score - min_score)
+            norm_score = 1.0 if max_score == min_score else (score - min_score) / (max_score - min_score)
 
             if invert:
                 norm_score = 1.0 - norm_score
@@ -45,13 +45,27 @@ class Retriever:
 
         return normalized
 
-    def _extract_acronyms(self, query: str) -> List[str]:
+    def _chunk_identity(self, meta: dict, content: str) -> tuple:
+        """
+        Stable dedup key for a retrieved chunk. Prefer (file_path, chunk_index)
+        from chunk metadata over raw content: two distinct chunks (different
+        source, different position) can share identical or near-identical text
+        (headers, boilerplate, short code snippets), and keying on content
+        would silently collapse them into one result.
+        """
+        file_path = meta.get("file_path") if meta else None
+        chunk_index = meta.get("chunk_index") if meta else None
+        if file_path is not None and chunk_index is not None:
+            return (file_path, chunk_index)
+        return (content,)
+
+    def _extract_acronyms(self, query: str) -> list[str]:
         return re.findall(r"\b[A-Z]{2,10}\b", query or "")
 
     def _apply_query_intent_boost(
         self,
         query: str,
-        combined_scores: Dict[str, List],
+        combined_scores: dict[str, list],
     ) -> None:
         acronyms = self._extract_acronyms(query)
         if not acronyms:
@@ -60,7 +74,7 @@ class Retriever:
 
         for acronym in acronyms:
             pattern = re.compile(rf"\b{re.escape(acronym)}\b", re.IGNORECASE)
-            for key, value in combined_scores.items():
+            for value in combined_scores.values():
                 content, meta, score = value
                 file_name = str(meta.get("file_name", "")).lower()
                 glossary_hint = ("słownik" in file_name) or ("slownik" in file_name) or ("glossary" in file_name)
@@ -75,9 +89,9 @@ class Retriever:
         self,
         query: str,
         top_k: int = None,
-        chat_history: Optional[List[Dict[str, str]]] = None,
-        config: Optional[RetrievalConfig] = None,
-    ) -> List[Tuple[str, dict, float]]:
+        chat_history: list[dict[str, str]] | None = None,
+        config: RetrievalConfig | None = None,
+    ) -> list[tuple[str, dict, float]]:
         # Resolve runtime knobs from `config`, falling back to global settings.
         if config is None:
             resolved_top_k = top_k if top_k is not None else settings.retrieval_top_k
@@ -116,7 +130,7 @@ class Retriever:
                 docs = chroma_res["documents"][0]
                 metas = chroma_res["metadatas"][0] if chroma_res.get("metadatas") else [{}] * len(docs)
                 dists = chroma_res["distances"][0] if chroma_res.get("distances") else [0.0] * len(docs)
-                for d, m, c in zip(docs, metas, dists):
+                for d, m, c in zip(docs, metas, dists, strict=True):
                     dense_results.append((d, m, c))
 
             bm25_res = self.bm25_store.query(query_text=q, n_results=initial_k)
@@ -133,15 +147,15 @@ class Retriever:
             # Acronym lookups work better with lexical emphasis.
             wd, ws = 0.35, 0.65
 
-        combined_scores: Dict[str, List] = {}
+        combined_scores: dict[tuple, list] = {}
         for content, meta, score in norm_dense:
-            key = content
+            key = self._chunk_identity(meta, content)
             if key not in combined_scores:
                 combined_scores[key] = [content, meta, 0.0]
             combined_scores[key][2] += score * wd
 
         for content, meta, score in norm_sparse:
-            key = content
+            key = self._chunk_identity(meta, content)
             if key not in combined_scores:
                 combined_scores[key] = [content, meta, 0.0]
             combined_scores[key][2] += score * ws
@@ -165,7 +179,7 @@ class Retriever:
 
         return candidates[:resolved_top_k]
 
-    def format_context(self, retrieved_chunks: List[Tuple[str, dict, float]]) -> str:
+    def format_context(self, retrieved_chunks: list[tuple[str, dict, float]]) -> str:
         context_parts = []
         for i, (content, meta, _) in enumerate(retrieved_chunks, start=1):
             source = meta.get("file_name", "Unknown Source")

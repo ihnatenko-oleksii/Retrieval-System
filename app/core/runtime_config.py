@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 from app.core.config import settings
 
@@ -19,7 +18,7 @@ class RetrievalConfig:
     rerank_top_n: int
     query_rewriting_on: bool
     query_expansion_on: bool
-    llm_model: Optional[str] = None
+    llm_model: str | None = None
 
     @classmethod
     def from_settings(cls) -> "RetrievalConfig":

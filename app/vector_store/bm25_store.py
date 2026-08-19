@@ -1,28 +1,57 @@
+import logging
 import os
 import pickle
-import logging
-from typing import List
 import re
+
 from rank_bm25 import BM25Okapi
+
 from app.core.models import Chunk
 
 logger = logging.getLogger(__name__)
+
 
 class BM25Store:
     def __init__(self, persist_dir: str = "./storage"):
         self.persist_dir = persist_dir
         self.file_path = os.path.join(persist_dir, "bm25_index.pkl")
         self.bm25: BM25Okapi = None
-        self.chunks: List[dict] = []
+        self.chunks: list[dict] = []
         self._load()
 
-    def _tokenize(self, text: str) -> List[str]:
+    def _tokenize(self, text: str) -> list[str]:
         # Unicode-aware word tokenization: handles punctuation like "SOW?"
         raw_tokens = re.findall(r"\w+", (text or "").lower())
         stopwords = {
-            "co", "to", "jest", "i", "oraz", "a", "w", "we", "na", "z", "za", "do",
-            "o", "od", "po", "dla", "czy", "jak", "jaki", "jakie", "ktory", "która",
-            "the", "is", "are", "what", "of", "in", "for", "and",
+            "co",
+            "to",
+            "jest",
+            "i",
+            "oraz",
+            "a",
+            "w",
+            "we",
+            "na",
+            "z",
+            "za",
+            "do",
+            "o",
+            "od",
+            "po",
+            "dla",
+            "czy",
+            "jak",
+            "jaki",
+            "jakie",
+            "ktory",
+            "która",
+            "the",
+            "is",
+            "are",
+            "what",
+            "of",
+            "in",
+            "for",
+            "and",
         }
         return [t for t in raw_tokens if len(t) > 1 and t not in stopwords]
 
@@ -59,21 +88,14 @@ class BM25Store:
         except Exception as e:
             logger.error(f"Failed to save BM25 index: {e}")
 
-    def add_chunks(self, chunks: List[Chunk]):
+    def add_chunks(self, chunks: list[Chunk]):
         if not chunks:
             return
 
-        existing_keys = {
-            self._chunk_key(c.get("metadata", {}), c.get("content", ""))
-            for c in self.chunks
-        }
+        existing_keys = {self._chunk_key(c.get("metadata", {}), c.get("content", "")) for c in self.chunks}
 
         for chunk in chunks:
-            record = {
-                "id": chunk.id,
-                "content": chunk.content,
-                "metadata": chunk.metadata.model_dump()
-            }
+            record = {"id": chunk.id, "content": chunk.content, "metadata": chunk.metadata.model_dump()}
             key = self._chunk_key(record["metadata"], record["content"])
             if key in existing_keys:
                 continue
@@ -83,7 +105,7 @@ class BM25Store:
         self._rebuild_index()
         self.save()
 
-    def query(self, query_text: str, n_results: int = 5) -> List[tuple[str, dict, float]]:
+    def query(self, query_text: str, n_results: int = 5) -> list[tuple[str, dict, float]]:
         if not self.bm25 or not self.chunks:
             return []
 
@@ -91,13 +113,13 @@ class BM25Store:
         if not tokenized_query:
             return []
         scores = self.bm25.get_scores(tokenized_query)
-        
+
         top_n = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:n_results]
-        
+
         results = []
         for idx in top_n:
             if scores[idx] > 0:
                 chunk = self.chunks[idx]
                 results.append((chunk["content"], chunk["metadata"], float(scores[idx])))
-                
+
         return results

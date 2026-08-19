@@ -1,9 +1,11 @@
-import ollama
 import logging
-from typing import List, Optional, Dict
+
+import ollama
+
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
+
 
 class QueryRewriter:
     def __init__(self, model_name: str = None):
@@ -12,8 +14,8 @@ class QueryRewriter:
     def rewrite_query(
         self,
         query: str,
-        chat_history: Optional[List[Dict[str, str]]] = None,
-        enabled: Optional[bool] = None,
+        chat_history: list[dict[str, str]] | None = None,
+        enabled: bool | None = None,
     ) -> str:
         """
         Rewrites a query to make it clearer and more specific for retrieval.
@@ -46,12 +48,9 @@ Standalone query:"""
             prompt = f"Rewrite the following search query to be clear, highly specific, and optimized for semantic search retrieval. Return ONLY the rewritten query text, without any explanations or formatting.\n\nOriginal query: {query}\n\nRewritten query:"
 
         try:
-            response = ollama.chat(
-                model=self.model_name,
-                messages=[{"role": "user", "content": prompt}]
-            )
+            response = ollama.chat(model=self.model_name, messages=[{"role": "user", "content": prompt}])
             rewritten = response.get("message", {}).get("content", "").strip()
-            rewritten = rewritten.strip('"\'')
+            rewritten = rewritten.strip("\"'")
             logger.info(f"Rewrote query: '{query}' -> '{rewritten}'")
             return rewritten if rewritten else query
         except Exception as e:
@@ -62,8 +61,8 @@ Standalone query:"""
         self,
         query: str,
         num_expansions: int = 2,
-        enabled: Optional[bool] = None,
-    ) -> List[str]:
+        enabled: bool | None = None,
+    ) -> list[str]:
         """
         Generates alternate versions of a query to increase recall.
 
@@ -76,10 +75,7 @@ Standalone query:"""
         prompt = f"Generate {num_expansions} different versions of the following search query to help retrieve more relevant documents. Focus on different keywords, synonyms, or angles of the same intent. Return each query on a new line. Do not include numbering, bullets, or explanations.\n\nOriginal query: {query}\n\nAlternate queries:"
 
         try:
-            response = ollama.chat(
-                model=self.model_name,
-                messages=[{"role": "user", "content": prompt}]
-            )
+            response = ollama.chat(model=self.model_name, messages=[{"role": "user", "content": prompt}])
             content = response.get("message", {}).get("content", "").strip()
             expansions = [q.strip("- *\"'") for q in content.split("\n") if q.strip()]
             queries = [query] + expansions[:num_expansions]

@@ -1,10 +1,11 @@
 import gradio as gr
-from app.vector_store.chroma_store import VectorStore
-from app.vector_store.bm25_store import BM25Store
-from app.retrieval.retriever import Retriever
-from app.generation.generator import Generator
+
 from app.core.config import settings
 from app.core.runtime_config import RetrievalConfig
+from app.generation.generator import Generator
+from app.retrieval.retriever import Retriever
+from app.vector_store.bm25_store import BM25Store
+from app.vector_store.chroma_store import VectorStore
 
 
 def _list_ollama_models() -> list[str]:
@@ -43,6 +44,7 @@ def _to_text(value) -> str:
         parts = [_to_text(item) for item in value]
         return " ".join([p for p in parts if p]).strip()
     return str(value)
+
 
 def format_chat_history(history):
     """
@@ -117,7 +119,7 @@ def chat_interaction(
 
         sources = answer.get("retrieved_sources", [])
         if sources:
-            unique_sources = list(set([s['file_name'] for s in sources]))
+            unique_sources = list(set([s["file_name"] for s in sources]))
             final_answer += f"\n\n*Sources: {', '.join(unique_sources)}*"
 
         messages = format_chat_history(history)
@@ -131,8 +133,10 @@ def chat_interaction(
         messages.append({"role": "assistant", "content": f"Error: {e}"})
         return "", messages
 
+
 def clear_chat():
     return [], ""
+
 
 def build_ui() -> gr.Blocks:
     with gr.Blocks(title="Production RAG System") as demo:
@@ -143,10 +147,7 @@ def build_ui() -> gr.Blocks:
                 chatbot = gr.Chatbot(height=500, label="RAG Chatbot")
                 with gr.Row():
                     msg = gr.Textbox(
-                        show_label=False,
-                        placeholder="Ask something about the indexed documents...",
-                        lines=2,
-                        scale=4
+                        show_label=False, placeholder="Ask something about the indexed documents...", lines=2, scale=4
                     )
                     submit_btn = gr.Button("Send", variant="primary", scale=1)
                 clear_btn = gr.Button("Clear Chat")
@@ -200,9 +201,7 @@ def build_ui() -> gr.Blocks:
                 )
 
                 gr.Markdown(
-                    "<sub>Embedding model: `"
-                    f"{settings.embedding_model}"
-                    "`. Changing it requires re-ingest.</sub>"
+                    f"<sub>Embedding model: `{settings.embedding_model}`. Changing it requires re-ingest.</sub>"
                 )
 
         chat_inputs = [

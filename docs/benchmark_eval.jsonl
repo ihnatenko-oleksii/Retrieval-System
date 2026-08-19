@@ -1,0 +1,20 @@
+{"question": "How are dense and BM25 scores combined into one ranking?", "expected_keywords": ["weighted sum", "normalized"], "expected_source": "hybrid-retrieval.md"}
+{"question": "What are the default hybrid search weights for dense and sparse retrieval?", "expected_keywords": ["0.7", "0.3"], "expected_source": "hybrid-retrieval.md"}
+{"question": "Why does dense retrieval invert its normalized score before fusion?", "expected_keywords": ["distance", "smaller"], "expected_source": "hybrid-retrieval.md"}
+{"question": "What identity is used to deduplicate chunks found by both dense and sparse retrieval?", "expected_keywords": ["file path", "chunk index"], "expected_source": "hybrid-retrieval.md"}
+{"question": "Which embedding model is used by default for dense retrieval?", "expected_keywords": ["multilingual-e5-base"], "expected_source": "hybrid-retrieval.md"}
+{"question": "What cross-encoder model is used for reranking by default?", "expected_keywords": ["ms-marco-MiniLM-L-6-v2"], "expected_source": "reranking.md"}
+{"question": "What happens if the reranker model fails to load or predict?", "expected_keywords": ["falls back", "original"], "expected_source": "reranking.md"}
+{"question": "Why is reranking useful after hybrid fusion?", "expected_keywords": ["cross-encoder", "relevance"], "expected_source": "reranking.md"}
+{"question": "Is reranking enabled by default?", "expected_keywords": ["off", "default"], "expected_source": "reranking.md"}
+{"question": "When is a query rewritten into a standalone question even if rewriting is disabled?", "expected_keywords": ["chat history", "follow-up"], "expected_source": "query-rewriting.md"}
+{"question": "What does query expansion generate to increase recall?", "expected_keywords": ["alternate", "phrasings"], "expected_source": "query-rewriting.md"}
+{"question": "What happens if the LLM call for query rewriting fails?", "expected_keywords": ["original query", "fall back"], "expected_source": "query-rewriting.md"}
+{"question": "What separators does the recursive character splitter try, in order?", "expected_keywords": ["double newline", "single newline", "space"], "expected_source": "chunking.md"}
+{"question": "What are the default chunk size and chunk overlap values?", "expected_keywords": ["1000", "200"], "expected_source": "chunking.md"}
+{"question": "Why do consecutive chunks share overlapping content?", "expected_keywords": ["context", "boundary"], "expected_source": "chunking.md"}
+{"question": "How is Recall@K defined in the evaluation harness?", "expected_keywords": ["expected source", "top"], "expected_source": "evaluation-metrics.md"}
+{"question": "What does the keyword hit rate metric require that the retrieval metrics do not?", "expected_keywords": ["LLM", "generate"], "expected_source": "evaluation-metrics.md"}
+{"question": "What three metrics make up the tuning dashboard's composite score?", "expected_keywords": ["keyword hit rate", "MRR", "recall"], "expected_source": "evaluation-metrics.md"}
+{"question": "What must you do after changing the embedding model in configuration?", "expected_keywords": ["re-ingest", "corpus"], "expected_source": "configuration.md"}
+{"question": "What lets a single request override the global retrieval settings?", "expected_keywords": ["RetrievalConfig"], "expected_source": "configuration.md"}

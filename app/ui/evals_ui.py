@@ -4,9 +4,9 @@ import gradio as gr
 import pandas as pd
 import plotly.graph_objects as go
 
-from app.evals.evaluator import Evaluator
 from app.core.config import settings
 from app.core.runtime_config import RetrievalConfig
+from app.evals.evaluator import Evaluator
 
 CSS = """
 :root {
@@ -20,6 +20,7 @@ CSS = """
   padding: 0 24px !important;
 }
 """
+
 
 def _list_ollama_models() -> list[str]:
     """
@@ -198,7 +199,16 @@ def run_evaluation(
             f"❌ File not found: `{eval_path}`",
             pd.DataFrame(columns=["metric", "value"]),
             _empty_figure("Metrics Overview"),
-            pd.DataFrame(columns=["question", "expected_source", "source_hit", "first_relevant_rank", "retrieved_sources", "keyword_hit_score"]),
+            pd.DataFrame(
+                columns=[
+                    "question",
+                    "expected_source",
+                    "source_hit",
+                    "first_relevant_rank",
+                    "retrieved_sources",
+                    "keyword_hit_score",
+                ]
+            ),
             _empty_figure("Source Hit vs Miss"),
             _empty_figure("First Relevant Rank Distribution"),
             _empty_figure("Keyword Hit Rate"),
@@ -224,15 +234,22 @@ def run_evaluation(
             "❌ No metrics produced. Verify your JSONL file format and content.",
             pd.DataFrame(columns=["metric", "value"]),
             _empty_figure("Metrics Overview"),
-            pd.DataFrame(columns=["question", "expected_source", "source_hit", "first_relevant_rank", "retrieved_sources", "keyword_hit_score"]),
+            pd.DataFrame(
+                columns=[
+                    "question",
+                    "expected_source",
+                    "source_hit",
+                    "first_relevant_rank",
+                    "retrieved_sources",
+                    "keyword_hit_score",
+                ]
+            ),
             _empty_figure("Source Hit vs Miss"),
             _empty_figure("First Relevant Rank Distribution"),
             _empty_figure("Keyword Hit Rate"),
         )
 
-    metrics_df = pd.DataFrame(
-        [{"metric": metric, "value": value} for metric, value in metrics.items()]
-    )
+    metrics_df = pd.DataFrame([{"metric": metric, "value": value} for metric, value in metrics.items()])
     details_df = pd.DataFrame(case_details)
 
     source_hits = int(details_df["source_hit"].sum()) if not details_df.empty else 0
@@ -317,7 +334,14 @@ def build_evals_ui() -> gr.Blocks:
 
         case_table = gr.Dataframe(
             label="Per-case results",
-            headers=["question", "expected_source", "source_hit", "first_relevant_rank", "retrieved_sources", "keyword_hit_score"],
+            headers=[
+                "question",
+                "expected_source",
+                "source_hit",
+                "first_relevant_rank",
+                "retrieved_sources",
+                "keyword_hit_score",
+            ],
             interactive=False,
             wrap=True,
         )

@@ -6,6 +6,11 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 
+# Test coverage
+.coverage
+coverage.xml
+htmlcov/
+
 # Virtual envs
 .venv/
 venv/
