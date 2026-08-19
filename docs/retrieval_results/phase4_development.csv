@@ -1,0 +1,5 @@
+name,ndcg_mean,ndcg_std,mrr_mean,mrr_std,latency_ms_mean,escalation_rate_percent
+phase4-multi-static-rrf,0.8292,0.0337,0.8958,0.0192,465.545,0
+phase4-multi-weighted-router,0.8295,0.0345,0.8958,0.0279,0.427,0
+phase4-routed-instruction-field-bm25,0.8216,0.0462,0.8908,0.0248,383.963,0
+phase4-routed-prf-cascade,0.8386,0.0359,0.9065,0.0318,609.543,56.3636

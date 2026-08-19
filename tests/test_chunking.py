@@ -55,6 +55,20 @@ class TestSplitDocument:
 
         assert splitter.split_document(document) == []
 
+    def test_chunks_expose_source_offsets_and_heading_context(self):
+        content = "# Guide\n## Retries\nUse the original key.\n## Limits\nWait for reset."
+        splitter = RecursiveCharacterTextSplitter(chunk_size=24, chunk_overlap=0)
+        chunks = splitter.split_document(make_document(content))
+
+        assert chunks
+        for chunk in chunks:
+            start = chunk.metadata.source_char_start
+            end = chunk.metadata.source_char_end
+            assert start is not None
+            assert end == start + len(chunk.content)
+            assert content[start:end] == chunk.content
+            assert chunk.metadata.heading_path.startswith("Guide")
+
 
 def test_get_splitter_returns_recursive_character_splitter():
     assert isinstance(get_splitter(), RecursiveCharacterTextSplitter)

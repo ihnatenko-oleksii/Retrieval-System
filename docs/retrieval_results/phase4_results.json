@@ -1,0 +1,3539 @@
+{
+  "protocol": "Phase 4 observed-data grouped cross-validation followed by one-time benchmark-v3 scoring",
+  "corpus_sha256": "05d22b65e580442b09ef806b7335009097295cdfad86a672e5029f8f531f30df",
+  "observed_case_count": 110,
+  "observed_case_ids": [
+    "exact-01",
+    "exact-02",
+    "exact-03",
+    "exact-04",
+    "exact-05",
+    "exact-06",
+    "exact-07",
+    "exact-08",
+    "exact-09",
+    "exact-10",
+    "exact-11",
+    "exact-12",
+    "semantic-01",
+    "semantic-02",
+    "semantic-03",
+    "semantic-04",
+    "semantic-05",
+    "semantic-06",
+    "semantic-07",
+    "semantic-08",
+    "semantic-09",
+    "semantic-10",
+    "semantic-11",
+    "semantic-12",
+    "ambiguous-01",
+    "ambiguous-02",
+    "ambiguous-03",
+    "ambiguous-04",
+    "ambiguous-05",
+    "ambiguous-06",
+    "ambiguous-07",
+    "ambiguous-08",
+    "ambiguous-09",
+    "ambiguous-10",
+    "ambiguous-11",
+    "ambiguous-12",
+    "fine_grained-01",
+    "fine_grained-02",
+    "fine_grained-03",
+    "fine_grained-04",
+    "fine_grained-05",
+    "fine_grained-06",
+    "fine_grained-07",
+    "fine_grained-08",
+    "fine_grained-09",
+    "fine_grained-10",
+    "fine_grained-11",
+    "fine_grained-12",
+    "multi_relevant-01",
+    "multi_relevant-02",
+    "multi_relevant-03",
+    "multi_relevant-04",
+    "multi_relevant-05",
+    "multi_relevant-06",
+    "multi_relevant-07",
+    "multi_relevant-08",
+    "multi_relevant-09",
+    "multi_relevant-10",
+    "multi_relevant-11",
+    "multi_relevant-12",
+    "v2-lexical-01",
+    "v2-lexical-02",
+    "v2-lexical-03",
+    "v2-lexical-04",
+    "v2-lexical-05",
+    "v2-lexical-06",
+    "v2-lexical-07",
+    "v2-lexical-08",
+    "v2-lexical-09",
+    "v2-lexical-10",
+    "v2-semantic-01",
+    "v2-semantic-02",
+    "v2-semantic-03",
+    "v2-semantic-04",
+    "v2-semantic-05",
+    "v2-semantic-06",
+    "v2-semantic-07",
+    "v2-semantic-08",
+    "v2-semantic-09",
+    "v2-semantic-10",
+    "v2-ambiguous-01",
+    "v2-ambiguous-02",
+    "v2-ambiguous-03",
+    "v2-ambiguous-04",
+    "v2-ambiguous-05",
+    "v2-ambiguous-06",
+    "v2-ambiguous-07",
+    "v2-ambiguous-08",
+    "v2-ambiguous-09",
+    "v2-ambiguous-10",
+    "v2-fine-01",
+    "v2-fine-02",
+    "v2-fine-03",
+    "v2-fine-04",
+    "v2-fine-05",
+    "v2-fine-06",
+    "v2-fine-07",
+    "v2-fine-08",
+    "v2-fine-09",
+    "v2-fine-10",
+    "v2-multi-01",
+    "v2-multi-02",
+    "v2-multi-03",
+    "v2-multi-04",
+    "v2-multi-05",
+    "v2-multi-06",
+    "v2-multi-07",
+    "v2-multi-08",
+    "v2-multi-09",
+    "v2-multi-10"
+  ],
+  "benchmark_v3_case_count": 100,
+  "benchmark_v3_manifest_sha256": "45bdcd2265e77a0b623502ef5ca574ab1bcb72345196283fd05e8df5d5b62583",
+  "v3_used_for_selection": false,
+  "development_controls": {
+    "original-e5-dense": {
+      "metrics": {
+        "recall@5": 0.7802,
+        "precision@5": 0.3164,
+        "mrr": 0.8632,
+        "ndcg": 0.7719
+      },
+      "category_metrics": {
+        "ambiguous": {
+          "cases": 22,
+          "recall": 0.4689,
+          "precision": 0.3364,
+          "mrr": 0.7424,
+          "ndcg": 0.4964
+        },
+        "exact_terminology": {
+          "cases": 12,
+          "recall": 0.9583,
+          "precision": 0.2167,
+          "mrr": 0.9333,
+          "ndcg": 0.9383
+        },
+        "fine_grained": {
+          "cases": 22,
+          "recall": 0.9205,
+          "precision": 0.3182,
+          "mrr": 1.0,
+          "ndcg": 0.9426
+        },
+        "lexical": {
+          "cases": 10,
+          "recall": 1.0,
+          "precision": 0.22,
+          "mrr": 0.925,
+          "ndcg": 0.9386
+        },
+        "multiple_relevant": {
+          "cases": 22,
+          "recall": 0.7159,
+          "precision": 0.5364,
+          "mrr": 0.9242,
+          "ndcg": 0.7444
+        },
+        "paraphrased_semantic": {
+          "cases": 12,
+          "recall": 0.8333,
+          "precision": 0.1833,
+          "mrr": 0.75,
+          "ndcg": 0.758
+        },
+        "semantic": {
+          "cases": 10,
+          "recall": 0.8,
+          "precision": 0.16,
+          "mrr": 0.6833,
+          "ndcg": 0.7131
+        }
+      },
+      "config": {
+        "top_k": 5,
+        "candidate_depth": 20,
+        "fusion_strategy": "weighted_linear",
+        "rrf_k": 60,
+        "router_on": false,
+        "lexical_route_delta": 0.2,
+        "disagreement_threshold": 0.5,
+        "cascade_on": false,
+        "cascade_initial_depth": 20,
+        "cascade_confidence_threshold": 0.42,
+        "qwen_instruction_mode": "generic",
+        "qwen_instruction_routing": false,
+        "qwen_instruction_ensemble": false,
+        "context_aware": false,
+        "field_aware_bm25": false,
+        "bm25_k1": 1.2,
+        "bm25_b": 0.75,
+        "bm25_title_weight": 3.0,
+        "bm25_heading_weight": 2.0,
+        "bm25_body_weight": 1.0,
+        "bm25_ngrams": true,
+        "hierarchical_on": false,
+        "hierarchy_weight": 0.08,
+        "prf_on": false,
+        "prf_depth": 1,
+        "prf_max_terms": 8,
+        "prf_weight": 0.25,
+        "prf_confidence_threshold": 0.35,
+        "hyde_on": false,
+        "stream_weights": {
+          "e5": 1.0
+        }
+      }
+    },
+    "phase3-qwen3-hybrid": {
+      "metrics": {
+        "recall@5": 0.8406,
+        "precision@5": 0.3455,
+        "mrr": 0.8768,
+        "ndcg": 0.8178
+      },
+      "category_metrics": {
+        "ambiguous": {
+          "cases": 22,
+          "recall": 0.4992,
+          "precision": 0.3636,
+          "mrr": 0.7023,
+          "ndcg": 0.5242
+        },
+        "exact_terminology": {
+          "cases": 12,
+          "recall": 0.9583,
+          "precision": 0.2167,
+          "mrr": 0.8333,
+          "ndcg": 0.8562
+        },
+        "fine_grained": {
+          "cases": 22,
+          "recall": 0.9545,
+          "precision": 0.3273,
+          "mrr": 0.9545,
+          "ndcg": 0.9274
+        },
+        "lexical": {
+          "cases": 10,
+          "recall": 1.0,
+          "precision": 0.22,
+          "mrr": 1.0,
+          "ndcg": 1.0
+        },
+        "multiple_relevant": {
+          "cases": 22,
+          "recall": 0.8174,
+          "precision": 0.6182,
+          "mrr": 0.9545,
+          "ndcg": 0.8357
+        },
+        "paraphrased_semantic": {
+          "cases": 12,
+          "recall": 0.9167,
+          "precision": 0.2,
+          "mrr": 0.875,
+          "ndcg": 0.8721
+        },
+        "semantic": {
+          "cases": 10,
+          "recall": 1.0,
+          "precision": 0.2,
+          "mrr": 0.85,
+          "ndcg": 0.8893
+        }
+      },
+      "config": {
+        "top_k": 5,
+        "candidate_depth": 20,
+        "fusion_strategy": "weighted_linear",
+        "rrf_k": 60,
+        "router_on": false,
+        "lexical_route_delta": 0.2,
+        "disagreement_threshold": 0.5,
+        "cascade_on": false,
+        "cascade_initial_depth": 20,
+        "cascade_confidence_threshold": 0.42,
+        "qwen_instruction_mode": "generic",
+        "qwen_instruction_routing": false,
+        "qwen_instruction_ensemble": false,
+        "context_aware": false,
+        "field_aware_bm25": false,
+        "bm25_k1": 1.2,
+        "bm25_b": 0.75,
+        "bm25_title_weight": 3.0,
+        "bm25_heading_weight": 2.0,
+        "bm25_body_weight": 1.0,
+        "bm25_ngrams": true,
+        "hierarchical_on": false,
+        "hierarchy_weight": 0.08,
+        "prf_on": false,
+        "prf_depth": 1,
+        "prf_max_terms": 8,
+        "prf_weight": 0.25,
+        "prf_confidence_threshold": 0.35,
+        "hyde_on": false,
+        "stream_weights": {
+          "qwen": 0.7,
+          "bm25": 0.3
+        }
+      }
+    }
+  },
+  "development_candidates": {
+    "phase4-multi-static-rrf": {
+      "metrics": {
+        "recall@5": 0.8403,
+        "precision@5": 0.3418,
+        "mrr": 0.8958,
+        "ndcg": 0.8292
+      },
+      "category_metrics": {
+        "ambiguous": {
+          "cases": 22,
+          "recall": 0.4712,
+          "precision": 0.3273,
+          "mrr": 0.725,
+          "ndcg": 0.5319
+        },
+        "exact_terminology": {
+          "cases": 12,
+          "recall": 0.9583,
+          "precision": 0.2167,
+          "mrr": 0.9167,
+          "ndcg": 0.9178
+        },
+        "fine_grained": {
+          "cases": 22,
+          "recall": 0.9659,
+          "precision": 0.3364,
+          "mrr": 0.9773,
+          "ndcg": 0.9495
+        },
+        "lexical": {
+          "cases": 10,
+          "recall": 1.0,
+          "precision": 0.22,
+          "mrr": 0.95,
+          "ndcg": 0.9631
+        },
+        "multiple_relevant": {
+          "cases": 22,
+          "recall": 0.8326,
+          "precision": 0.6273,
+          "mrr": 0.9773,
+          "ndcg": 0.8369
+        },
+        "paraphrased_semantic": {
+          "cases": 12,
+          "recall": 0.9167,
+          "precision": 0.2,
+          "mrr": 0.8611,
+          "ndcg": 0.875
+        },
+        "semantic": {
+          "cases": 10,
+          "recall": 1.0,
+          "precision": 0.2,
+          "mrr": 0.875,
+          "ndcg": 0.9062
+        }
+      },
+      "cv": {
+        "n_splits": 5,
+        "folds": [
+          {
+            "fold": 1,
+            "validation_case_ids": [
+              "ambiguous-09",
+              "ambiguous-11",
+              "exact-03",
+              "exact-08",
+              "exact-09",
+              "fine_grained-02",
+              "fine_grained-09",
+              "multi_relevant-02",
+              "multi_relevant-04",
+              "multi_relevant-05",
+              "semantic-04",
+              "semantic-10",
+              "semantic-11",
+              "v2-ambiguous-08",
+              "v2-ambiguous-10",
+              "v2-fine-02",
+              "v2-fine-06",
+              "v2-fine-09",
+              "v2-multi-01",
+              "v2-multi-02",
+              "v2-multi-03",
+              "v2-semantic-08"
+            ],
+            "metrics": {
+              "recall": 0.8568,
+              "precision": 0.4,
+              "mrr": 0.9182,
+              "ndcg": 0.8336
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 4,
+                "recall": 0.375,
+                "precision": 0.25,
+                "mrr": 0.55,
+                "ndcg": 0.4225
+              },
+              "exact_terminology": {
+                "cases": 3,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "fine_grained": {
+                "cases": 5,
+                "recall": 1.0,
+                "precision": 0.36,
+                "mrr": 1.0,
+                "ndcg": 0.958
+              },
+              "multiple_relevant": {
+                "cases": 6,
+                "recall": 0.8917,
+                "precision": 0.7333,
+                "mrr": 1.0,
+                "ndcg": 0.8098
+              },
+              "paraphrased_semantic": {
+                "cases": 3,
+                "recall": 1.0,
+                "precision": 0.2667,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "semantic": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              }
+            }
+          },
+          {
+            "fold": 2,
+            "validation_case_ids": [
+              "ambiguous-01",
+              "ambiguous-03",
+              "ambiguous-12",
+              "exact-01",
+              "exact-06",
+              "exact-12",
+              "fine_grained-03",
+              "fine_grained-05",
+              "fine_grained-07",
+              "fine_grained-08",
+              "multi_relevant-09",
+              "multi_relevant-10",
+              "semantic-06",
+              "semantic-09",
+              "v2-ambiguous-05",
+              "v2-ambiguous-06",
+              "v2-fine-07",
+              "v2-fine-08",
+              "v2-semantic-02",
+              "v2-semantic-04",
+              "v2-semantic-05",
+              "v2-semantic-10"
+            ],
+            "metrics": {
+              "recall": 0.8599,
+              "precision": 0.3,
+              "mrr": 0.8864,
+              "ndcg": 0.8315
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 5,
+                "recall": 0.4333,
+                "precision": 0.32,
+                "mrr": 0.85,
+                "ndcg": 0.6115
+              },
+              "exact_terminology": {
+                "cases": 3,
+                "recall": 1.0,
+                "precision": 0.2667,
+                "mrr": 0.8333,
+                "ndcg": 0.8216
+              },
+              "fine_grained": {
+                "cases": 6,
+                "recall": 1.0,
+                "precision": 0.3333,
+                "mrr": 0.9167,
+                "ndcg": 0.8965
+              },
+              "multiple_relevant": {
+                "cases": 2,
+                "recall": 0.875,
+                "precision": 0.5,
+                "mrr": 1.0,
+                "ndcg": 0.9801
+              },
+              "paraphrased_semantic": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "semantic": {
+                "cases": 4,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 0.8125,
+                "ndcg": 0.8577
+              }
+            }
+          },
+          {
+            "fold": 3,
+            "validation_case_ids": [
+              "ambiguous-02",
+              "ambiguous-07",
+              "ambiguous-08",
+              "exact-02",
+              "exact-11",
+              "fine_grained-01",
+              "multi_relevant-01",
+              "multi_relevant-03",
+              "multi_relevant-06",
+              "multi_relevant-08",
+              "semantic-03",
+              "semantic-05",
+              "v2-ambiguous-02",
+              "v2-ambiguous-04",
+              "v2-fine-05",
+              "v2-lexical-03",
+              "v2-lexical-08",
+              "v2-multi-05",
+              "v2-multi-06",
+              "v2-multi-07",
+              "v2-multi-10",
+              "v2-semantic-07"
+            ],
+            "metrics": {
+              "recall": 0.7803,
+              "precision": 0.3727,
+              "mrr": 0.9015,
+              "ndcg": 0.7767
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 5,
+                "recall": 0.54,
+                "precision": 0.36,
+                "mrr": 0.8,
+                "ndcg": 0.5289
+              },
+              "exact_terminology": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "fine_grained": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.3,
+                "mrr": 1.0,
+                "ndcg": 0.9869
+              },
+              "lexical": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "multiple_relevant": {
+                "cases": 8,
+                "recall": 0.6833,
+                "precision": 0.55,
+                "mrr": 0.9375,
+                "ndcg": 0.746
+              },
+              "paraphrased_semantic": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 0.6666,
+                "ndcg": 0.75
+              },
+              "semantic": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              }
+            }
+          },
+          {
+            "fold": 4,
+            "validation_case_ids": [
+              "ambiguous-04",
+              "ambiguous-06",
+              "ambiguous-10",
+              "fine_grained-04",
+              "fine_grained-06",
+              "fine_grained-12",
+              "multi_relevant-07",
+              "multi_relevant-11",
+              "multi_relevant-12",
+              "semantic-02",
+              "v2-ambiguous-03",
+              "v2-ambiguous-09",
+              "v2-fine-01",
+              "v2-fine-03",
+              "v2-fine-04",
+              "v2-lexical-06",
+              "v2-lexical-07",
+              "v2-lexical-09",
+              "v2-lexical-10",
+              "v2-multi-08",
+              "v2-multi-09",
+              "v2-semantic-09"
+            ],
+            "metrics": {
+              "recall": 0.8068,
+              "precision": 0.3364,
+              "mrr": 0.8636,
+              "ndcg": 0.8218
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 5,
+                "recall": 0.25,
+                "precision": 0.2,
+                "mrr": 0.5,
+                "ndcg": 0.3408
+              },
+              "fine_grained": {
+                "cases": 6,
+                "recall": 0.9583,
+                "precision": 0.3333,
+                "mrr": 1.0,
+                "ndcg": 0.9934
+              },
+              "lexical": {
+                "cases": 4,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 0.875,
+                "ndcg": 0.9077
+              },
+              "multiple_relevant": {
+                "cases": 5,
+                "recall": 0.95,
+                "precision": 0.64,
+                "mrr": 1.0,
+                "ndcg": 0.9569
+              },
+              "paraphrased_semantic": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "semantic": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              }
+            }
+          },
+          {
+            "fold": 5,
+            "validation_case_ids": [
+              "ambiguous-05",
+              "exact-04",
+              "exact-05",
+              "exact-07",
+              "exact-10",
+              "fine_grained-10",
+              "fine_grained-11",
+              "semantic-01",
+              "semantic-07",
+              "semantic-08",
+              "semantic-12",
+              "v2-ambiguous-01",
+              "v2-ambiguous-07",
+              "v2-fine-10",
+              "v2-lexical-01",
+              "v2-lexical-02",
+              "v2-lexical-04",
+              "v2-lexical-05",
+              "v2-multi-04",
+              "v2-semantic-01",
+              "v2-semantic-03",
+              "v2-semantic-06"
+            ],
+            "metrics": {
+              "recall": 0.8977,
+              "precision": 0.3,
+              "mrr": 0.9091,
+              "ndcg": 0.8824
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 3,
+                "recall": 0.9167,
+                "precision": 0.6,
+                "mrr": 1.0,
+                "ndcg": 0.8687
+              },
+              "exact_terminology": {
+                "cases": 4,
+                "recall": 0.875,
+                "precision": 0.2,
+                "mrr": 0.875,
+                "ndcg": 0.8871
+              },
+              "fine_grained": {
+                "cases": 3,
+                "recall": 0.8333,
+                "precision": 0.3333,
+                "mrr": 1.0,
+                "ndcg": 0.9291
+              },
+              "lexical": {
+                "cases": 4,
+                "recall": 1.0,
+                "precision": 0.25,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "multiple_relevant": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.8,
+                "mrr": 1.0,
+                "ndcg": 0.8406
+              },
+              "paraphrased_semantic": {
+                "cases": 4,
+                "recall": 0.75,
+                "precision": 0.15,
+                "mrr": 0.75,
+                "ndcg": 0.75
+              },
+              "semantic": {
+                "cases": 3,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 0.8333,
+                "ndcg": 0.877
+              }
+            }
+          }
+        ],
+        "mean": {
+          "recall": 0.8403,
+          "precision": 0.3418,
+          "mrr": 0.8958,
+          "ndcg": 0.8292
+        },
+        "std": {
+          "recall": 0.0416,
+          "precision": 0.0397,
+          "mrr": 0.0192,
+          "ndcg": 0.0337
+        },
+        "per_category": {
+          "ambiguous": {
+            "cases": 22,
+            "recall": 0.4712,
+            "precision": 0.3273,
+            "mrr": 0.725,
+            "ndcg": 0.5319
+          },
+          "exact_terminology": {
+            "cases": 12,
+            "recall": 0.9583,
+            "precision": 0.2167,
+            "mrr": 0.9167,
+            "ndcg": 0.9178
+          },
+          "fine_grained": {
+            "cases": 22,
+            "recall": 0.9659,
+            "precision": 0.3364,
+            "mrr": 0.9773,
+            "ndcg": 0.9495
+          },
+          "lexical": {
+            "cases": 10,
+            "recall": 1.0,
+            "precision": 0.22,
+            "mrr": 0.95,
+            "ndcg": 0.9631
+          },
+          "multiple_relevant": {
+            "cases": 22,
+            "recall": 0.8326,
+            "precision": 0.6273,
+            "mrr": 0.9773,
+            "ndcg": 0.8369
+          },
+          "paraphrased_semantic": {
+            "cases": 12,
+            "recall": 0.9167,
+            "precision": 0.2,
+            "mrr": 0.8611,
+            "ndcg": 0.875
+          },
+          "semantic": {
+            "cases": 10,
+            "recall": 1.0,
+            "precision": 0.2,
+            "mrr": 0.875,
+            "ndcg": 0.9062
+          }
+        },
+        "latency_ms": {
+          "mean": 465.545,
+          "p95": 541.877
+        },
+        "escalation_rate_percent": 0
+      },
+      "config": {
+        "top_k": 5,
+        "candidate_depth": 50,
+        "fusion_strategy": "rrf",
+        "rrf_k": 60,
+        "router_on": false,
+        "lexical_route_delta": 0.2,
+        "disagreement_threshold": 0.5,
+        "cascade_on": false,
+        "cascade_initial_depth": 20,
+        "cascade_confidence_threshold": 0.42,
+        "qwen_instruction_mode": "generic",
+        "qwen_instruction_routing": false,
+        "qwen_instruction_ensemble": false,
+        "context_aware": false,
+        "field_aware_bm25": true,
+        "bm25_k1": 1.2,
+        "bm25_b": 0.75,
+        "bm25_title_weight": 3.0,
+        "bm25_heading_weight": 2.0,
+        "bm25_body_weight": 1.0,
+        "bm25_ngrams": true,
+        "hierarchical_on": false,
+        "hierarchy_weight": 0.08,
+        "prf_on": false,
+        "prf_depth": 1,
+        "prf_max_terms": 8,
+        "prf_weight": 0.25,
+        "prf_confidence_threshold": 0.35,
+        "hyde_on": false,
+        "stream_weights": {
+          "qwen": 0.25,
+          "bge": 0.25,
+          "e5": 0.2,
+          "bm25": 0.3
+        }
+      }
+    },
+    "phase4-multi-weighted-router": {
+      "metrics": {
+        "recall@5": 0.8403,
+        "precision@5": 0.3418,
+        "mrr": 0.8958,
+        "ndcg": 0.8295
+      },
+      "category_metrics": {
+        "ambiguous": {
+          "cases": 22,
+          "recall": 0.4712,
+          "precision": 0.3273,
+          "mrr": 0.725,
+          "ndcg": 0.5319
+        },
+        "exact_terminology": {
+          "cases": 12,
+          "recall": 0.9583,
+          "precision": 0.2167,
+          "mrr": 0.9167,
+          "ndcg": 0.9178
+        },
+        "fine_grained": {
+          "cases": 22,
+          "recall": 0.9659,
+          "precision": 0.3364,
+          "mrr": 1.0,
+          "ndcg": 0.9591
+        },
+        "lexical": {
+          "cases": 10,
+          "recall": 1.0,
+          "precision": 0.22,
+          "mrr": 0.9,
+          "ndcg": 0.9262
+        },
+        "multiple_relevant": {
+          "cases": 22,
+          "recall": 0.8326,
+          "precision": 0.6273,
+          "mrr": 0.9773,
+          "ndcg": 0.8456
+        },
+        "paraphrased_semantic": {
+          "cases": 12,
+          "recall": 0.9167,
+          "precision": 0.2,
+          "mrr": 0.8611,
+          "ndcg": 0.875
+        },
+        "semantic": {
+          "cases": 10,
+          "recall": 1.0,
+          "precision": 0.2,
+          "mrr": 0.875,
+          "ndcg": 0.9062
+        }
+      },
+      "cv": {
+        "n_splits": 5,
+        "folds": [
+          {
+            "fold": 1,
+            "validation_case_ids": [
+              "ambiguous-09",
+              "ambiguous-11",
+              "exact-03",
+              "exact-08",
+              "exact-09",
+              "fine_grained-02",
+              "fine_grained-09",
+              "multi_relevant-02",
+              "multi_relevant-04",
+              "multi_relevant-05",
+              "semantic-04",
+              "semantic-10",
+              "semantic-11",
+              "v2-ambiguous-08",
+              "v2-ambiguous-10",
+              "v2-fine-02",
+              "v2-fine-06",
+              "v2-fine-09",
+              "v2-multi-01",
+              "v2-multi-02",
+              "v2-multi-03",
+              "v2-semantic-08"
+            ],
+            "metrics": {
+              "recall": 0.8568,
+              "precision": 0.4,
+              "mrr": 0.9182,
+              "ndcg": 0.8384
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 4,
+                "recall": 0.375,
+                "precision": 0.25,
+                "mrr": 0.55,
+                "ndcg": 0.4225
+              },
+              "exact_terminology": {
+                "cases": 3,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "fine_grained": {
+                "cases": 5,
+                "recall": 1.0,
+                "precision": 0.36,
+                "mrr": 1.0,
+                "ndcg": 0.958
+              },
+              "multiple_relevant": {
+                "cases": 6,
+                "recall": 0.8917,
+                "precision": 0.7333,
+                "mrr": 1.0,
+                "ndcg": 0.8274
+              },
+              "paraphrased_semantic": {
+                "cases": 3,
+                "recall": 1.0,
+                "precision": 0.2667,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "semantic": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              }
+            }
+          },
+          {
+            "fold": 2,
+            "validation_case_ids": [
+              "ambiguous-01",
+              "ambiguous-03",
+              "ambiguous-12",
+              "exact-01",
+              "exact-06",
+              "exact-12",
+              "fine_grained-03",
+              "fine_grained-05",
+              "fine_grained-07",
+              "fine_grained-08",
+              "multi_relevant-09",
+              "multi_relevant-10",
+              "semantic-06",
+              "semantic-09",
+              "v2-ambiguous-05",
+              "v2-ambiguous-06",
+              "v2-fine-07",
+              "v2-fine-08",
+              "v2-semantic-02",
+              "v2-semantic-04",
+              "v2-semantic-05",
+              "v2-semantic-10"
+            ],
+            "metrics": {
+              "recall": 0.8599,
+              "precision": 0.3,
+              "mrr": 0.9091,
+              "ndcg": 0.8447
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 5,
+                "recall": 0.4333,
+                "precision": 0.32,
+                "mrr": 0.85,
+                "ndcg": 0.6115
+              },
+              "exact_terminology": {
+                "cases": 3,
+                "recall": 1.0,
+                "precision": 0.2667,
+                "mrr": 0.8333,
+                "ndcg": 0.8216
+              },
+              "fine_grained": {
+                "cases": 6,
+                "recall": 1.0,
+                "precision": 0.3333,
+                "mrr": 1.0,
+                "ndcg": 0.9449
+              },
+              "multiple_relevant": {
+                "cases": 2,
+                "recall": 0.875,
+                "precision": 0.5,
+                "mrr": 1.0,
+                "ndcg": 0.9801
+              },
+              "paraphrased_semantic": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "semantic": {
+                "cases": 4,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 0.8125,
+                "ndcg": 0.8577
+              }
+            }
+          },
+          {
+            "fold": 3,
+            "validation_case_ids": [
+              "ambiguous-02",
+              "ambiguous-07",
+              "ambiguous-08",
+              "exact-02",
+              "exact-11",
+              "fine_grained-01",
+              "multi_relevant-01",
+              "multi_relevant-03",
+              "multi_relevant-06",
+              "multi_relevant-08",
+              "semantic-03",
+              "semantic-05",
+              "v2-ambiguous-02",
+              "v2-ambiguous-04",
+              "v2-fine-05",
+              "v2-lexical-03",
+              "v2-lexical-08",
+              "v2-multi-05",
+              "v2-multi-06",
+              "v2-multi-07",
+              "v2-multi-10",
+              "v2-semantic-07"
+            ],
+            "metrics": {
+              "recall": 0.7803,
+              "precision": 0.3727,
+              "mrr": 0.9015,
+              "ndcg": 0.7767
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 5,
+                "recall": 0.54,
+                "precision": 0.36,
+                "mrr": 0.8,
+                "ndcg": 0.5289
+              },
+              "exact_terminology": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "fine_grained": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.3,
+                "mrr": 1.0,
+                "ndcg": 0.9869
+              },
+              "lexical": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "multiple_relevant": {
+                "cases": 8,
+                "recall": 0.6833,
+                "precision": 0.55,
+                "mrr": 0.9375,
+                "ndcg": 0.746
+              },
+              "paraphrased_semantic": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 0.6666,
+                "ndcg": 0.75
+              },
+              "semantic": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              }
+            }
+          },
+          {
+            "fold": 4,
+            "validation_case_ids": [
+              "ambiguous-04",
+              "ambiguous-06",
+              "ambiguous-10",
+              "fine_grained-04",
+              "fine_grained-06",
+              "fine_grained-12",
+              "multi_relevant-07",
+              "multi_relevant-11",
+              "multi_relevant-12",
+              "semantic-02",
+              "v2-ambiguous-03",
+              "v2-ambiguous-09",
+              "v2-fine-01",
+              "v2-fine-03",
+              "v2-fine-04",
+              "v2-lexical-06",
+              "v2-lexical-07",
+              "v2-lexical-09",
+              "v2-lexical-10",
+              "v2-multi-08",
+              "v2-multi-09",
+              "v2-semantic-09"
+            ],
+            "metrics": {
+              "recall": 0.8068,
+              "precision": 0.3364,
+              "mrr": 0.8409,
+              "ndcg": 0.8089
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 5,
+                "recall": 0.25,
+                "precision": 0.2,
+                "mrr": 0.5,
+                "ndcg": 0.3408
+              },
+              "fine_grained": {
+                "cases": 6,
+                "recall": 0.9583,
+                "precision": 0.3333,
+                "mrr": 1.0,
+                "ndcg": 0.9934
+              },
+              "lexical": {
+                "cases": 4,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 0.75,
+                "ndcg": 0.8155
+              },
+              "multiple_relevant": {
+                "cases": 5,
+                "recall": 0.95,
+                "precision": 0.64,
+                "mrr": 1.0,
+                "ndcg": 0.9739
+              },
+              "paraphrased_semantic": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "semantic": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              }
+            }
+          },
+          {
+            "fold": 5,
+            "validation_case_ids": [
+              "ambiguous-05",
+              "exact-04",
+              "exact-05",
+              "exact-07",
+              "exact-10",
+              "fine_grained-10",
+              "fine_grained-11",
+              "semantic-01",
+              "semantic-07",
+              "semantic-08",
+              "semantic-12",
+              "v2-ambiguous-01",
+              "v2-ambiguous-07",
+              "v2-fine-10",
+              "v2-lexical-01",
+              "v2-lexical-02",
+              "v2-lexical-04",
+              "v2-lexical-05",
+              "v2-multi-04",
+              "v2-semantic-01",
+              "v2-semantic-03",
+              "v2-semantic-06"
+            ],
+            "metrics": {
+              "recall": 0.8977,
+              "precision": 0.3,
+              "mrr": 0.9091,
+              "ndcg": 0.8788
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 3,
+                "recall": 0.9167,
+                "precision": 0.6,
+                "mrr": 1.0,
+                "ndcg": 0.8687
+              },
+              "exact_terminology": {
+                "cases": 4,
+                "recall": 0.875,
+                "precision": 0.2,
+                "mrr": 0.875,
+                "ndcg": 0.8871
+              },
+              "fine_grained": {
+                "cases": 3,
+                "recall": 0.8333,
+                "precision": 0.3333,
+                "mrr": 1.0,
+                "ndcg": 0.9023
+              },
+              "lexical": {
+                "cases": 4,
+                "recall": 1.0,
+                "precision": 0.25,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "multiple_relevant": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.8,
+                "mrr": 1.0,
+                "ndcg": 0.8406
+              },
+              "paraphrased_semantic": {
+                "cases": 4,
+                "recall": 0.75,
+                "precision": 0.15,
+                "mrr": 0.75,
+                "ndcg": 0.75
+              },
+              "semantic": {
+                "cases": 3,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 0.8333,
+                "ndcg": 0.877
+              }
+            }
+          }
+        ],
+        "mean": {
+          "recall": 0.8403,
+          "precision": 0.3418,
+          "mrr": 0.8958,
+          "ndcg": 0.8295
+        },
+        "std": {
+          "recall": 0.0416,
+          "precision": 0.0397,
+          "mrr": 0.0279,
+          "ndcg": 0.0345
+        },
+        "per_category": {
+          "ambiguous": {
+            "cases": 22,
+            "recall": 0.4712,
+            "precision": 0.3273,
+            "mrr": 0.725,
+            "ndcg": 0.5319
+          },
+          "exact_terminology": {
+            "cases": 12,
+            "recall": 0.9583,
+            "precision": 0.2167,
+            "mrr": 0.9167,
+            "ndcg": 0.9178
+          },
+          "fine_grained": {
+            "cases": 22,
+            "recall": 0.9659,
+            "precision": 0.3364,
+            "mrr": 1.0,
+            "ndcg": 0.9591
+          },
+          "lexical": {
+            "cases": 10,
+            "recall": 1.0,
+            "precision": 0.22,
+            "mrr": 0.9,
+            "ndcg": 0.9262
+          },
+          "multiple_relevant": {
+            "cases": 22,
+            "recall": 0.8326,
+            "precision": 0.6273,
+            "mrr": 0.9773,
+            "ndcg": 0.8456
+          },
+          "paraphrased_semantic": {
+            "cases": 12,
+            "recall": 0.9167,
+            "precision": 0.2,
+            "mrr": 0.8611,
+            "ndcg": 0.875
+          },
+          "semantic": {
+            "cases": 10,
+            "recall": 1.0,
+            "precision": 0.2,
+            "mrr": 0.875,
+            "ndcg": 0.9062
+          }
+        },
+        "latency_ms": {
+          "mean": 0.427,
+          "p95": 0.685
+        },
+        "escalation_rate_percent": 0
+      },
+      "config": {
+        "top_k": 5,
+        "candidate_depth": 50,
+        "fusion_strategy": "weighted_rrf",
+        "rrf_k": 60,
+        "router_on": true,
+        "lexical_route_delta": 0.2,
+        "disagreement_threshold": 0.5,
+        "cascade_on": false,
+        "cascade_initial_depth": 20,
+        "cascade_confidence_threshold": 0.42,
+        "qwen_instruction_mode": "generic",
+        "qwen_instruction_routing": false,
+        "qwen_instruction_ensemble": false,
+        "context_aware": false,
+        "field_aware_bm25": true,
+        "bm25_k1": 1.2,
+        "bm25_b": 0.75,
+        "bm25_title_weight": 3.0,
+        "bm25_heading_weight": 2.0,
+        "bm25_body_weight": 1.0,
+        "bm25_ngrams": true,
+        "hierarchical_on": false,
+        "hierarchy_weight": 0.08,
+        "prf_on": false,
+        "prf_depth": 1,
+        "prf_max_terms": 8,
+        "prf_weight": 0.25,
+        "prf_confidence_threshold": 0.35,
+        "hyde_on": false,
+        "stream_weights": {
+          "qwen": 0.3,
+          "bge": 0.25,
+          "e5": 0.2,
+          "bm25": 0.25
+        }
+      }
+    },
+    "phase4-routed-instruction-field-bm25": {
+      "metrics": {
+        "recall@5": 0.8403,
+        "precision@5": 0.3418,
+        "mrr": 0.8908,
+        "ndcg": 0.8216
+      },
+      "category_metrics": {
+        "ambiguous": {
+          "cases": 22,
+          "recall": 0.4803,
+          "precision": 0.3364,
+          "mrr": 0.7364,
+          "ndcg": 0.5272
+        },
+        "exact_terminology": {
+          "cases": 12,
+          "recall": 0.9583,
+          "precision": 0.2167,
+          "mrr": 0.8611,
+          "ndcg": 0.8761
+        },
+        "fine_grained": {
+          "cases": 22,
+          "recall": 0.9659,
+          "precision": 0.3364,
+          "mrr": 1.0,
+          "ndcg": 0.9626
+        },
+        "lexical": {
+          "cases": 10,
+          "recall": 1.0,
+          "precision": 0.22,
+          "mrr": 0.9,
+          "ndcg": 0.9218
+        },
+        "multiple_relevant": {
+          "cases": 22,
+          "recall": 0.8235,
+          "precision": 0.6182,
+          "mrr": 0.9773,
+          "ndcg": 0.8374
+        },
+        "paraphrased_semantic": {
+          "cases": 12,
+          "recall": 0.9167,
+          "precision": 0.2,
+          "mrr": 0.85,
+          "ndcg": 0.8656
+        },
+        "semantic": {
+          "cases": 10,
+          "recall": 1.0,
+          "precision": 0.2,
+          "mrr": 0.875,
+          "ndcg": 0.9062
+        }
+      },
+      "cv": {
+        "n_splits": 5,
+        "folds": [
+          {
+            "fold": 1,
+            "validation_case_ids": [
+              "ambiguous-09",
+              "ambiguous-11",
+              "exact-03",
+              "exact-08",
+              "exact-09",
+              "fine_grained-02",
+              "fine_grained-09",
+              "multi_relevant-02",
+              "multi_relevant-04",
+              "multi_relevant-05",
+              "semantic-04",
+              "semantic-10",
+              "semantic-11",
+              "v2-ambiguous-08",
+              "v2-ambiguous-10",
+              "v2-fine-02",
+              "v2-fine-06",
+              "v2-fine-09",
+              "v2-multi-01",
+              "v2-multi-02",
+              "v2-multi-03",
+              "v2-semantic-08"
+            ],
+            "metrics": {
+              "recall": 0.8568,
+              "precision": 0.4,
+              "mrr": 0.8955,
+              "ndcg": 0.8374
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 4,
+                "recall": 0.375,
+                "precision": 0.25,
+                "mrr": 0.55,
+                "ndcg": 0.4404
+              },
+              "exact_terminology": {
+                "cases": 3,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "fine_grained": {
+                "cases": 5,
+                "recall": 1.0,
+                "precision": 0.36,
+                "mrr": 1.0,
+                "ndcg": 0.958
+              },
+              "multiple_relevant": {
+                "cases": 6,
+                "recall": 0.8917,
+                "precision": 0.7333,
+                "mrr": 0.9167,
+                "ndcg": 0.8118
+              },
+              "paraphrased_semantic": {
+                "cases": 3,
+                "recall": 1.0,
+                "precision": 0.2667,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "semantic": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              }
+            }
+          },
+          {
+            "fold": 2,
+            "validation_case_ids": [
+              "ambiguous-01",
+              "ambiguous-03",
+              "ambiguous-12",
+              "exact-01",
+              "exact-06",
+              "exact-12",
+              "fine_grained-03",
+              "fine_grained-05",
+              "fine_grained-07",
+              "fine_grained-08",
+              "multi_relevant-09",
+              "multi_relevant-10",
+              "semantic-06",
+              "semantic-09",
+              "v2-ambiguous-05",
+              "v2-ambiguous-06",
+              "v2-fine-07",
+              "v2-fine-08",
+              "v2-semantic-02",
+              "v2-semantic-04",
+              "v2-semantic-05",
+              "v2-semantic-10"
+            ],
+            "metrics": {
+              "recall": 0.8712,
+              "precision": 0.3091,
+              "mrr": 0.9091,
+              "ndcg": 0.8487
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 5,
+                "recall": 0.4833,
+                "precision": 0.36,
+                "mrr": 0.85,
+                "ndcg": 0.6052
+              },
+              "exact_terminology": {
+                "cases": 3,
+                "recall": 1.0,
+                "precision": 0.2667,
+                "mrr": 0.8333,
+                "ndcg": 0.8216
+              },
+              "fine_grained": {
+                "cases": 6,
+                "recall": 1.0,
+                "precision": 0.3333,
+                "mrr": 1.0,
+                "ndcg": 0.965
+              },
+              "multiple_relevant": {
+                "cases": 2,
+                "recall": 0.875,
+                "precision": 0.5,
+                "mrr": 1.0,
+                "ndcg": 0.9801
+              },
+              "paraphrased_semantic": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "semantic": {
+                "cases": 4,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 0.8125,
+                "ndcg": 0.8577
+              }
+            }
+          },
+          {
+            "fold": 3,
+            "validation_case_ids": [
+              "ambiguous-02",
+              "ambiguous-07",
+              "ambiguous-08",
+              "exact-02",
+              "exact-11",
+              "fine_grained-01",
+              "multi_relevant-01",
+              "multi_relevant-03",
+              "multi_relevant-06",
+              "multi_relevant-08",
+              "semantic-03",
+              "semantic-05",
+              "v2-ambiguous-02",
+              "v2-ambiguous-04",
+              "v2-fine-05",
+              "v2-lexical-03",
+              "v2-lexical-08",
+              "v2-multi-05",
+              "v2-multi-06",
+              "v2-multi-07",
+              "v2-multi-10",
+              "v2-semantic-07"
+            ],
+            "metrics": {
+              "recall": 0.7803,
+              "precision": 0.3727,
+              "mrr": 0.8614,
+              "ndcg": 0.7397
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 5,
+                "recall": 0.58,
+                "precision": 0.4,
+                "mrr": 0.75,
+                "ndcg": 0.535
+              },
+              "exact_terminology": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 0.75,
+                "ndcg": 0.8155
+              },
+              "fine_grained": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.3,
+                "mrr": 1.0,
+                "ndcg": 0.9869
+              },
+              "lexical": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "multiple_relevant": {
+                "cases": 8,
+                "recall": 0.6583,
+                "precision": 0.525,
+                "mrr": 1.0,
+                "ndcg": 0.7471
+              },
+              "paraphrased_semantic": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 0.6,
+                "ndcg": 0.6935
+              },
+              "semantic": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 0.5,
+                "ndcg": 0.6309
+              }
+            }
+          },
+          {
+            "fold": 4,
+            "validation_case_ids": [
+              "ambiguous-04",
+              "ambiguous-06",
+              "ambiguous-10",
+              "fine_grained-04",
+              "fine_grained-06",
+              "fine_grained-12",
+              "multi_relevant-07",
+              "multi_relevant-11",
+              "multi_relevant-12",
+              "semantic-02",
+              "v2-ambiguous-03",
+              "v2-ambiguous-09",
+              "v2-fine-01",
+              "v2-fine-03",
+              "v2-fine-04",
+              "v2-lexical-06",
+              "v2-lexical-07",
+              "v2-lexical-09",
+              "v2-lexical-10",
+              "v2-multi-08",
+              "v2-multi-09",
+              "v2-semantic-09"
+            ],
+            "metrics": {
+              "recall": 0.8068,
+              "precision": 0.3364,
+              "mrr": 0.8636,
+              "ndcg": 0.8077
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 5,
+                "recall": 0.25,
+                "precision": 0.2,
+                "mrr": 0.6,
+                "ndcg": 0.3486
+              },
+              "fine_grained": {
+                "cases": 6,
+                "recall": 0.9583,
+                "precision": 0.3333,
+                "mrr": 1.0,
+                "ndcg": 0.9934
+              },
+              "lexical": {
+                "cases": 4,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 0.75,
+                "ndcg": 0.8155
+              },
+              "multiple_relevant": {
+                "cases": 5,
+                "recall": 0.95,
+                "precision": 0.64,
+                "mrr": 1.0,
+                "ndcg": 0.961
+              },
+              "paraphrased_semantic": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "semantic": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              }
+            }
+          },
+          {
+            "fold": 5,
+            "validation_case_ids": [
+              "ambiguous-05",
+              "exact-04",
+              "exact-05",
+              "exact-07",
+              "exact-10",
+              "fine_grained-10",
+              "fine_grained-11",
+              "semantic-01",
+              "semantic-07",
+              "semantic-08",
+              "semantic-12",
+              "v2-ambiguous-01",
+              "v2-ambiguous-07",
+              "v2-fine-10",
+              "v2-lexical-01",
+              "v2-lexical-02",
+              "v2-lexical-04",
+              "v2-lexical-05",
+              "v2-multi-04",
+              "v2-semantic-01",
+              "v2-semantic-03",
+              "v2-semantic-06"
+            ],
+            "metrics": {
+              "recall": 0.8864,
+              "precision": 0.2909,
+              "mrr": 0.9242,
+              "ndcg": 0.8746
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 3,
+                "recall": 0.8333,
+                "precision": 0.5333,
+                "mrr": 1.0,
+                "ndcg": 0.798
+              },
+              "exact_terminology": {
+                "cases": 4,
+                "recall": 0.875,
+                "precision": 0.2,
+                "mrr": 0.8333,
+                "ndcg": 0.8543
+              },
+              "fine_grained": {
+                "cases": 3,
+                "recall": 0.8333,
+                "precision": 0.3333,
+                "mrr": 1.0,
+                "ndcg": 0.8881
+              },
+              "lexical": {
+                "cases": 4,
+                "recall": 1.0,
+                "precision": 0.25,
+                "mrr": 1.0,
+                "ndcg": 0.9889
+              },
+              "multiple_relevant": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.8,
+                "mrr": 1.0,
+                "ndcg": 0.8106
+              },
+              "paraphrased_semantic": {
+                "cases": 4,
+                "recall": 0.75,
+                "precision": 0.15,
+                "mrr": 0.75,
+                "ndcg": 0.75
+              },
+              "semantic": {
+                "cases": 3,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              }
+            }
+          }
+        ],
+        "mean": {
+          "recall": 0.8403,
+          "precision": 0.3418,
+          "mrr": 0.8908,
+          "ndcg": 0.8216
+        },
+        "std": {
+          "recall": 0.0402,
+          "precision": 0.0401,
+          "mrr": 0.0248,
+          "ndcg": 0.0462
+        },
+        "per_category": {
+          "ambiguous": {
+            "cases": 22,
+            "recall": 0.4803,
+            "precision": 0.3364,
+            "mrr": 0.7364,
+            "ndcg": 0.5272
+          },
+          "exact_terminology": {
+            "cases": 12,
+            "recall": 0.9583,
+            "precision": 0.2167,
+            "mrr": 0.8611,
+            "ndcg": 0.8761
+          },
+          "fine_grained": {
+            "cases": 22,
+            "recall": 0.9659,
+            "precision": 0.3364,
+            "mrr": 1.0,
+            "ndcg": 0.9626
+          },
+          "lexical": {
+            "cases": 10,
+            "recall": 1.0,
+            "precision": 0.22,
+            "mrr": 0.9,
+            "ndcg": 0.9218
+          },
+          "multiple_relevant": {
+            "cases": 22,
+            "recall": 0.8235,
+            "precision": 0.6182,
+            "mrr": 0.9773,
+            "ndcg": 0.8374
+          },
+          "paraphrased_semantic": {
+            "cases": 12,
+            "recall": 0.9167,
+            "precision": 0.2,
+            "mrr": 0.85,
+            "ndcg": 0.8656
+          },
+          "semantic": {
+            "cases": 10,
+            "recall": 1.0,
+            "precision": 0.2,
+            "mrr": 0.875,
+            "ndcg": 0.9062
+          }
+        },
+        "latency_ms": {
+          "mean": 383.963,
+          "p95": 466.083
+        },
+        "escalation_rate_percent": 0
+      },
+      "config": {
+        "top_k": 5,
+        "candidate_depth": 50,
+        "fusion_strategy": "weighted_rrf",
+        "rrf_k": 60,
+        "router_on": true,
+        "lexical_route_delta": 0.2,
+        "disagreement_threshold": 0.5,
+        "cascade_on": false,
+        "cascade_initial_depth": 20,
+        "cascade_confidence_threshold": 0.42,
+        "qwen_instruction_mode": "routed",
+        "qwen_instruction_routing": true,
+        "qwen_instruction_ensemble": false,
+        "context_aware": false,
+        "field_aware_bm25": true,
+        "bm25_k1": 1.4,
+        "bm25_b": 0.65,
+        "bm25_title_weight": 3.0,
+        "bm25_heading_weight": 2.0,
+        "bm25_body_weight": 1.0,
+        "bm25_ngrams": true,
+        "hierarchical_on": false,
+        "hierarchy_weight": 0.08,
+        "prf_on": false,
+        "prf_depth": 1,
+        "prf_max_terms": 8,
+        "prf_weight": 0.25,
+        "prf_confidence_threshold": 0.35,
+        "hyde_on": false,
+        "stream_weights": {
+          "qwen": 0.25,
+          "bge": 0.2,
+          "e5": 0.15,
+          "bm25": 0.4
+        }
+      }
+    },
+    "phase4-routed-prf-cascade": {
+      "metrics": {
+        "recall@5": 0.8502,
+        "precision@5": 0.3491,
+        "mrr": 0.9065,
+        "ndcg": 0.8386
+      },
+      "category_metrics": {
+        "ambiguous": {
+          "cases": 22,
+          "recall": 0.5205,
+          "precision": 0.3636,
+          "mrr": 0.7356,
+          "ndcg": 0.5566
+        },
+        "exact_terminology": {
+          "cases": 12,
+          "recall": 0.9583,
+          "precision": 0.2167,
+          "mrr": 0.9167,
+          "ndcg": 0.9178
+        },
+        "fine_grained": {
+          "cases": 22,
+          "recall": 0.9659,
+          "precision": 0.3364,
+          "mrr": 1.0,
+          "ndcg": 0.9635
+        },
+        "lexical": {
+          "cases": 10,
+          "recall": 1.0,
+          "precision": 0.22,
+          "mrr": 0.9,
+          "ndcg": 0.9262
+        },
+        "multiple_relevant": {
+          "cases": 22,
+          "recall": 0.8326,
+          "precision": 0.6273,
+          "mrr": 1.0,
+          "ndcg": 0.8475
+        },
+        "paraphrased_semantic": {
+          "cases": 12,
+          "recall": 0.9167,
+          "precision": 0.2,
+          "mrr": 0.85,
+          "ndcg": 0.8656
+        },
+        "semantic": {
+          "cases": 10,
+          "recall": 1.0,
+          "precision": 0.2,
+          "mrr": 0.9333,
+          "ndcg": 0.95
+        }
+      },
+      "cv": {
+        "n_splits": 5,
+        "folds": [
+          {
+            "fold": 1,
+            "validation_case_ids": [
+              "ambiguous-09",
+              "ambiguous-11",
+              "exact-03",
+              "exact-08",
+              "exact-09",
+              "fine_grained-02",
+              "fine_grained-09",
+              "multi_relevant-02",
+              "multi_relevant-04",
+              "multi_relevant-05",
+              "semantic-04",
+              "semantic-10",
+              "semantic-11",
+              "v2-ambiguous-08",
+              "v2-ambiguous-10",
+              "v2-fine-02",
+              "v2-fine-06",
+              "v2-fine-09",
+              "v2-multi-01",
+              "v2-multi-02",
+              "v2-multi-03",
+              "v2-semantic-08"
+            ],
+            "metrics": {
+              "recall": 0.8682,
+              "precision": 0.4091,
+              "mrr": 0.9273,
+              "ndcg": 0.849
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 4,
+                "recall": 0.4375,
+                "precision": 0.3,
+                "mrr": 0.6,
+                "ndcg": 0.485
+              },
+              "exact_terminology": {
+                "cases": 3,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "fine_grained": {
+                "cases": 5,
+                "recall": 1.0,
+                "precision": 0.36,
+                "mrr": 1.0,
+                "ndcg": 0.958
+              },
+              "multiple_relevant": {
+                "cases": 6,
+                "recall": 0.8917,
+                "precision": 0.7333,
+                "mrr": 1.0,
+                "ndcg": 0.8248
+              },
+              "paraphrased_semantic": {
+                "cases": 3,
+                "recall": 1.0,
+                "precision": 0.2667,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "semantic": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              }
+            }
+          },
+          {
+            "fold": 2,
+            "validation_case_ids": [
+              "ambiguous-01",
+              "ambiguous-03",
+              "ambiguous-12",
+              "exact-01",
+              "exact-06",
+              "exact-12",
+              "fine_grained-03",
+              "fine_grained-05",
+              "fine_grained-07",
+              "fine_grained-08",
+              "multi_relevant-09",
+              "multi_relevant-10",
+              "semantic-06",
+              "semantic-09",
+              "v2-ambiguous-05",
+              "v2-ambiguous-06",
+              "v2-fine-07",
+              "v2-fine-08",
+              "v2-semantic-02",
+              "v2-semantic-04",
+              "v2-semantic-05",
+              "v2-semantic-10"
+            ],
+            "metrics": {
+              "recall": 0.8826,
+              "precision": 0.3182,
+              "mrr": 0.9106,
+              "ndcg": 0.8548
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 5,
+                "recall": 0.5333,
+                "precision": 0.4,
+                "mrr": 0.84,
+                "ndcg": 0.6226
+              },
+              "exact_terminology": {
+                "cases": 3,
+                "recall": 1.0,
+                "precision": 0.2667,
+                "mrr": 0.8333,
+                "ndcg": 0.8216
+              },
+              "fine_grained": {
+                "cases": 6,
+                "recall": 1.0,
+                "precision": 0.3333,
+                "mrr": 1.0,
+                "ndcg": 0.9611
+              },
+              "multiple_relevant": {
+                "cases": 2,
+                "recall": 0.875,
+                "precision": 0.5,
+                "mrr": 1.0,
+                "ndcg": 0.9801
+              },
+              "paraphrased_semantic": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "semantic": {
+                "cases": 4,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 0.8333,
+                "ndcg": 0.875
+              }
+            }
+          },
+          {
+            "fold": 3,
+            "validation_case_ids": [
+              "ambiguous-02",
+              "ambiguous-07",
+              "ambiguous-08",
+              "exact-02",
+              "exact-11",
+              "fine_grained-01",
+              "multi_relevant-01",
+              "multi_relevant-03",
+              "multi_relevant-06",
+              "multi_relevant-08",
+              "semantic-03",
+              "semantic-05",
+              "v2-ambiguous-02",
+              "v2-ambiguous-04",
+              "v2-fine-05",
+              "v2-lexical-03",
+              "v2-lexical-08",
+              "v2-multi-05",
+              "v2-multi-06",
+              "v2-multi-07",
+              "v2-multi-10",
+              "v2-semantic-07"
+            ],
+            "metrics": {
+              "recall": 0.7803,
+              "precision": 0.3727,
+              "mrr": 0.9182,
+              "ndcg": 0.7792
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 5,
+                "recall": 0.54,
+                "precision": 0.36,
+                "mrr": 0.8,
+                "ndcg": 0.5424
+              },
+              "exact_terminology": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "fine_grained": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.3,
+                "mrr": 1.0,
+                "ndcg": 0.9869
+              },
+              "lexical": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "multiple_relevant": {
+                "cases": 8,
+                "recall": 0.6833,
+                "precision": 0.55,
+                "mrr": 1.0,
+                "ndcg": 0.7588
+              },
+              "paraphrased_semantic": {
+                "cases": 2,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 0.6,
+                "ndcg": 0.6935
+              },
+              "semantic": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              }
+            }
+          },
+          {
+            "fold": 4,
+            "validation_case_ids": [
+              "ambiguous-04",
+              "ambiguous-06",
+              "ambiguous-10",
+              "fine_grained-04",
+              "fine_grained-06",
+              "fine_grained-12",
+              "multi_relevant-07",
+              "multi_relevant-11",
+              "multi_relevant-12",
+              "semantic-02",
+              "v2-ambiguous-03",
+              "v2-ambiguous-09",
+              "v2-fine-01",
+              "v2-fine-03",
+              "v2-fine-04",
+              "v2-lexical-06",
+              "v2-lexical-07",
+              "v2-lexical-09",
+              "v2-lexical-10",
+              "v2-multi-08",
+              "v2-multi-09",
+              "v2-semantic-09"
+            ],
+            "metrics": {
+              "recall": 0.8333,
+              "precision": 0.3545,
+              "mrr": 0.8447,
+              "ndcg": 0.8233
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 5,
+                "recall": 0.3667,
+                "precision": 0.28,
+                "mrr": 0.5167,
+                "ndcg": 0.4173
+              },
+              "fine_grained": {
+                "cases": 6,
+                "recall": 0.9583,
+                "precision": 0.3333,
+                "mrr": 1.0,
+                "ndcg": 0.9934
+              },
+              "lexical": {
+                "cases": 4,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 0.75,
+                "ndcg": 0.8155
+              },
+              "multiple_relevant": {
+                "cases": 5,
+                "recall": 0.95,
+                "precision": 0.64,
+                "mrr": 1.0,
+                "ndcg": 0.961
+              },
+              "paraphrased_semantic": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "semantic": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              }
+            }
+          },
+          {
+            "fold": 5,
+            "validation_case_ids": [
+              "ambiguous-05",
+              "exact-04",
+              "exact-05",
+              "exact-07",
+              "exact-10",
+              "fine_grained-10",
+              "fine_grained-11",
+              "semantic-01",
+              "semantic-07",
+              "semantic-08",
+              "semantic-12",
+              "v2-ambiguous-01",
+              "v2-ambiguous-07",
+              "v2-fine-10",
+              "v2-lexical-01",
+              "v2-lexical-02",
+              "v2-lexical-04",
+              "v2-lexical-05",
+              "v2-multi-04",
+              "v2-semantic-01",
+              "v2-semantic-03",
+              "v2-semantic-06"
+            ],
+            "metrics": {
+              "recall": 0.8864,
+              "precision": 0.2909,
+              "mrr": 0.9318,
+              "ndcg": 0.8868
+            },
+            "category_metrics": {
+              "ambiguous": {
+                "cases": 3,
+                "recall": 0.8333,
+                "precision": 0.5333,
+                "mrr": 1.0,
+                "ndcg": 0.798
+              },
+              "exact_terminology": {
+                "cases": 4,
+                "recall": 0.875,
+                "precision": 0.2,
+                "mrr": 0.875,
+                "ndcg": 0.8871
+              },
+              "fine_grained": {
+                "cases": 3,
+                "recall": 0.8333,
+                "precision": 0.3333,
+                "mrr": 1.0,
+                "ndcg": 0.9023
+              },
+              "lexical": {
+                "cases": 4,
+                "recall": 1.0,
+                "precision": 0.25,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              },
+              "multiple_relevant": {
+                "cases": 1,
+                "recall": 1.0,
+                "precision": 0.8,
+                "mrr": 1.0,
+                "ndcg": 0.8595
+              },
+              "paraphrased_semantic": {
+                "cases": 4,
+                "recall": 0.75,
+                "precision": 0.15,
+                "mrr": 0.75,
+                "ndcg": 0.75
+              },
+              "semantic": {
+                "cases": 3,
+                "recall": 1.0,
+                "precision": 0.2,
+                "mrr": 1.0,
+                "ndcg": 1.0
+              }
+            }
+          }
+        ],
+        "mean": {
+          "recall": 0.8502,
+          "precision": 0.3491,
+          "mrr": 0.9065,
+          "ndcg": 0.8386
+        },
+        "std": {
+          "recall": 0.0396,
+          "precision": 0.0413,
+          "mrr": 0.0318,
+          "ndcg": 0.0359
+        },
+        "per_category": {
+          "ambiguous": {
+            "cases": 22,
+            "recall": 0.5205,
+            "precision": 0.3636,
+            "mrr": 0.7356,
+            "ndcg": 0.5566
+          },
+          "exact_terminology": {
+            "cases": 12,
+            "recall": 0.9583,
+            "precision": 0.2167,
+            "mrr": 0.9167,
+            "ndcg": 0.9178
+          },
+          "fine_grained": {
+            "cases": 22,
+            "recall": 0.9659,
+            "precision": 0.3364,
+            "mrr": 1.0,
+            "ndcg": 0.9635
+          },
+          "lexical": {
+            "cases": 10,
+            "recall": 1.0,
+            "precision": 0.22,
+            "mrr": 0.9,
+            "ndcg": 0.9262
+          },
+          "multiple_relevant": {
+            "cases": 22,
+            "recall": 0.8326,
+            "precision": 0.6273,
+            "mrr": 1.0,
+            "ndcg": 0.8475
+          },
+          "paraphrased_semantic": {
+            "cases": 12,
+            "recall": 0.9167,
+            "precision": 0.2,
+            "mrr": 0.85,
+            "ndcg": 0.8656
+          },
+          "semantic": {
+            "cases": 10,
+            "recall": 1.0,
+            "precision": 0.2,
+            "mrr": 0.9333,
+            "ndcg": 0.95
+          }
+        },
+        "latency_ms": {
+          "mean": 609.543,
+          "p95": 1099.167
+        },
+        "escalation_rate_percent": 56.3636
+      },
+      "config": {
+        "top_k": 5,
+        "candidate_depth": 50,
+        "fusion_strategy": "weighted_rrf",
+        "rrf_k": 60,
+        "router_on": true,
+        "lexical_route_delta": 0.2,
+        "disagreement_threshold": 0.5,
+        "cascade_on": true,
+        "cascade_initial_depth": 20,
+        "cascade_confidence_threshold": 0.42,
+        "qwen_instruction_mode": "routed",
+        "qwen_instruction_routing": true,
+        "qwen_instruction_ensemble": false,
+        "context_aware": false,
+        "field_aware_bm25": true,
+        "bm25_k1": 1.2,
+        "bm25_b": 0.75,
+        "bm25_title_weight": 3.0,
+        "bm25_heading_weight": 2.0,
+        "bm25_body_weight": 1.0,
+        "bm25_ngrams": true,
+        "hierarchical_on": true,
+        "hierarchy_weight": 0.08,
+        "prf_on": true,
+        "prf_depth": 1,
+        "prf_max_terms": 8,
+        "prf_weight": 0.25,
+        "prf_confidence_threshold": 0.35,
+        "hyde_on": false,
+        "stream_weights": {
+          "qwen": 0.3,
+          "bge": 0.2,
+          "e5": 0.2,
+          "bm25": 0.3
+        }
+      }
+    }
+  },
+  "selected": {
+    "name": "phase4-routed-prf-cascade",
+    "config": {
+      "top_k": 5,
+      "candidate_depth": 50,
+      "fusion_strategy": "weighted_rrf",
+      "rrf_k": 60,
+      "router_on": true,
+      "lexical_route_delta": 0.2,
+      "disagreement_threshold": 0.5,
+      "cascade_on": true,
+      "cascade_initial_depth": 20,
+      "cascade_confidence_threshold": 0.42,
+      "qwen_instruction_mode": "routed",
+      "qwen_instruction_routing": true,
+      "qwen_instruction_ensemble": false,
+      "context_aware": false,
+      "field_aware_bm25": true,
+      "bm25_k1": 1.2,
+      "bm25_b": 0.75,
+      "bm25_title_weight": 3.0,
+      "bm25_heading_weight": 2.0,
+      "bm25_body_weight": 1.0,
+      "bm25_ngrams": true,
+      "hierarchical_on": true,
+      "hierarchy_weight": 0.08,
+      "prf_on": true,
+      "prf_depth": 1,
+      "prf_max_terms": 8,
+      "prf_weight": 0.25,
+      "prf_confidence_threshold": 0.35,
+      "hyde_on": false,
+      "stream_weights": {
+        "qwen": 0.3,
+        "bge": 0.2,
+        "e5": 0.2,
+        "bm25": 0.3
+      }
+    },
+    "cv": {
+      "n_splits": 5,
+      "folds": [
+        {
+          "fold": 1,
+          "validation_case_ids": [
+            "ambiguous-09",
+            "ambiguous-11",
+            "exact-03",
+            "exact-08",
+            "exact-09",
+            "fine_grained-02",
+            "fine_grained-09",
+            "multi_relevant-02",
+            "multi_relevant-04",
+            "multi_relevant-05",
+            "semantic-04",
+            "semantic-10",
+            "semantic-11",
+            "v2-ambiguous-08",
+            "v2-ambiguous-10",
+            "v2-fine-02",
+            "v2-fine-06",
+            "v2-fine-09",
+            "v2-multi-01",
+            "v2-multi-02",
+            "v2-multi-03",
+            "v2-semantic-08"
+          ],
+          "metrics": {
+            "recall": 0.8682,
+            "precision": 0.4091,
+            "mrr": 0.9273,
+            "ndcg": 0.849
+          },
+          "category_metrics": {
+            "ambiguous": {
+              "cases": 4,
+              "recall": 0.4375,
+              "precision": 0.3,
+              "mrr": 0.6,
+              "ndcg": 0.485
+            },
+            "exact_terminology": {
+              "cases": 3,
+              "recall": 1.0,
+              "precision": 0.2,
+              "mrr": 1.0,
+              "ndcg": 1.0
+            },
+            "fine_grained": {
+              "cases": 5,
+              "recall": 1.0,
+              "precision": 0.36,
+              "mrr": 1.0,
+              "ndcg": 0.958
+            },
+            "multiple_relevant": {
+              "cases": 6,
+              "recall": 0.8917,
+              "precision": 0.7333,
+              "mrr": 1.0,
+              "ndcg": 0.8248
+            },
+            "paraphrased_semantic": {
+              "cases": 3,
+              "recall": 1.0,
+              "precision": 0.2667,
+              "mrr": 1.0,
+              "ndcg": 1.0
+            },
+            "semantic": {
+              "cases": 1,
+              "recall": 1.0,
+              "precision": 0.2,
+              "mrr": 1.0,
+              "ndcg": 1.0
+            }
+          }
+        },
+        {
+          "fold": 2,
+          "validation_case_ids": [
+            "ambiguous-01",
+            "ambiguous-03",
+            "ambiguous-12",
+            "exact-01",
+            "exact-06",
+            "exact-12",
+            "fine_grained-03",
+            "fine_grained-05",
+            "fine_grained-07",
+            "fine_grained-08",
+            "multi_relevant-09",
+            "multi_relevant-10",
+            "semantic-06",
+            "semantic-09",
+            "v2-ambiguous-05",
+            "v2-ambiguous-06",
+            "v2-fine-07",
+            "v2-fine-08",
+            "v2-semantic-02",
+            "v2-semantic-04",
+            "v2-semantic-05",
+            "v2-semantic-10"
+          ],
+          "metrics": {
+            "recall": 0.8826,
+            "precision": 0.3182,
+            "mrr": 0.9106,
+            "ndcg": 0.8548
+          },
+          "category_metrics": {
+            "ambiguous": {
+              "cases": 5,
+              "recall": 0.5333,
+              "precision": 0.4,
+              "mrr": 0.84,
+              "ndcg": 0.6226
+            },
+            "exact_terminology": {
+              "cases": 3,
+              "recall": 1.0,
+              "precision": 0.2667,
+              "mrr": 0.8333,
+              "ndcg": 0.8216
+            },
+            "fine_grained": {
+              "cases": 6,
+              "recall": 1.0,
+              "precision": 0.3333,
+              "mrr": 1.0,
+              "ndcg": 0.9611
+            },
+            "multiple_relevant": {
+              "cases": 2,
+              "recall": 0.875,
+              "precision": 0.5,
+              "mrr": 1.0,
+              "ndcg": 0.9801
+            },
+            "paraphrased_semantic": {
+              "cases": 2,
+              "recall": 1.0,
+              "precision": 0.2,
+              "mrr": 1.0,
+              "ndcg": 1.0
+            },
+            "semantic": {
+              "cases": 4,
+              "recall": 1.0,
+              "precision": 0.2,
+              "mrr": 0.8333,
+              "ndcg": 0.875
+            }
+          }
+        },
+        {
+          "fold": 3,
+          "validation_case_ids": [
+            "ambiguous-02",
+            "ambiguous-07",
+            "ambiguous-08",
+            "exact-02",
+            "exact-11",
+            "fine_grained-01",
+            "multi_relevant-01",
+            "multi_relevant-03",
+            "multi_relevant-06",
+            "multi_relevant-08",
+            "semantic-03",
+            "semantic-05",
+            "v2-ambiguous-02",
+            "v2-ambiguous-04",
+            "v2-fine-05",
+            "v2-lexical-03",
+            "v2-lexical-08",
+            "v2-multi-05",
+            "v2-multi-06",
+            "v2-multi-07",
+            "v2-multi-10",
+            "v2-semantic-07"
+          ],
+          "metrics": {
+            "recall": 0.7803,
+            "precision": 0.3727,
+            "mrr": 0.9182,
+            "ndcg": 0.7792
+          },
+          "category_metrics": {
+            "ambiguous": {
+              "cases": 5,
+              "recall": 0.54,
+              "precision": 0.36,
+              "mrr": 0.8,
+              "ndcg": 0.5424
+            },
+            "exact_terminology": {
+              "cases": 2,
+              "recall": 1.0,
+              "precision": 0.2,
+              "mrr": 1.0,
+              "ndcg": 1.0
+            },
+            "fine_grained": {
+              "cases": 2,
+              "recall": 1.0,
+              "precision": 0.3,
+              "mrr": 1.0,
+              "ndcg": 0.9869
+            },
+            "lexical": {
+              "cases": 2,
+              "recall": 1.0,
+              "precision": 0.2,
+              "mrr": 1.0,
+              "ndcg": 1.0
+            },
+            "multiple_relevant": {
+              "cases": 8,
+              "recall": 0.6833,
+              "precision": 0.55,
+              "mrr": 1.0,
+              "ndcg": 0.7588
+            },
+            "paraphrased_semantic": {
+              "cases": 2,
+              "recall": 1.0,
+              "precision": 0.2,
+              "mrr": 0.6,
+              "ndcg": 0.6935
+            },
+            "semantic": {
+              "cases": 1,
+              "recall": 1.0,
+              "precision": 0.2,
+              "mrr": 1.0,
+              "ndcg": 1.0
+            }
+          }
+        },
+        {
+          "fold": 4,
+          "validation_case_ids": [
+            "ambiguous-04",
+            "ambiguous-06",
+            "ambiguous-10",
+            "fine_grained-04",
+            "fine_grained-06",
+            "fine_grained-12",
+            "multi_relevant-07",
+            "multi_relevant-11",
+            "multi_relevant-12",
+            "semantic-02",
+            "v2-ambiguous-03",
+            "v2-ambiguous-09",
+            "v2-fine-01",
+            "v2-fine-03",
+            "v2-fine-04",
+            "v2-lexical-06",
+            "v2-lexical-07",
+            "v2-lexical-09",
+            "v2-lexical-10",
+            "v2-multi-08",
+            "v2-multi-09",
+            "v2-semantic-09"
+          ],
+          "metrics": {
+            "recall": 0.8333,
+            "precision": 0.3545,
+            "mrr": 0.8447,
+            "ndcg": 0.8233
+          },
+          "category_metrics": {
+            "ambiguous": {
+              "cases": 5,
+              "recall": 0.3667,
+              "precision": 0.28,
+              "mrr": 0.5167,
+              "ndcg": 0.4173
+            },
+            "fine_grained": {
+              "cases": 6,
+              "recall": 0.9583,
+              "precision": 0.3333,
+              "mrr": 1.0,
+              "ndcg": 0.9934
+            },
+            "lexical": {
+              "cases": 4,
+              "recall": 1.0,
+              "precision": 0.2,
+              "mrr": 0.75,
+              "ndcg": 0.8155
+            },
+            "multiple_relevant": {
+              "cases": 5,
+              "recall": 0.95,
+              "precision": 0.64,
+              "mrr": 1.0,
+              "ndcg": 0.961
+            },
+            "paraphrased_semantic": {
+              "cases": 1,
+              "recall": 1.0,
+              "precision": 0.2,
+              "mrr": 1.0,
+              "ndcg": 1.0
+            },
+            "semantic": {
+              "cases": 1,
+              "recall": 1.0,
+              "precision": 0.2,
+              "mrr": 1.0,
+              "ndcg": 1.0
+            }
+          }
+        },
+        {
+          "fold": 5,
+          "validation_case_ids": [
+            "ambiguous-05",
+            "exact-04",
+            "exact-05",
+            "exact-07",
+            "exact-10",
+            "fine_grained-10",
+            "fine_grained-11",
+            "semantic-01",
+            "semantic-07",
+            "semantic-08",
+            "semantic-12",
+            "v2-ambiguous-01",
+            "v2-ambiguous-07",
+            "v2-fine-10",
+            "v2-lexical-01",
+            "v2-lexical-02",
+            "v2-lexical-04",
+            "v2-lexical-05",
+            "v2-multi-04",
+            "v2-semantic-01",
+            "v2-semantic-03",
+            "v2-semantic-06"
+          ],
+          "metrics": {
+            "recall": 0.8864,
+            "precision": 0.2909,
+            "mrr": 0.9318,
+            "ndcg": 0.8868
+          },
+          "category_metrics": {
+            "ambiguous": {
+              "cases": 3,
+              "recall": 0.8333,
+              "precision": 0.5333,
+              "mrr": 1.0,
+              "ndcg": 0.798
+            },
+            "exact_terminology": {
+              "cases": 4,
+              "recall": 0.875,
+              "precision": 0.2,
+              "mrr": 0.875,
+              "ndcg": 0.8871
+            },
+            "fine_grained": {
+              "cases": 3,
+              "recall": 0.8333,
+              "precision": 0.3333,
+              "mrr": 1.0,
+              "ndcg": 0.9023
+            },
+            "lexical": {
+              "cases": 4,
+              "recall": 1.0,
+              "precision": 0.25,
+              "mrr": 1.0,
+              "ndcg": 1.0
+            },
+            "multiple_relevant": {
+              "cases": 1,
+              "recall": 1.0,
+              "precision": 0.8,
+              "mrr": 1.0,
+              "ndcg": 0.8595
+            },
+            "paraphrased_semantic": {
+              "cases": 4,
+              "recall": 0.75,
+              "precision": 0.15,
+              "mrr": 0.75,
+              "ndcg": 0.75
+            },
+            "semantic": {
+              "cases": 3,
+              "recall": 1.0,
+              "precision": 0.2,
+              "mrr": 1.0,
+              "ndcg": 1.0
+            }
+          }
+        }
+      ],
+      "mean": {
+        "recall": 0.8502,
+        "precision": 0.3491,
+        "mrr": 0.9065,
+        "ndcg": 0.8386
+      },
+      "std": {
+        "recall": 0.0396,
+        "precision": 0.0413,
+        "mrr": 0.0318,
+        "ndcg": 0.0359
+      },
+      "per_category": {
+        "ambiguous": {
+          "cases": 22,
+          "recall": 0.5205,
+          "precision": 0.3636,
+          "mrr": 0.7356,
+          "ndcg": 0.5566
+        },
+        "exact_terminology": {
+          "cases": 12,
+          "recall": 0.9583,
+          "precision": 0.2167,
+          "mrr": 0.9167,
+          "ndcg": 0.9178
+        },
+        "fine_grained": {
+          "cases": 22,
+          "recall": 0.9659,
+          "precision": 0.3364,
+          "mrr": 1.0,
+          "ndcg": 0.9635
+        },
+        "lexical": {
+          "cases": 10,
+          "recall": 1.0,
+          "precision": 0.22,
+          "mrr": 0.9,
+          "ndcg": 0.9262
+        },
+        "multiple_relevant": {
+          "cases": 22,
+          "recall": 0.8326,
+          "precision": 0.6273,
+          "mrr": 1.0,
+          "ndcg": 0.8475
+        },
+        "paraphrased_semantic": {
+          "cases": 12,
+          "recall": 0.9167,
+          "precision": 0.2,
+          "mrr": 0.85,
+          "ndcg": 0.8656
+        },
+        "semantic": {
+          "cases": 10,
+          "recall": 1.0,
+          "precision": 0.2,
+          "mrr": 0.9333,
+          "ndcg": 0.95
+        }
+      },
+      "latency_ms": {
+        "mean": 609.543,
+        "p95": 1099.167
+      },
+      "escalation_rate_percent": 56.3636
+    }
+  },
+  "ranker": {
+    "backend": "pairwise-linear",
+    "grouped_cv": {
+      "n_splits": 5,
+      "folds": [
+        {
+          "fold": 1,
+          "validation_case_ids": [
+            "ambiguous-09",
+            "ambiguous-11",
+            "exact-03",
+            "exact-08",
+            "exact-09",
+            "fine_grained-02",
+            "fine_grained-09",
+            "multi_relevant-02",
+            "multi_relevant-04",
+            "multi_relevant-05",
+            "semantic-04",
+            "semantic-10",
+            "semantic-11",
+            "v2-ambiguous-08",
+            "v2-ambiguous-10",
+            "v2-fine-02",
+            "v2-fine-06",
+            "v2-fine-09",
+            "v2-multi-01",
+            "v2-multi-02",
+            "v2-multi-03",
+            "v2-semantic-08"
+          ],
+          "metrics": {
+            "recall": 0.8492,
+            "precision": 0.4,
+            "mrr": 0.8788,
+            "ndcg": 0.8418
+          }
+        },
+        {
+          "fold": 2,
+          "validation_case_ids": [
+            "ambiguous-01",
+            "ambiguous-03",
+            "ambiguous-12",
+            "exact-01",
+            "exact-06",
+            "exact-12",
+            "fine_grained-03",
+            "fine_grained-05",
+            "fine_grained-07",
+            "fine_grained-08",
+            "multi_relevant-09",
+            "multi_relevant-10",
+            "semantic-06",
+            "semantic-09",
+            "v2-ambiguous-05",
+            "v2-ambiguous-06",
+            "v2-fine-07",
+            "v2-fine-08",
+            "v2-semantic-02",
+            "v2-semantic-04",
+            "v2-semantic-05",
+            "v2-semantic-10"
+          ],
+          "metrics": {
+            "recall": 0.8826,
+            "precision": 0.3182,
+            "mrr": 0.8977,
+            "ndcg": 0.8558
+          }
+        },
+        {
+          "fold": 3,
+          "validation_case_ids": [
+            "ambiguous-02",
+            "ambiguous-07",
+            "ambiguous-08",
+            "exact-02",
+            "exact-11",
+            "fine_grained-01",
+            "multi_relevant-01",
+            "multi_relevant-03",
+            "multi_relevant-06",
+            "multi_relevant-08",
+            "semantic-03",
+            "semantic-05",
+            "v2-ambiguous-02",
+            "v2-ambiguous-04",
+            "v2-fine-05",
+            "v2-lexical-03",
+            "v2-lexical-08",
+            "v2-multi-05",
+            "v2-multi-06",
+            "v2-multi-07",
+            "v2-multi-10",
+            "v2-semantic-07"
+          ],
+          "metrics": {
+            "recall": 0.7811,
+            "precision": 0.3909,
+            "mrr": 0.875,
+            "ndcg": 0.7445
+          }
+        },
+        {
+          "fold": 4,
+          "validation_case_ids": [
+            "ambiguous-04",
+            "ambiguous-06",
+            "ambiguous-10",
+            "fine_grained-04",
+            "fine_grained-06",
+            "fine_grained-12",
+            "multi_relevant-07",
+            "multi_relevant-11",
+            "multi_relevant-12",
+            "semantic-02",
+            "v2-ambiguous-03",
+            "v2-ambiguous-09",
+            "v2-fine-01",
+            "v2-fine-03",
+            "v2-fine-04",
+            "v2-lexical-06",
+            "v2-lexical-07",
+            "v2-lexical-09",
+            "v2-lexical-10",
+            "v2-multi-08",
+            "v2-multi-09",
+            "v2-semantic-09"
+          ],
+          "metrics": {
+            "recall": 0.8242,
+            "precision": 0.3455,
+            "mrr": 0.8992,
+            "ndcg": 0.8356
+          }
+        },
+        {
+          "fold": 5,
+          "validation_case_ids": [
+            "ambiguous-05",
+            "exact-04",
+            "exact-05",
+            "exact-07",
+            "exact-10",
+            "fine_grained-10",
+            "fine_grained-11",
+            "semantic-01",
+            "semantic-07",
+            "semantic-08",
+            "semantic-12",
+            "v2-ambiguous-01",
+            "v2-ambiguous-07",
+            "v2-fine-10",
+            "v2-lexical-01",
+            "v2-lexical-02",
+            "v2-lexical-04",
+            "v2-lexical-05",
+            "v2-multi-04",
+            "v2-semantic-01",
+            "v2-semantic-03",
+            "v2-semantic-06"
+          ],
+          "metrics": {
+            "recall": 0.9167,
+            "precision": 0.2909,
+            "mrr": 0.8803,
+            "ndcg": 0.8541
+          }
+        }
+      ],
+      "mean": {
+        "recall": 0.8508,
+        "precision": 0.3491,
+        "mrr": 0.8862,
+        "ndcg": 0.8264
+      },
+      "std": {
+        "recall": 0.0467,
+        "precision": 0.0417,
+        "mrr": 0.0102,
+        "ndcg": 0.0416
+      }
+    },
+    "lambda_mart_status": "blocked: xgboost is not installed; pairwise-linear grouped ranking used as the equivalent fallback",
+    "used_for_final": false
+  },
+  "benchmark_v3_final": {
+    "original-e5-dense": {
+      "metrics": {
+        "recall@5": 0.765,
+        "precision@5": 0.266,
+        "mrr": 0.7898,
+        "ndcg": 0.6886
+      },
+      "category_metrics": {
+        "ambiguous": {
+          "cases": 20,
+          "recall": 0.3167,
+          "precision": 0.19,
+          "mrr": 0.4933,
+          "ndcg": 0.3055
+        },
+        "fine_grained": {
+          "cases": 20,
+          "recall": 0.875,
+          "precision": 0.33,
+          "mrr": 0.9042,
+          "ndcg": 0.7948
+        },
+        "lexical": {
+          "cases": 20,
+          "recall": 0.95,
+          "precision": 0.19,
+          "mrr": 0.885,
+          "ndcg": 0.9009
+        },
+        "multiple_relevant": {
+          "cases": 20,
+          "recall": 0.7833,
+          "precision": 0.44,
+          "mrr": 0.875,
+          "ndcg": 0.6221
+        },
+        "semantic": {
+          "cases": 20,
+          "recall": 0.9,
+          "precision": 0.18,
+          "mrr": 0.7917,
+          "ndcg": 0.8196
+        }
+      },
+      "config": {
+        "top_k": 5,
+        "candidate_depth": 20,
+        "fusion_strategy": "weighted_linear",
+        "rrf_k": 60,
+        "router_on": false,
+        "lexical_route_delta": 0.2,
+        "disagreement_threshold": 0.5,
+        "cascade_on": false,
+        "cascade_initial_depth": 20,
+        "cascade_confidence_threshold": 0.42,
+        "qwen_instruction_mode": "generic",
+        "qwen_instruction_routing": false,
+        "qwen_instruction_ensemble": false,
+        "context_aware": false,
+        "field_aware_bm25": false,
+        "bm25_k1": 1.2,
+        "bm25_b": 0.75,
+        "bm25_title_weight": 3.0,
+        "bm25_heading_weight": 2.0,
+        "bm25_body_weight": 1.0,
+        "bm25_ngrams": true,
+        "hierarchical_on": false,
+        "hierarchy_weight": 0.08,
+        "prf_on": false,
+        "prf_depth": 1,
+        "prf_max_terms": 8,
+        "prf_weight": 0.25,
+        "prf_confidence_threshold": 0.35,
+        "hyde_on": false,
+        "stream_weights": {
+          "e5": 1.0
+        }
+      },
+      "ranker_used": false
+    },
+    "phase3-qwen3-hybrid": {
+      "metrics": {
+        "recall@5": 0.8342,
+        "precision@5": 0.304,
+        "mrr": 0.8745,
+        "ndcg": 0.771
+      },
+      "category_metrics": {
+        "ambiguous": {
+          "cases": 20,
+          "recall": 0.55,
+          "precision": 0.33,
+          "mrr": 0.6433,
+          "ndcg": 0.4657
+        },
+        "fine_grained": {
+          "cases": 20,
+          "recall": 0.875,
+          "precision": 0.33,
+          "mrr": 0.925,
+          "ndcg": 0.8186
+        },
+        "lexical": {
+          "cases": 20,
+          "recall": 0.95,
+          "precision": 0.19,
+          "mrr": 0.9125,
+          "ndcg": 0.9215
+        },
+        "multiple_relevant": {
+          "cases": 20,
+          "recall": 0.8458,
+          "precision": 0.48,
+          "mrr": 0.975,
+          "ndcg": 0.7243
+        },
+        "semantic": {
+          "cases": 20,
+          "recall": 0.95,
+          "precision": 0.19,
+          "mrr": 0.9167,
+          "ndcg": 0.925
+        }
+      },
+      "config": {
+        "top_k": 5,
+        "candidate_depth": 20,
+        "fusion_strategy": "weighted_linear",
+        "rrf_k": 60,
+        "router_on": false,
+        "lexical_route_delta": 0.2,
+        "disagreement_threshold": 0.5,
+        "cascade_on": false,
+        "cascade_initial_depth": 20,
+        "cascade_confidence_threshold": 0.42,
+        "qwen_instruction_mode": "generic",
+        "qwen_instruction_routing": false,
+        "qwen_instruction_ensemble": false,
+        "context_aware": false,
+        "field_aware_bm25": false,
+        "bm25_k1": 1.2,
+        "bm25_b": 0.75,
+        "bm25_title_weight": 3.0,
+        "bm25_heading_weight": 2.0,
+        "bm25_body_weight": 1.0,
+        "bm25_ngrams": true,
+        "hierarchical_on": false,
+        "hierarchy_weight": 0.08,
+        "prf_on": false,
+        "prf_depth": 1,
+        "prf_max_terms": 8,
+        "prf_weight": 0.25,
+        "prf_confidence_threshold": 0.35,
+        "hyde_on": false,
+        "stream_weights": {
+          "qwen": 0.7,
+          "bm25": 0.3
+        }
+      },
+      "ranker_used": false
+    },
+    "phase4-final": {
+      "metrics": {
+        "recall@5": 0.8333,
+        "precision@5": 0.3,
+        "mrr": 0.8442,
+        "ndcg": 0.7544
+      },
+      "category_metrics": {
+        "ambiguous": {
+          "cases": 20,
+          "recall": 0.45,
+          "precision": 0.27,
+          "mrr": 0.6,
+          "ndcg": 0.4018
+        },
+        "fine_grained": {
+          "cases": 20,
+          "recall": 0.95,
+          "precision": 0.36,
+          "mrr": 0.9417,
+          "ndcg": 0.8634
+        },
+        "lexical": {
+          "cases": 20,
+          "recall": 0.95,
+          "precision": 0.19,
+          "mrr": 0.875,
+          "ndcg": 0.8946
+        },
+        "multiple_relevant": {
+          "cases": 20,
+          "recall": 0.8667,
+          "precision": 0.49,
+          "mrr": 0.8875,
+          "ndcg": 0.6872
+        },
+        "semantic": {
+          "cases": 20,
+          "recall": 0.95,
+          "precision": 0.19,
+          "mrr": 0.9167,
+          "ndcg": 0.925
+        }
+      },
+      "config": {
+        "top_k": 5,
+        "candidate_depth": 50,
+        "fusion_strategy": "weighted_rrf",
+        "rrf_k": 60,
+        "router_on": true,
+        "lexical_route_delta": 0.2,
+        "disagreement_threshold": 0.5,
+        "cascade_on": true,
+        "cascade_initial_depth": 20,
+        "cascade_confidence_threshold": 0.42,
+        "qwen_instruction_mode": "routed",
+        "qwen_instruction_routing": true,
+        "qwen_instruction_ensemble": false,
+        "context_aware": false,
+        "field_aware_bm25": true,
+        "bm25_k1": 1.2,
+        "bm25_b": 0.75,
+        "bm25_title_weight": 3.0,
+        "bm25_heading_weight": 2.0,
+        "bm25_body_weight": 1.0,
+        "bm25_ngrams": true,
+        "hierarchical_on": true,
+        "hierarchy_weight": 0.08,
+        "prf_on": true,
+        "prf_depth": 1,
+        "prf_max_terms": 8,
+        "prf_weight": 0.25,
+        "prf_confidence_threshold": 0.35,
+        "hyde_on": false,
+        "stream_weights": {
+          "qwen": 0.3,
+          "bge": 0.2,
+          "e5": 0.2,
+          "bm25": 0.3
+        }
+      },
+      "ranker_used": false
+    }
+  },
+  "v3_scoring_call_count": 3,
+  "relative_improvement_percent": {
+    "ndcg": 9.5556,
+    "mrr": 6.8878
+  },
+  "blocked_components": {
+    "lambda_mart": "blocked: xgboost is not installed; grouped pairwise-linear ranking was evaluated",
+    "qwen_hyde": "blocked unless a local hypothetical-answer provider is explicitly configured",
+    "qwen_fast_reranker": "not selected: the Phase 3 CPU smoke test measured 51.58 seconds for 16 real chunks"
+  },
+  "measurement_note": "An initial pre-correction v3 control pass was discarded because plain BM25 could inherit a field-aware index. This corrected pass uses per-trial sparse variants; selection parameters were unchanged and v3 was not consulted for selection."
+}

@@ -30,6 +30,20 @@ FEATURE_NAMES = (
     "query_token_count",
     "chunk_token_count",
     "identifier_signal",
+    "qwen_score",
+    "qwen_rank",
+    "bge_score",
+    "bge_rank",
+    "e5_score",
+    "e5_rank",
+    "bm25_score",
+    "bm25_rank",
+    "title_lexical_overlap",
+    "heading_lexical_overlap",
+    "stream_presence",
+    "section_depth",
+    "source_char_length",
+    "identifier_overlap",
 )
 
 _TOKEN_RE = re.compile(r"\b[A-Za-z][A-Za-z0-9]*(?:[-_][A-Za-z0-9]+)+\b|\b[A-Za-z][A-Za-z0-9]*\b")
@@ -88,6 +102,24 @@ class LTRFeatureExtractor:
         query_tokens = set(_tokens(query))
         chunk_tokens = set(_tokens(str(candidate.get("content", ""))))
         overlap = len(query_tokens & chunk_tokens) / len(query_tokens) if query_tokens else 0.0
+        metadata = candidate.get("metadata", {}) if isinstance(candidate.get("metadata", {}), dict) else {}
+        title_tokens = set(_tokens(str(metadata.get("heading_path", "")).split(" > ", 1)[0]))
+        heading_tokens = set(_tokens(str(metadata.get("heading_path", ""))))
+        title_overlap = len(query_tokens & title_tokens) / len(query_tokens) if query_tokens else 0.0
+        heading_overlap = len(query_tokens & heading_tokens) / len(query_tokens) if query_tokens else 0.0
+        query_identifiers = {
+            token.casefold()
+            for token in _TOKEN_RE.findall(query)
+            if "-" in token or "_" in token or token.isupper() or token.isdigit()
+        }
+        content_identifiers = {
+            token.casefold()
+            for token in _TOKEN_RE.findall(str(candidate.get("content", "")))
+            if "-" in token or "_" in token or token.isupper() or token.isdigit()
+        }
+        identifier_overlap = (
+            len(query_identifiers & content_identifiers) / len(query_identifiers) if query_identifiers else 0.0
+        )
         identifier_signal = sum(
             1
             for token in _TOKEN_RE.findall(str(candidate.get("content", "")))
@@ -114,6 +146,20 @@ class LTRFeatureExtractor:
             "query_token_count": float(len(query_tokens)),
             "chunk_token_count": float(len(chunk_tokens)),
             "identifier_signal": float(identifier_signal),
+            "qwen_score": float(candidate.get("qwen_score", 0.0) or 0.0),
+            "qwen_rank": float(candidate.get("qwen_rank", 0.0) or 0.0),
+            "bge_score": float(candidate.get("bge_score", 0.0) or 0.0),
+            "bge_rank": float(candidate.get("bge_rank", 0.0) or 0.0),
+            "e5_score": float(candidate.get("e5_score", 0.0) or 0.0),
+            "e5_rank": float(candidate.get("e5_rank", 0.0) or 0.0),
+            "bm25_score": float(candidate.get("bm25_score", 0.0) or 0.0),
+            "bm25_rank": float(candidate.get("bm25_rank", 0.0) or 0.0),
+            "title_lexical_overlap": title_overlap,
+            "heading_lexical_overlap": heading_overlap,
+            "stream_presence": float(candidate.get("stream_count", 0.0) or 0.0),
+            "section_depth": float(len(str(metadata.get("heading_path", "")).split(" > ")) if metadata.get("heading_path") else 0),
+            "source_char_length": float(len(str(candidate.get("content", "")))),
+            "identifier_overlap": identifier_overlap,
         }
 
     @staticmethod

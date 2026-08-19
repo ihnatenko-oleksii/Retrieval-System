@@ -1,0 +1,1546 @@
+[
+  {
+    "document_id": "atlas/access-mfa.md",
+    "span_id": "atlas/access-mfa.md#atlas-access-multi-factor-authentication",
+    "heading": "Atlas Access: Multi-Factor Authentication",
+    "level": 1,
+    "start": 0,
+    "end": 44
+  },
+  {
+    "document_id": "atlas/access-mfa.md",
+    "span_id": "atlas/access-mfa.md#enrollment-methods-and-assurance-levels",
+    "heading": "Enrollment methods and assurance levels",
+    "level": 2,
+    "start": 44,
+    "end": 588
+  },
+  {
+    "document_id": "atlas/access-mfa.md",
+    "span_id": "atlas/access-mfa.md#step-up-authentication",
+    "heading": "Step-up authentication",
+    "level": 2,
+    "start": 588,
+    "end": 1143
+  },
+  {
+    "document_id": "atlas/access-mfa.md",
+    "span_id": "atlas/access-mfa.md#recovery-codes",
+    "heading": "Recovery codes",
+    "level": 2,
+    "start": 1143,
+    "end": 1630
+  },
+  {
+    "document_id": "atlas/access-mfa.md",
+    "span_id": "atlas/access-mfa.md#failed-attempts-and-lockout",
+    "heading": "Failed attempts and lockout",
+    "level": 2,
+    "start": 1630,
+    "end": 2134
+  },
+  {
+    "document_id": "atlas/access-mfa.md",
+    "span_id": "atlas/access-mfa.md#remembered-devices",
+    "heading": "Remembered devices",
+    "level": 2,
+    "start": 2134,
+    "end": 2637
+  },
+  {
+    "document_id": "atlas/access-passwords.md",
+    "span_id": "atlas/access-passwords.md#atlas-access-passwords-and-recovery",
+    "heading": "Atlas Access: Passwords and Recovery",
+    "level": 1,
+    "start": 0,
+    "end": 39
+  },
+  {
+    "document_id": "atlas/access-passwords.md",
+    "span_id": "atlas/access-passwords.md#password-policy",
+    "heading": "Password policy",
+    "level": 2,
+    "start": 39,
+    "end": 472
+  },
+  {
+    "document_id": "atlas/access-passwords.md",
+    "span_id": "atlas/access-passwords.md#reset-links",
+    "heading": "Reset links",
+    "level": 2,
+    "start": 472,
+    "end": 923
+  },
+  {
+    "document_id": "atlas/access-passwords.md",
+    "span_id": "atlas/access-passwords.md#recovery-versus-unlock",
+    "heading": "Recovery versus unlock",
+    "level": 2,
+    "start": 923,
+    "end": 1385
+  },
+  {
+    "document_id": "atlas/access-passwords.md",
+    "span_id": "atlas/access-passwords.md#breached-password-checks",
+    "heading": "Breached-password checks",
+    "level": 2,
+    "start": 1385,
+    "end": 1894
+  },
+  {
+    "document_id": "atlas/access-passwords.md",
+    "span_id": "atlas/access-passwords.md#session-consequences",
+    "heading": "Session consequences",
+    "level": 2,
+    "start": 1894,
+    "end": 2379
+  },
+  {
+    "document_id": "atlas/access-service-accounts.md",
+    "span_id": "atlas/access-service-accounts.md#atlas-access-service-accounts",
+    "heading": "Atlas Access: Service Accounts",
+    "level": 1,
+    "start": 0,
+    "end": 33
+  },
+  {
+    "document_id": "atlas/access-service-accounts.md",
+    "span_id": "atlas/access-service-accounts.md#client-credentials-tokens",
+    "heading": "Client-credentials tokens",
+    "level": 2,
+    "start": 33,
+    "end": 557
+  },
+  {
+    "document_id": "atlas/access-service-accounts.md",
+    "span_id": "atlas/access-service-accounts.md#api-key-storage-and-prefixes",
+    "heading": "API key storage and prefixes",
+    "level": 2,
+    "start": 557,
+    "end": 1064
+  },
+  {
+    "document_id": "atlas/access-service-accounts.md",
+    "span_id": "atlas/access-service-accounts.md#rotation-overlap",
+    "heading": "Rotation overlap",
+    "level": 2,
+    "start": 1064,
+    "end": 1550
+  },
+  {
+    "document_id": "atlas/access-service-accounts.md",
+    "span_id": "atlas/access-service-accounts.md#scope-boundaries",
+    "heading": "Scope boundaries",
+    "level": 2,
+    "start": 1550,
+    "end": 2031
+  },
+  {
+    "document_id": "atlas/access-service-accounts.md",
+    "span_id": "atlas/access-service-accounts.md#audit-identity",
+    "heading": "Audit identity",
+    "level": 2,
+    "start": 2031,
+    "end": 2499
+  },
+  {
+    "document_id": "atlas/access-sessions.md",
+    "span_id": "atlas/access-sessions.md#atlas-access-sessions-and-tokens",
+    "heading": "Atlas Access: Sessions and Tokens",
+    "level": 1,
+    "start": 0,
+    "end": 36
+  },
+  {
+    "document_id": "atlas/access-sessions.md",
+    "span_id": "atlas/access-sessions.md#session-lifetime-and-token-claims",
+    "heading": "Session lifetime and token claims",
+    "level": 2,
+    "start": 36,
+    "end": 591
+  },
+  {
+    "document_id": "atlas/access-sessions.md",
+    "span_id": "atlas/access-sessions.md#refresh-token-rotation",
+    "heading": "Refresh-token rotation",
+    "level": 2,
+    "start": 591,
+    "end": 1109
+  },
+  {
+    "document_id": "atlas/access-sessions.md",
+    "span_id": "atlas/access-sessions.md#cookie-and-bearer-transport",
+    "heading": "Cookie and bearer transport",
+    "level": 2,
+    "start": 1109,
+    "end": 1615
+  },
+  {
+    "document_id": "atlas/access-sessions.md",
+    "span_id": "atlas/access-sessions.md#logout-and-administrator-revocation",
+    "heading": "Logout and administrator revocation",
+    "level": 2,
+    "start": 1615,
+    "end": 2129
+  },
+  {
+    "document_id": "atlas/access-sessions.md",
+    "span_id": "atlas/access-sessions.md#clock-skew-and-expiry-errors",
+    "heading": "Clock skew and expiry errors",
+    "level": 2,
+    "start": 2129,
+    "end": 2623
+  },
+  {
+    "document_id": "atlas/api-errors.md",
+    "span_id": "atlas/api-errors.md#atlas-api-errors-and-status-codes",
+    "heading": "Atlas API: Errors and Status Codes",
+    "level": 1,
+    "start": 0,
+    "end": 37
+  },
+  {
+    "document_id": "atlas/api-errors.md",
+    "span_id": "atlas/api-errors.md#error-envelope",
+    "heading": "Error envelope",
+    "level": 2,
+    "start": 37,
+    "end": 474
+  },
+  {
+    "document_id": "atlas/api-errors.md",
+    "span_id": "atlas/api-errors.md#client-and-authorization-errors",
+    "heading": "Client and authorization errors",
+    "level": 2,
+    "start": 474,
+    "end": 981
+  },
+  {
+    "document_id": "atlas/api-errors.md",
+    "span_id": "atlas/api-errors.md#conflict-and-precondition-errors",
+    "heading": "Conflict and precondition errors",
+    "level": 2,
+    "start": 981,
+    "end": 1434
+  },
+  {
+    "document_id": "atlas/api-errors.md",
+    "span_id": "atlas/api-errors.md#rate-and-server-errors",
+    "heading": "Rate and server errors",
+    "level": 2,
+    "start": 1434,
+    "end": 1893
+  },
+  {
+    "document_id": "atlas/api-errors.md",
+    "span_id": "atlas/api-errors.md#request-tracing",
+    "heading": "Request tracing",
+    "level": 2,
+    "start": 1893,
+    "end": 2375
+  },
+  {
+    "document_id": "atlas/api-pagination.md",
+    "span_id": "atlas/api-pagination.md#atlas-api-pagination-and-filtering",
+    "heading": "Atlas API: Pagination and Filtering",
+    "level": 1,
+    "start": 0,
+    "end": 38
+  },
+  {
+    "document_id": "atlas/api-pagination.md",
+    "span_id": "atlas/api-pagination.md#cursor-pagination",
+    "heading": "Cursor pagination",
+    "level": 2,
+    "start": 38,
+    "end": 490
+  },
+  {
+    "document_id": "atlas/api-pagination.md",
+    "span_id": "atlas/api-pagination.md#page-size-defaults-and-limits",
+    "heading": "Page-size defaults and limits",
+    "level": 2,
+    "start": 490,
+    "end": 952
+  },
+  {
+    "document_id": "atlas/api-pagination.md",
+    "span_id": "atlas/api-pagination.md#filters-and-sort-order",
+    "heading": "Filters and sort order",
+    "level": 2,
+    "start": 952,
+    "end": 1425
+  },
+  {
+    "document_id": "atlas/api-pagination.md",
+    "span_id": "atlas/api-pagination.md#snapshot-consistency",
+    "heading": "Snapshot consistency",
+    "level": 2,
+    "start": 1425,
+    "end": 1893
+  },
+  {
+    "document_id": "atlas/api-pagination.md",
+    "span_id": "atlas/api-pagination.md#invalid-cursors",
+    "heading": "Invalid cursors",
+    "level": 2,
+    "start": 1893,
+    "end": 2343
+  },
+  {
+    "document_id": "atlas/api-rate-limits.md",
+    "span_id": "atlas/api-rate-limits.md#atlas-api-rate-limits-and-quotas",
+    "heading": "Atlas API: Rate Limits and Quotas",
+    "level": 1,
+    "start": 0,
+    "end": 36
+  },
+  {
+    "document_id": "atlas/api-rate-limits.md",
+    "span_id": "atlas/api-rate-limits.md#limit-dimensions",
+    "heading": "Limit dimensions",
+    "level": 2,
+    "start": 36,
+    "end": 543
+  },
+  {
+    "document_id": "atlas/api-rate-limits.md",
+    "span_id": "atlas/api-rate-limits.md#response-headers-and-429-handling",
+    "heading": "Response headers and 429 handling",
+    "level": 2,
+    "start": 543,
+    "end": 1051
+  },
+  {
+    "document_id": "atlas/api-rate-limits.md",
+    "span_id": "atlas/api-rate-limits.md#default-request-rates",
+    "heading": "Default request rates",
+    "level": 2,
+    "start": 1051,
+    "end": 1546
+  },
+  {
+    "document_id": "atlas/api-rate-limits.md",
+    "span_id": "atlas/api-rate-limits.md#weighted-request-cost",
+    "heading": "Weighted request cost",
+    "level": 2,
+    "start": 1546,
+    "end": 2005
+  },
+  {
+    "document_id": "atlas/api-rate-limits.md",
+    "span_id": "atlas/api-rate-limits.md#rate-limit-versus-quota",
+    "heading": "Rate limit versus quota",
+    "level": 2,
+    "start": 2005,
+    "end": 2488
+  },
+  {
+    "document_id": "atlas/api-retries.md",
+    "span_id": "atlas/api-retries.md#atlas-api-retries-and-idempotency",
+    "heading": "Atlas API: Retries and Idempotency",
+    "level": 1,
+    "start": 0,
+    "end": 37
+  },
+  {
+    "document_id": "atlas/api-retries.md",
+    "span_id": "atlas/api-retries.md#idempotency-keys",
+    "heading": "Idempotency keys",
+    "level": 2,
+    "start": 37,
+    "end": 545
+  },
+  {
+    "document_id": "atlas/api-retries.md",
+    "span_id": "atlas/api-retries.md#retryable-responses",
+    "heading": "Retryable responses",
+    "level": 2,
+    "start": 545,
+    "end": 1007
+  },
+  {
+    "document_id": "atlas/api-retries.md",
+    "span_id": "atlas/api-retries.md#backoff-and-attempt-limit",
+    "heading": "Backoff and attempt limit",
+    "level": 2,
+    "start": 1007,
+    "end": 1447
+  },
+  {
+    "document_id": "atlas/api-retries.md",
+    "span_id": "atlas/api-retries.md#connect-read-and-total-timeouts",
+    "heading": "Connect, read, and total timeouts",
+    "level": 2,
+    "start": 1447,
+    "end": 1943
+  },
+  {
+    "document_id": "atlas/api-retries.md",
+    "span_id": "atlas/api-retries.md#duplicate-outcome-recovery",
+    "heading": "Duplicate outcome recovery",
+    "level": 2,
+    "start": 1943,
+    "end": 2431
+  },
+  {
+    "document_id": "atlas/billing-credits.md",
+    "span_id": "atlas/billing-credits.md#atlas-billing-credits",
+    "heading": "Atlas Billing: Credits",
+    "level": 1,
+    "start": 0,
+    "end": 25
+  },
+  {
+    "document_id": "atlas/billing-credits.md",
+    "span_id": "atlas/billing-credits.md#credit-ledger-and-expiry",
+    "heading": "Credit ledger and expiry",
+    "level": 2,
+    "start": 25,
+    "end": 475
+  },
+  {
+    "document_id": "atlas/billing-credits.md",
+    "span_id": "atlas/billing-credits.md#promotional-and-prepaid-credits",
+    "heading": "Promotional and prepaid credits",
+    "level": 2,
+    "start": 475,
+    "end": 973
+  },
+  {
+    "document_id": "atlas/billing-credits.md",
+    "span_id": "atlas/billing-credits.md#negative-balances-and-overage",
+    "heading": "Negative balances and overage",
+    "level": 2,
+    "start": 973,
+    "end": 1418
+  },
+  {
+    "document_id": "atlas/billing-credits.md",
+    "span_id": "atlas/billing-credits.md#adjustments-and-approvals",
+    "heading": "Adjustments and approvals",
+    "level": 2,
+    "start": 1418,
+    "end": 1896
+  },
+  {
+    "document_id": "atlas/billing-credits.md",
+    "span_id": "atlas/billing-credits.md#credit-audit-events",
+    "heading": "Credit audit events",
+    "level": 2,
+    "start": 1896,
+    "end": 2366
+  },
+  {
+    "document_id": "atlas/billing-invoices.md",
+    "span_id": "atlas/billing-invoices.md#atlas-billing-invoices",
+    "heading": "Atlas Billing: Invoices",
+    "level": 1,
+    "start": 0,
+    "end": 26
+  },
+  {
+    "document_id": "atlas/billing-invoices.md",
+    "span_id": "atlas/billing-invoices.md#invoice-lifecycle",
+    "heading": "Invoice lifecycle",
+    "level": 2,
+    "start": 26,
+    "end": 522
+  },
+  {
+    "document_id": "atlas/billing-invoices.md",
+    "span_id": "atlas/billing-invoices.md#issue-dates-and-due-dates",
+    "heading": "Issue dates and due dates",
+    "level": 2,
+    "start": 522,
+    "end": 1003
+  },
+  {
+    "document_id": "atlas/billing-invoices.md",
+    "span_id": "atlas/billing-invoices.md#credit-notes-and-refunds",
+    "heading": "Credit notes and refunds",
+    "level": 2,
+    "start": 1003,
+    "end": 1482
+  },
+  {
+    "document_id": "atlas/billing-invoices.md",
+    "span_id": "atlas/billing-invoices.md#line-items-and-tax",
+    "heading": "Line items and tax",
+    "level": 2,
+    "start": 1482,
+    "end": 1899
+  },
+  {
+    "document_id": "atlas/billing-invoices.md",
+    "span_id": "atlas/billing-invoices.md#pdf-and-delivery",
+    "heading": "PDF and delivery",
+    "level": 2,
+    "start": 1899,
+    "end": 2369
+  },
+  {
+    "document_id": "atlas/billing-payments.md",
+    "span_id": "atlas/billing-payments.md#atlas-billing-payments-and-collection",
+    "heading": "Atlas Billing: Payments and Collection",
+    "level": 1,
+    "start": 0,
+    "end": 41
+  },
+  {
+    "document_id": "atlas/billing-payments.md",
+    "span_id": "atlas/billing-payments.md#payment-attempts",
+    "heading": "Payment attempts",
+    "level": 2,
+    "start": 41,
+    "end": 482
+  },
+  {
+    "document_id": "atlas/billing-payments.md",
+    "span_id": "atlas/billing-payments.md#collection-retries",
+    "heading": "Collection retries",
+    "level": 2,
+    "start": 482,
+    "end": 920
+  },
+  {
+    "document_id": "atlas/billing-payments.md",
+    "span_id": "atlas/billing-payments.md#refunds-and-reversals",
+    "heading": "Refunds and reversals",
+    "level": 2,
+    "start": 920,
+    "end": 1409
+  },
+  {
+    "document_id": "atlas/billing-payments.md",
+    "span_id": "atlas/billing-payments.md#currency-and-rounding",
+    "heading": "Currency and rounding",
+    "level": 2,
+    "start": 1409,
+    "end": 1870
+  },
+  {
+    "document_id": "atlas/billing-payments.md",
+    "span_id": "atlas/billing-payments.md#payment-audit",
+    "heading": "Payment audit",
+    "level": 2,
+    "start": 1870,
+    "end": 2359
+  },
+  {
+    "document_id": "atlas/billing-usage.md",
+    "span_id": "atlas/billing-usage.md#atlas-billing-usage-metering",
+    "heading": "Atlas Billing: Usage Metering",
+    "level": 1,
+    "start": 0,
+    "end": 32
+  },
+  {
+    "document_id": "atlas/billing-usage.md",
+    "span_id": "atlas/billing-usage.md#meter-event-acceptance",
+    "heading": "Meter event acceptance",
+    "level": 2,
+    "start": 32,
+    "end": 491
+  },
+  {
+    "document_id": "atlas/billing-usage.md",
+    "span_id": "atlas/billing-usage.md#aggregation-windows-and-late-events",
+    "heading": "Aggregation windows and late events",
+    "level": 2,
+    "start": 491,
+    "end": 975
+  },
+  {
+    "document_id": "atlas/billing-usage.md",
+    "span_id": "atlas/billing-usage.md#billable-units",
+    "heading": "Billable units",
+    "level": 2,
+    "start": 975,
+    "end": 1424
+  },
+  {
+    "document_id": "atlas/billing-usage.md",
+    "span_id": "atlas/billing-usage.md#estimates-and-finalized-totals",
+    "heading": "Estimates and finalized totals",
+    "level": 2,
+    "start": 1424,
+    "end": 1904
+  },
+  {
+    "document_id": "atlas/billing-usage.md",
+    "span_id": "atlas/billing-usage.md#usage-exports",
+    "heading": "Usage exports",
+    "level": 2,
+    "start": 1904,
+    "end": 2349
+  },
+  {
+    "document_id": "atlas/ingestion-batch.md",
+    "span_id": "atlas/ingestion-batch.md#atlas-ingestion-batch-imports",
+    "heading": "Atlas Ingestion: Batch Imports",
+    "level": 1,
+    "start": 0,
+    "end": 33
+  },
+  {
+    "document_id": "atlas/ingestion-batch.md",
+    "span_id": "atlas/ingestion-batch.md#batch-submission-and-limits",
+    "heading": "Batch submission and limits",
+    "level": 2,
+    "start": 33,
+    "end": 500
+  },
+  {
+    "document_id": "atlas/ingestion-batch.md",
+    "span_id": "atlas/ingestion-batch.md#per-record-validation",
+    "heading": "Per-record validation",
+    "level": 2,
+    "start": 500,
+    "end": 1000
+  },
+  {
+    "document_id": "atlas/ingestion-batch.md",
+    "span_id": "atlas/ingestion-batch.md#external-id-deduplication",
+    "heading": "External-ID deduplication",
+    "level": 2,
+    "start": 1000,
+    "end": 1468
+  },
+  {
+    "document_id": "atlas/ingestion-batch.md",
+    "span_id": "atlas/ingestion-batch.md#date-and-timezone-mapping",
+    "heading": "Date and timezone mapping",
+    "level": 2,
+    "start": 1468,
+    "end": 1938
+  },
+  {
+    "document_id": "atlas/ingestion-batch.md",
+    "span_id": "atlas/ingestion-batch.md#safe-batch-retries",
+    "heading": "Safe batch retries",
+    "level": 2,
+    "start": 1938,
+    "end": 2418
+  },
+  {
+    "document_id": "atlas/ingestion-dedup.md",
+    "span_id": "atlas/ingestion-dedup.md#atlas-ingestion-deduplication-and-corrections",
+    "heading": "Atlas Ingestion: Deduplication and Corrections",
+    "level": 1,
+    "start": 0,
+    "end": 49
+  },
+  {
+    "document_id": "atlas/ingestion-dedup.md",
+    "span_id": "atlas/ingestion-dedup.md#record-identity",
+    "heading": "Record identity",
+    "level": 2,
+    "start": 49,
+    "end": 517
+  },
+  {
+    "document_id": "atlas/ingestion-dedup.md",
+    "span_id": "atlas/ingestion-dedup.md#upsert-and-create-only-modes",
+    "heading": "Upsert and create-only modes",
+    "level": 2,
+    "start": 517,
+    "end": 961
+  },
+  {
+    "document_id": "atlas/ingestion-dedup.md",
+    "span_id": "atlas/ingestion-dedup.md#conflicting-retries",
+    "heading": "Conflicting retries",
+    "level": 2,
+    "start": 961,
+    "end": 1435
+  },
+  {
+    "document_id": "atlas/ingestion-dedup.md",
+    "span_id": "atlas/ingestion-dedup.md#corrections",
+    "heading": "Corrections",
+    "level": 2,
+    "start": 1435,
+    "end": 1862
+  },
+  {
+    "document_id": "atlas/ingestion-dedup.md",
+    "span_id": "atlas/ingestion-dedup.md#reconciliation",
+    "heading": "Reconciliation",
+    "level": 2,
+    "start": 1862,
+    "end": 2351
+  },
+  {
+    "document_id": "atlas/ingestion-schema.md",
+    "span_id": "atlas/ingestion-schema.md#atlas-ingestion-schema-evolution",
+    "heading": "Atlas Ingestion: Schema Evolution",
+    "level": 1,
+    "start": 0,
+    "end": 36
+  },
+  {
+    "document_id": "atlas/ingestion-schema.md",
+    "span_id": "atlas/ingestion-schema.md#registry-versions",
+    "heading": "Registry versions",
+    "level": 2,
+    "start": 36,
+    "end": 479
+  },
+  {
+    "document_id": "atlas/ingestion-schema.md",
+    "span_id": "atlas/ingestion-schema.md#compatible-and-breaking-changes",
+    "heading": "Compatible and breaking changes",
+    "level": 2,
+    "start": 479,
+    "end": 911
+  },
+  {
+    "document_id": "atlas/ingestion-schema.md",
+    "span_id": "atlas/ingestion-schema.md#field-aliases-and-mapping",
+    "heading": "Field aliases and mapping",
+    "level": 2,
+    "start": 911,
+    "end": 1391
+  },
+  {
+    "document_id": "atlas/ingestion-schema.md",
+    "span_id": "atlas/ingestion-schema.md#validation-modes",
+    "heading": "Validation modes",
+    "level": 2,
+    "start": 1391,
+    "end": 1847
+  },
+  {
+    "document_id": "atlas/ingestion-schema.md",
+    "span_id": "atlas/ingestion-schema.md#migration-jobs",
+    "heading": "Migration jobs",
+    "level": 2,
+    "start": 1847,
+    "end": 2324
+  },
+  {
+    "document_id": "atlas/ingestion-webhooks.md",
+    "span_id": "atlas/ingestion-webhooks.md#atlas-ingestion-webhooks",
+    "heading": "Atlas Ingestion: Webhooks",
+    "level": 1,
+    "start": 0,
+    "end": 28
+  },
+  {
+    "document_id": "atlas/ingestion-webhooks.md",
+    "span_id": "atlas/ingestion-webhooks.md#delivery-schedule-and-acknowledgement",
+    "heading": "Delivery schedule and acknowledgement",
+    "level": 2,
+    "start": 28,
+    "end": 510
+  },
+  {
+    "document_id": "atlas/ingestion-webhooks.md",
+    "span_id": "atlas/ingestion-webhooks.md#signature-verification",
+    "heading": "Signature verification",
+    "level": 2,
+    "start": 510,
+    "end": 972
+  },
+  {
+    "document_id": "atlas/ingestion-webhooks.md",
+    "span_id": "atlas/ingestion-webhooks.md#event-ids-and-ordering",
+    "heading": "Event IDs and ordering",
+    "level": 2,
+    "start": 972,
+    "end": 1450
+  },
+  {
+    "document_id": "atlas/ingestion-webhooks.md",
+    "span_id": "atlas/ingestion-webhooks.md#replay-window",
+    "heading": "Replay window",
+    "level": 2,
+    "start": 1450,
+    "end": 1904
+  },
+  {
+    "document_id": "atlas/ingestion-webhooks.md",
+    "span_id": "atlas/ingestion-webhooks.md#dead-letter-behavior",
+    "heading": "Dead-letter behavior",
+    "level": 2,
+    "start": 1904,
+    "end": 2339
+  },
+  {
+    "document_id": "atlas/operations-database.md",
+    "span_id": "atlas/operations-database.md#atlas-operations-database-reliability",
+    "heading": "Atlas Operations: Database Reliability",
+    "level": 1,
+    "start": 0,
+    "end": 41
+  },
+  {
+    "document_id": "atlas/operations-database.md",
+    "span_id": "atlas/operations-database.md#replica-lag",
+    "heading": "Replica lag",
+    "level": 2,
+    "start": 41,
+    "end": 496
+  },
+  {
+    "document_id": "atlas/operations-database.md",
+    "span_id": "atlas/operations-database.md#failover-objectives",
+    "heading": "Failover objectives",
+    "level": 2,
+    "start": 496,
+    "end": 983
+  },
+  {
+    "document_id": "atlas/operations-database.md",
+    "span_id": "atlas/operations-database.md#connection-pools",
+    "heading": "Connection pools",
+    "level": 2,
+    "start": 983,
+    "end": 1487
+  },
+  {
+    "document_id": "atlas/operations-database.md",
+    "span_id": "atlas/operations-database.md#migration-locks",
+    "heading": "Migration locks",
+    "level": 2,
+    "start": 1487,
+    "end": 1966
+  },
+  {
+    "document_id": "atlas/operations-database.md",
+    "span_id": "atlas/operations-database.md#backups-and-restore-tests",
+    "heading": "Backups and restore tests",
+    "level": 2,
+    "start": 1966,
+    "end": 2457
+  },
+  {
+    "document_id": "atlas/operations-exports.md",
+    "span_id": "atlas/operations-exports.md#atlas-operations-export-jobs",
+    "heading": "Atlas Operations: Export Jobs",
+    "level": 1,
+    "start": 0,
+    "end": 32
+  },
+  {
+    "document_id": "atlas/operations-exports.md",
+    "span_id": "atlas/operations-exports.md#job-creation-and-formats",
+    "heading": "Job creation and formats",
+    "level": 2,
+    "start": 32,
+    "end": 505
+  },
+  {
+    "document_id": "atlas/operations-exports.md",
+    "span_id": "atlas/operations-exports.md#export-permissions",
+    "heading": "Export permissions",
+    "level": 2,
+    "start": 505,
+    "end": 946
+  },
+  {
+    "document_id": "atlas/operations-exports.md",
+    "span_id": "atlas/operations-exports.md#file-retention-and-urls",
+    "heading": "File retention and URLs",
+    "level": 2,
+    "start": 946,
+    "end": 1388
+  },
+  {
+    "document_id": "atlas/operations-exports.md",
+    "span_id": "atlas/operations-exports.md#consistency-modes",
+    "heading": "Consistency modes",
+    "level": 2,
+    "start": 1388,
+    "end": 1858
+  },
+  {
+    "document_id": "atlas/operations-exports.md",
+    "span_id": "atlas/operations-exports.md#large-export-parts",
+    "heading": "Large export parts",
+    "level": 2,
+    "start": 1858,
+    "end": 2352
+  },
+  {
+    "document_id": "atlas/operations-incidents.md",
+    "span_id": "atlas/operations-incidents.md#atlas-operations-incidents",
+    "heading": "Atlas Operations: Incidents",
+    "level": 1,
+    "start": 0,
+    "end": 30
+  },
+  {
+    "document_id": "atlas/operations-incidents.md",
+    "span_id": "atlas/operations-incidents.md#severity-and-ownership",
+    "heading": "Severity and ownership",
+    "level": 2,
+    "start": 30,
+    "end": 454
+  },
+  {
+    "document_id": "atlas/operations-incidents.md",
+    "span_id": "atlas/operations-incidents.md#timeline-events",
+    "heading": "Timeline events",
+    "level": 2,
+    "start": 454,
+    "end": 905
+  },
+  {
+    "document_id": "atlas/operations-incidents.md",
+    "span_id": "atlas/operations-incidents.md#mitigation-versus-resolution",
+    "heading": "Mitigation versus resolution",
+    "level": 2,
+    "start": 905,
+    "end": 1330
+  },
+  {
+    "document_id": "atlas/operations-incidents.md",
+    "span_id": "atlas/operations-incidents.md#communication-cadence",
+    "heading": "Communication cadence",
+    "level": 2,
+    "start": 1330,
+    "end": 1793
+  },
+  {
+    "document_id": "atlas/operations-incidents.md",
+    "span_id": "atlas/operations-incidents.md#post-incident-review",
+    "heading": "Post-incident review",
+    "level": 2,
+    "start": 1793,
+    "end": 2263
+  },
+  {
+    "document_id": "atlas/operations-queue.md",
+    "span_id": "atlas/operations-queue.md#atlas-operations-queue-reliability",
+    "heading": "Atlas Operations: Queue Reliability",
+    "level": 1,
+    "start": 0,
+    "end": 38
+  },
+  {
+    "document_id": "atlas/operations-queue.md",
+    "span_id": "atlas/operations-queue.md#queue-lag-and-consumer-health",
+    "heading": "Queue lag and consumer health",
+    "level": 2,
+    "start": 38,
+    "end": 514
+  },
+  {
+    "document_id": "atlas/operations-queue.md",
+    "span_id": "atlas/operations-queue.md#poison-messages",
+    "heading": "Poison messages",
+    "level": 2,
+    "start": 514,
+    "end": 968
+  },
+  {
+    "document_id": "atlas/operations-queue.md",
+    "span_id": "atlas/operations-queue.md#visibility-timeout",
+    "heading": "Visibility timeout",
+    "level": 2,
+    "start": 968,
+    "end": 1417
+  },
+  {
+    "document_id": "atlas/operations-queue.md",
+    "span_id": "atlas/operations-queue.md#priority-queues",
+    "heading": "Priority queues",
+    "level": 2,
+    "start": 1417,
+    "end": 1864
+  },
+  {
+    "document_id": "atlas/operations-queue.md",
+    "span_id": "atlas/operations-queue.md#draining-and-shutdown",
+    "heading": "Draining and shutdown",
+    "level": 2,
+    "start": 1864,
+    "end": 2321
+  },
+  {
+    "document_id": "atlas/search-filters.md",
+    "span_id": "atlas/search-filters.md#atlas-search-filters-and-facets",
+    "heading": "Atlas Search: Filters and Facets",
+    "level": 1,
+    "start": 0,
+    "end": 35
+  },
+  {
+    "document_id": "atlas/search-filters.md",
+    "span_id": "atlas/search-filters.md#structured-filters",
+    "heading": "Structured filters",
+    "level": 2,
+    "start": 35,
+    "end": 521
+  },
+  {
+    "document_id": "atlas/search-filters.md",
+    "span_id": "atlas/search-filters.md#facets-and-counts",
+    "heading": "Facets and counts",
+    "level": 2,
+    "start": 521,
+    "end": 965
+  },
+  {
+    "document_id": "atlas/search-filters.md",
+    "span_id": "atlas/search-filters.md#date-boundaries",
+    "heading": "Date boundaries",
+    "level": 2,
+    "start": 965,
+    "end": 1390
+  },
+  {
+    "document_id": "atlas/search-filters.md",
+    "span_id": "atlas/search-filters.md#filter-and-semantic-ordering",
+    "heading": "Filter and semantic ordering",
+    "level": 2,
+    "start": 1390,
+    "end": 1892
+  },
+  {
+    "document_id": "atlas/search-filters.md",
+    "span_id": "atlas/search-filters.md#filter-explanations",
+    "heading": "Filter explanations",
+    "level": 2,
+    "start": 1892,
+    "end": 2339
+  },
+  {
+    "document_id": "atlas/search-lexical.md",
+    "span_id": "atlas/search-lexical.md#atlas-search-lexical-retrieval",
+    "heading": "Atlas Search: Lexical Retrieval",
+    "level": 1,
+    "start": 0,
+    "end": 34
+  },
+  {
+    "document_id": "atlas/search-lexical.md",
+    "span_id": "atlas/search-lexical.md#when-lexical-search-is-the-right-tool",
+    "heading": "When lexical search is the right tool",
+    "level": 2,
+    "start": 34,
+    "end": 547
+  },
+  {
+    "document_id": "atlas/search-lexical.md",
+    "span_id": "atlas/search-lexical.md#field-boosts",
+    "heading": "Field boosts",
+    "level": 2,
+    "start": 547,
+    "end": 982
+  },
+  {
+    "document_id": "atlas/search-lexical.md",
+    "span_id": "atlas/search-lexical.md#phrase-and-punctuation-handling",
+    "heading": "Phrase and punctuation handling",
+    "level": 2,
+    "start": 982,
+    "end": 1424
+  },
+  {
+    "document_id": "atlas/search-lexical.md",
+    "span_id": "atlas/search-lexical.md#tokenization-and-stopwords",
+    "heading": "Tokenization and stopwords",
+    "level": 2,
+    "start": 1424,
+    "end": 1902
+  },
+  {
+    "document_id": "atlas/search-lexical.md",
+    "span_id": "atlas/search-lexical.md#fuzzy-matching",
+    "heading": "Fuzzy matching",
+    "level": 2,
+    "start": 1902,
+    "end": 2378
+  },
+  {
+    "document_id": "atlas/search-ranking.md",
+    "span_id": "atlas/search-ranking.md#atlas-search-ranking-and-reranking",
+    "heading": "Atlas Search: Ranking and Reranking",
+    "level": 1,
+    "start": 0,
+    "end": 38
+  },
+  {
+    "document_id": "atlas/search-ranking.md",
+    "span_id": "atlas/search-ranking.md#hybrid-score-fusion",
+    "heading": "Hybrid score fusion",
+    "level": 2,
+    "start": 38,
+    "end": 515
+  },
+  {
+    "document_id": "atlas/search-ranking.md",
+    "span_id": "atlas/search-ranking.md#candidate-pool-and-cross-encoder",
+    "heading": "Candidate pool and cross-encoder",
+    "level": 2,
+    "start": 515,
+    "end": 997
+  },
+  {
+    "document_id": "atlas/search-ranking.md",
+    "span_id": "atlas/search-ranking.md#ranking-features",
+    "heading": "Ranking features",
+    "level": 2,
+    "start": 997,
+    "end": 1458
+  },
+  {
+    "document_id": "atlas/search-ranking.md",
+    "span_id": "atlas/search-ranking.md#deterministic-tie-breaking",
+    "heading": "Deterministic tie-breaking",
+    "level": 2,
+    "start": 1458,
+    "end": 1974
+  },
+  {
+    "document_id": "atlas/search-ranking.md",
+    "span_id": "atlas/search-ranking.md#explainability",
+    "heading": "Explainability",
+    "level": 2,
+    "start": 1974,
+    "end": 2480
+  },
+  {
+    "document_id": "atlas/search-semantic.md",
+    "span_id": "atlas/search-semantic.md#atlas-search-semantic-retrieval",
+    "heading": "Atlas Search: Semantic Retrieval",
+    "level": 1,
+    "start": 0,
+    "end": 35
+  },
+  {
+    "document_id": "atlas/search-semantic.md",
+    "span_id": "atlas/search-semantic.md#meaning-beyond-exact-terms",
+    "heading": "Meaning beyond exact terms",
+    "level": 2,
+    "start": 35,
+    "end": 540
+  },
+  {
+    "document_id": "atlas/search-semantic.md",
+    "span_id": "atlas/search-semantic.md#passage-representation",
+    "heading": "Passage representation",
+    "level": 2,
+    "start": 540,
+    "end": 1034
+  },
+  {
+    "document_id": "atlas/search-semantic.md",
+    "span_id": "atlas/search-semantic.md#similarity-and-candidate-recall",
+    "heading": "Similarity and candidate recall",
+    "level": 2,
+    "start": 1034,
+    "end": 1510
+  },
+  {
+    "document_id": "atlas/search-semantic.md",
+    "span_id": "atlas/search-semantic.md#multilingual-and-paraphrase-behavior",
+    "heading": "Multilingual and paraphrase behavior",
+    "level": 2,
+    "start": 1510,
+    "end": 2050
+  },
+  {
+    "document_id": "atlas/search-semantic.md",
+    "span_id": "atlas/search-semantic.md#dense-failure-modes",
+    "heading": "Dense failure modes",
+    "level": 2,
+    "start": 2050,
+    "end": 2538
+  },
+  {
+    "document_id": "atlas/workflows-approvals.md",
+    "span_id": "atlas/workflows-approvals.md#atlas-workflows-approvals",
+    "heading": "Atlas Workflows: Approvals",
+    "level": 1,
+    "start": 0,
+    "end": 29
+  },
+  {
+    "document_id": "atlas/workflows-approvals.md",
+    "span_id": "atlas/workflows-approvals.md#approval-states",
+    "heading": "Approval states",
+    "level": 2,
+    "start": 29,
+    "end": 470
+  },
+  {
+    "document_id": "atlas/workflows-approvals.md",
+    "span_id": "atlas/workflows-approvals.md#quorum-rules",
+    "heading": "Quorum rules",
+    "level": 2,
+    "start": 470,
+    "end": 907
+  },
+  {
+    "document_id": "atlas/workflows-approvals.md",
+    "span_id": "atlas/workflows-approvals.md#approver-eligibility",
+    "heading": "Approver eligibility",
+    "level": 2,
+    "start": 907,
+    "end": 1368
+  },
+  {
+    "document_id": "atlas/workflows-approvals.md",
+    "span_id": "atlas/workflows-approvals.md#timeouts-and-reassignment",
+    "heading": "Timeouts and reassignment",
+    "level": 2,
+    "start": 1368,
+    "end": 1838
+  },
+  {
+    "document_id": "atlas/workflows-approvals.md",
+    "span_id": "atlas/workflows-approvals.md#approval-audit",
+    "heading": "Approval audit",
+    "level": 2,
+    "start": 1838,
+    "end": 2285
+  },
+  {
+    "document_id": "atlas/workflows-conditions.md",
+    "span_id": "atlas/workflows-conditions.md#atlas-workflows-conditions-and-branches",
+    "heading": "Atlas Workflows: Conditions and Branches",
+    "level": 1,
+    "start": 0,
+    "end": 43
+  },
+  {
+    "document_id": "atlas/workflows-conditions.md",
+    "span_id": "atlas/workflows-conditions.md#condition-evaluation",
+    "heading": "Condition evaluation",
+    "level": 2,
+    "start": 43,
+    "end": 521
+  },
+  {
+    "document_id": "atlas/workflows-conditions.md",
+    "span_id": "atlas/workflows-conditions.md#branch-joins",
+    "heading": "Branch joins",
+    "level": 2,
+    "start": 521,
+    "end": 979
+  },
+  {
+    "document_id": "atlas/workflows-conditions.md",
+    "span_id": "atlas/workflows-conditions.md#input-and-output-references",
+    "heading": "Input and output references",
+    "level": 2,
+    "start": 979,
+    "end": 1405
+  },
+  {
+    "document_id": "atlas/workflows-conditions.md",
+    "span_id": "atlas/workflows-conditions.md#versioned-definitions",
+    "heading": "Versioned definitions",
+    "level": 2,
+    "start": 1405,
+    "end": 1817
+  },
+  {
+    "document_id": "atlas/workflows-conditions.md",
+    "span_id": "atlas/workflows-conditions.md#branch-diagnostics",
+    "heading": "Branch diagnostics",
+    "level": 2,
+    "start": 1817,
+    "end": 2268
+  },
+  {
+    "document_id": "atlas/workflows-retries.md",
+    "span_id": "atlas/workflows-retries.md#atlas-workflows-task-retries",
+    "heading": "Atlas Workflows: Task Retries",
+    "level": 1,
+    "start": 0,
+    "end": 32
+  },
+  {
+    "document_id": "atlas/workflows-retries.md",
+    "span_id": "atlas/workflows-retries.md#attempts-and-backoff",
+    "heading": "Attempts and backoff",
+    "level": 2,
+    "start": 32,
+    "end": 487
+  },
+  {
+    "document_id": "atlas/workflows-retries.md",
+    "span_id": "atlas/workflows-retries.md#concurrency-and-queues",
+    "heading": "Concurrency and queues",
+    "level": 2,
+    "start": 487,
+    "end": 952
+  },
+  {
+    "document_id": "atlas/workflows-retries.md",
+    "span_id": "atlas/workflows-retries.md#failure-classification",
+    "heading": "Failure classification",
+    "level": 2,
+    "start": 952,
+    "end": 1487
+  },
+  {
+    "document_id": "atlas/workflows-retries.md",
+    "span_id": "atlas/workflows-retries.md#compensation-versus-retry",
+    "heading": "Compensation versus retry",
+    "level": 2,
+    "start": 1487,
+    "end": 2008
+  },
+  {
+    "document_id": "atlas/workflows-retries.md",
+    "span_id": "atlas/workflows-retries.md#manual-replay",
+    "heading": "Manual replay",
+    "level": 2,
+    "start": 2008,
+    "end": 2463
+  },
+  {
+    "document_id": "atlas/workflows-triggers.md",
+    "span_id": "atlas/workflows-triggers.md#atlas-workflows-triggers",
+    "heading": "Atlas Workflows: Triggers",
+    "level": 1,
+    "start": 0,
+    "end": 28
+  },
+  {
+    "document_id": "atlas/workflows-triggers.md",
+    "span_id": "atlas/workflows-triggers.md#trigger-types",
+    "heading": "Trigger types",
+    "level": 2,
+    "start": 28,
+    "end": 458
+  },
+  {
+    "document_id": "atlas/workflows-triggers.md",
+    "span_id": "atlas/workflows-triggers.md#event-filters",
+    "heading": "Event filters",
+    "level": 2,
+    "start": 458,
+    "end": 930
+  },
+  {
+    "document_id": "atlas/workflows-triggers.md",
+    "span_id": "atlas/workflows-triggers.md#debounce-and-cooldown",
+    "heading": "Debounce and cooldown",
+    "level": 2,
+    "start": 930,
+    "end": 1414
+  },
+  {
+    "document_id": "atlas/workflows-triggers.md",
+    "span_id": "atlas/workflows-triggers.md#schedule-timezones-and-dst",
+    "heading": "Schedule timezones and DST",
+    "level": 2,
+    "start": 1414,
+    "end": 1861
+  },
+  {
+    "document_id": "atlas/workflows-triggers.md",
+    "span_id": "atlas/workflows-triggers.md#trigger-deduplication",
+    "heading": "Trigger deduplication",
+    "level": 2,
+    "start": 1861,
+    "end": 2328
+  },
+  {
+    "document_id": "chunking.md",
+    "span_id": "chunking.md#chunking",
+    "heading": "Chunking",
+    "level": 1,
+    "start": 0,
+    "end": 214
+  },
+  {
+    "document_id": "chunking.md",
+    "span_id": "chunking.md#recursive-character-splitting",
+    "heading": "Recursive character splitting",
+    "level": 2,
+    "start": 214,
+    "end": 665
+  },
+  {
+    "document_id": "chunking.md",
+    "span_id": "chunking.md#overlap",
+    "heading": "Overlap",
+    "level": 2,
+    "start": 665,
+    "end": 904
+  },
+  {
+    "document_id": "chunking.md",
+    "span_id": "chunking.md#defaults",
+    "heading": "Defaults",
+    "level": 2,
+    "start": 904,
+    "end": 1237
+  },
+  {
+    "document_id": "configuration.md",
+    "span_id": "configuration.md#configuration",
+    "heading": "Configuration",
+    "level": 1,
+    "start": 0,
+    "end": 256
+  },
+  {
+    "document_id": "configuration.md",
+    "span_id": "configuration.md#retrieval-and-storage-settings",
+    "heading": "Retrieval and storage settings",
+    "level": 2,
+    "start": 256,
+    "end": 649
+  },
+  {
+    "document_id": "configuration.md",
+    "span_id": "configuration.md#hybrid-rewriting-and-reranking-toggles",
+    "heading": "Hybrid, rewriting, and reranking toggles",
+    "level": 2,
+    "start": 649,
+    "end": 1010
+  },
+  {
+    "document_id": "configuration.md",
+    "span_id": "configuration.md#per-request-overrides",
+    "heading": "Per-request overrides",
+    "level": 2,
+    "start": 1010,
+    "end": 1301
+  },
+  {
+    "document_id": "evaluation-metrics.md",
+    "span_id": "evaluation-metrics.md#evaluation-metrics",
+    "heading": "Evaluation Metrics",
+    "level": 1,
+    "start": 0,
+    "end": 297
+  },
+  {
+    "document_id": "evaluation-metrics.md",
+    "span_id": "evaluation-metrics.md#retrieval-metrics",
+    "heading": "Retrieval metrics",
+    "level": 2,
+    "start": 297,
+    "end": 1213
+  },
+  {
+    "document_id": "evaluation-metrics.md",
+    "span_id": "evaluation-metrics.md#answer-metric",
+    "heading": "Answer metric",
+    "level": 2,
+    "start": 1213,
+    "end": 1494
+  },
+  {
+    "document_id": "evaluation-metrics.md",
+    "span_id": "evaluation-metrics.md#tuning-workflow",
+    "heading": "Tuning workflow",
+    "level": 2,
+    "start": 1494,
+    "end": 1750
+  },
+  {
+    "document_id": "hybrid-retrieval.md",
+    "span_id": "hybrid-retrieval.md#hybrid-dense-bm25-retrieval",
+    "heading": "Hybrid Dense + BM25 Retrieval",
+    "level": 1,
+    "start": 0,
+    "end": 148
+  },
+  {
+    "document_id": "hybrid-retrieval.md",
+    "span_id": "hybrid-retrieval.md#dense-retrieval",
+    "heading": "Dense retrieval",
+    "level": 2,
+    "start": 148,
+    "end": 423
+  },
+  {
+    "document_id": "hybrid-retrieval.md",
+    "span_id": "hybrid-retrieval.md#sparse-retrieval",
+    "heading": "Sparse retrieval",
+    "level": 2,
+    "start": 423,
+    "end": 651
+  },
+  {
+    "document_id": "hybrid-retrieval.md",
+    "span_id": "hybrid-retrieval.md#score-normalization-and-fusion",
+    "heading": "Score normalization and fusion",
+    "level": 2,
+    "start": 651,
+    "end": 1161
+  },
+  {
+    "document_id": "hybrid-retrieval.md",
+    "span_id": "hybrid-retrieval.md#deduplication",
+    "heading": "Deduplication",
+    "level": 2,
+    "start": 1161,
+    "end": 1510
+  },
+  {
+    "document_id": "query-rewriting.md",
+    "span_id": "query-rewriting.md#query-rewriting-and-expansion",
+    "heading": "Query Rewriting and Expansion",
+    "level": 1,
+    "start": 0,
+    "end": 134
+  },
+  {
+    "document_id": "query-rewriting.md",
+    "span_id": "query-rewriting.md#query-rewriting",
+    "heading": "Query rewriting",
+    "level": 2,
+    "start": 134,
+    "end": 547
+  },
+  {
+    "document_id": "query-rewriting.md",
+    "span_id": "query-rewriting.md#query-expansion",
+    "heading": "Query expansion",
+    "level": 2,
+    "start": 547,
+    "end": 994
+  },
+  {
+    "document_id": "query-rewriting.md",
+    "span_id": "query-rewriting.md#failure-behavior",
+    "heading": "Failure behavior",
+    "level": 2,
+    "start": 994,
+    "end": 1303
+  },
+  {
+    "document_id": "reranking.md",
+    "span_id": "reranking.md#reranking",
+    "heading": "Reranking",
+    "level": 1,
+    "start": 0,
+    "end": 126
+  },
+  {
+    "document_id": "reranking.md",
+    "span_id": "reranking.md#why-rerank",
+    "heading": "Why rerank",
+    "level": 2,
+    "start": 126,
+    "end": 531
+  },
+  {
+    "document_id": "reranking.md",
+    "span_id": "reranking.md#model-and-behavior",
+    "heading": "Model and behavior",
+    "level": 2,
+    "start": 531,
+    "end": 1010
+  },
+  {
+    "document_id": "reranking.md",
+    "span_id": "reranking.md#when-to-enable-it",
+    "heading": "When to enable it",
+    "level": 2,
+    "start": 1010,
+    "end": 1299
+  }
+]

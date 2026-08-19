@@ -16,8 +16,25 @@ class TextSplitter:
     def split_document(self, document: Document) -> list[Chunk]:
         texts = self.split_text(document.content)
         chunks = []
+        source_cursor = 0
+        headings = list(re.finditer(r"(?m)^(#{1,6})[ \t]+(.+?)[ \t]*$", document.content))
         for i, text in enumerate(texts):
             stable_source = str(document.metadata.file_name or document.metadata.file_path).replace("\\", "/").strip()
+            source_start = document.content.find(text, source_cursor)
+            if source_start < 0:
+                source_start = document.content.find(text)
+            source_end = source_start + len(text) if source_start >= 0 else None
+            if source_start >= 0:
+                source_cursor = source_start + 1
+
+            heading_stack: list[tuple[int, str]] = []
+            if source_start is not None and source_start >= 0:
+                for heading in headings:
+                    if heading.start() > source_start:
+                        break
+                    level = len(heading.group(1))
+                    heading_stack = [item for item in heading_stack if item[0] < level]
+                    heading_stack.append((level, heading.group(2).strip()))
             chunk_metadata = ChunkMetadata(
                 document_id=document.id,
                 chunk_id=f"{stable_source}::{i}",
@@ -26,6 +43,9 @@ class TextSplitter:
                 extension=document.metadata.extension,
                 loader_type=document.metadata.loader_type,
                 chunk_index=i,
+                source_char_start=source_start if source_start >= 0 else None,
+                source_char_end=source_end,
+                heading_path=" > ".join(title for _, title in heading_stack),
                 **document.metadata.model_dump(exclude={"file_path", "file_name", "extension", "loader_type"}),
             )
             chunks.append(Chunk(id=str(uuid.uuid4()), document_id=document.id, content=text, metadata=chunk_metadata))

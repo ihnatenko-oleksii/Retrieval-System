@@ -2,9 +2,11 @@ import json
 import logging
 import math
 import os
+from time import perf_counter
 from typing import Any
 
 from app.core.runtime_config import RetrievalConfig
+from app.evals.span_relevance import span_matches_metadata
 from app.generation.generator import Generator
 from app.retrieval.reranker import Reranker
 from app.retrieval.retriever import Retriever
@@ -22,6 +24,10 @@ class Evaluator:
     IDs to positive gains, for example ``{"atlas/api-retries.md::1": 3}``.
     The older ``expected_source`` field remains supported for existing users
     and tests, but it can only provide binary, source-level relevance.
+
+    Benchmark-v3 cases may instead use ``relevance_spans``. These labels point
+    at source-document character intervals and therefore remain valid when the
+    retrieval index changes chunk size, overlap, or representation.
     """
 
     def __init__(
@@ -175,6 +181,40 @@ class Evaluator:
         return labels
 
     @classmethod
+    def _parse_span_relevance(cls, case: dict[str, Any]) -> list[dict[str, Any]] | None:
+        """Parse source-span labels without converting them to chunk IDs."""
+        raw_spans = case.get("relevance_spans")
+        if raw_spans is None:
+            return None
+        if not isinstance(raw_spans, list):
+            return []
+
+        labels: list[dict[str, Any]] = []
+        for entry in raw_spans:
+            if not isinstance(entry, dict):
+                continue
+            document_id = entry.get("document_id")
+            span_id = entry.get("span_id") or document_id
+            try:
+                start = int(entry["start"])
+                end = int(entry["end"])
+                gain = float(entry.get("gain", 1))
+            except (KeyError, TypeError, ValueError):
+                continue
+            if not document_id or not span_id or start < 0 or end <= start or gain <= 0:
+                continue
+            labels.append(
+                {
+                    "document_id": str(document_id),
+                    "span_id": str(span_id),
+                    "start": start,
+                    "end": end,
+                    "gain": gain,
+                }
+            )
+        return labels
+
+    @classmethod
     def _match_label(
         cls, labels: dict[str, float], retrieved_meta: dict[str, Any]
     ) -> tuple[str | None, float]:
@@ -222,10 +262,13 @@ class Evaluator:
             question = case.get("question", "")
             expected_source = case.get("expected_source", "")
             expected_keywords = case.get("expected_keywords", [])
+            span_labels = self._parse_span_relevance(case)
             labels = self._parse_relevance(case)
             expected_sources = self._expected_sources(case)
 
+            retrieval_started = perf_counter()
             chunks = self.retriever.retrieve(question, top_k=self.top_k, config=self.config)
+            retrieval_latency_ms = round((perf_counter() - retrieval_started) * 1000, 3)
             routing_trace = getattr(self.retriever, "last_trace", {}) or {}
             retrieved_sources = [chunk[1].get("file_name", "") for chunk in chunks]
             retrieved_chunk_ids = [self.chunk_id_for_metadata(chunk[1]) for chunk in chunks]
@@ -238,7 +281,14 @@ class Evaluator:
             case_mrr = 0.0
             case_ndcg = 0.0
             for rank, (_, meta, _) in enumerate(chunks, start=1):
-                if labels is not None:
+                if span_labels is not None:
+                    matching_spans = [span for span in span_labels if span_matches_metadata(span, meta)]
+                    gain = max((float(span["gain"]) for span in matching_spans), default=0.0)
+                    gains_by_rank.append(gain)
+                    if matching_spans and gain > 0:
+                        relevant_ranks.append(rank)
+                        matched_label_ids.extend(str(span["span_id"]) for span in matching_spans)
+                elif labels is not None:
                     matched_label_id, gain = self._match_label(labels, meta)
                     gains_by_rank.append(gain)
                     if matched_label_id is not None and gain > 0:
@@ -253,7 +303,24 @@ class Evaluator:
             source_hit = bool(relevant_ranks)
             first_relevant_rank = relevant_ranks[0] if source_hit else None
 
-            if labels is not None:
+            if span_labels is not None:
+                relevant_label_ids = {str(span["span_id"]) for span in span_labels if float(span["gain"]) > 0}
+                matched_ids = set(matched_label_ids)
+                case_recall = (
+                    len(matched_ids & relevant_label_ids) / len(relevant_label_ids) if relevant_label_ids else 0.0
+                )
+                case_precision = len(relevant_ranks) / self.top_k
+
+                if first_relevant_rank is not None:
+                    case_mrr = 1.0 / first_relevant_rank
+
+                ideal_gains = sorted(
+                    (float(span["gain"]) for span in span_labels if float(span["gain"]) > 0),
+                    reverse=True,
+                )
+                idcg = self._dcg(ideal_gains[: self.top_k])
+                case_ndcg = self._dcg(gains_by_rank[: self.top_k]) / idcg if idcg else 0.0
+            elif labels is not None:
                 relevant_label_ids = {label_id for label_id, gain in labels.items() if gain > 0}
                 matched_ids = set(matched_label_ids)
                 case_recall = (
@@ -300,7 +367,13 @@ class Evaluator:
                     "category": case.get("category", "uncategorized"),
                     "question": question,
                     "expected_source": expected_source,
-                    "relevant_chunk_ids": " | ".join(sorted(labels or {})),
+                    "relevant_chunk_ids": " | ".join(
+                        sorted(
+                            {str(span["span_id"]) for span in span_labels}
+                            if span_labels is not None
+                            else labels or {}
+                        )
+                    ),
                     "retrieved_chunk_ids": " | ".join(retrieved_chunk_ids),
                     "source_hit": source_hit,
                     "first_relevant_rank": first_relevant_rank,
@@ -315,6 +388,14 @@ class Evaluator:
                     "query_variant_count": int(routing_trace.get("query_variant_count", 1)),
                     "confidence_score": routing_trace.get("confidence_score"),
                     "confidence_triggered": bool(routing_trace.get("confidence_triggered", False)),
+                    "retrieval_latency_ms": retrieval_latency_ms,
+                    "escalated": bool(routing_trace.get("escalated", False)),
+                    "escalation_rate": float(routing_trace.get("escalation_rate", 0.0) or 0.0),
+                    "router_reasons": " | ".join(str(reason) for reason in routing_trace.get("router_reasons", ())),
+                    "instruction_modes": " | ".join(
+                        str(mode) for mode in routing_trace.get("instruction_modes", ())
+                    ),
+                    "hyde_status": str(routing_trace.get("hyde_status", "disabled")),
                     "prf_applied": bool(routing_trace.get("prf_applied", False)),
                     "prf_terms": " | ".join(str(term) for term in routing_trace.get("prf_terms", ())),
                     "ltr_applied": bool(routing_trace.get("ltr_applied", False)),

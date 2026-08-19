@@ -117,6 +117,45 @@ class TestNdcgCorrectness:
 
 
 class TestRetrievalMetrics:
+    def test_source_span_labels_score_overlapping_chunks_without_chunk_ids(self, tmp_path):
+        evaluator = make_evaluator(top_k=3)
+        meta_miss = make_meta("atlas/api-errors.md", 0, file_name="atlas/api-errors.md")
+        meta_hit = make_meta("atlas/api-retries.md", 0, file_name="atlas/api-retries.md")
+        meta_hit.update({"source_char_start": 150, "source_char_end": 250})
+        evaluator.retriever = FakeRetriever(
+            [
+                ("unrelated", meta_miss, 0.9),
+                ("source span", meta_hit, 0.8),
+            ]
+        )
+        evaluator.generator = FakeGenerator("some answer")
+
+        jsonl = write_jsonl(
+            tmp_path,
+            [
+                {
+                    "id": "v3-test",
+                    "category": "semantic",
+                    "question": "q",
+                    "relevance_spans": [
+                        {
+                            "document_id": "atlas/api-retries.md",
+                            "span_id": "atlas/api-retries.md#retryable-responses",
+                            "start": 200,
+                            "end": 300,
+                            "gain": 3,
+                        }
+                    ],
+                    "expected_keywords": [],
+                }
+            ],
+        )
+        metrics, details = evaluator.evaluate_cases(jsonl)
+
+        assert metrics["recall@3"] == 1.0
+        assert metrics["mrr"] == pytest.approx(0.5)
+        assert details[0]["relevant_chunk_ids"] == "atlas/api-retries.md#retryable-responses"
+
     def test_recall_precision_mrr_for_single_hit_at_rank_two(self, tmp_path):
         evaluator = make_evaluator(top_k=3)
         meta_hit = make_meta("a.md", 0, file_name="a.md")
