@@ -8,8 +8,8 @@ logger = logging.getLogger(__name__)
 
 
 class Reranker:
-    def __init__(self, model_name: str = "cross-encoder/ms-marco-MiniLM-L-6-v2", force_load: bool = False):
-        self.model_name = model_name
+    def __init__(self, model_name: str | None = None, force_load: bool = False):
+        self.model_name = model_name or settings.reranker_model
         self.model = None
         # Load eagerly either when enabled in settings OR when force_load=True
         # (used by the tuning UI which flips the flag per trial).

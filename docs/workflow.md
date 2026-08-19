@@ -34,12 +34,13 @@
    ```text
    You are creating an evaluation dataset for a RAG system.
    Given the documents, generate JSONL lines with schema:
-   {"question":"...","expected_keywords":["..."],"expected_source":"..."}
+   {"question":"...","expected_keywords":["..."],"relevance":{"docs/a.md::0":3}}
 
    Requirements:
    - Create diverse questions: definitions, process steps, URLs, statuses, technical details.
    - Include both easy and hard questions.
-   - expected_source must be the exact relative source path/file used in the corpus.
+   - relevance should map one or more corpus-relative chunk IDs to positive graded gains.
+   - expected_chunk_ids is supported as a binary shorthand; expected_source remains a legacy document-level fallback.
    - expected_keywords should contain key terms that must appear in a correct answer.
    - Keep questions unambiguous and answerable from one or few sources.
    - Output only valid JSONL (one JSON object per line, no markdown).
@@ -77,7 +78,7 @@ Follow these steps exactly:
 1) Install dependencies:
    - Run: uv sync
 2) Ensure Ollama model is available:
-   - Run: ollama pull llama3.2
+   - Run: ollama pull <the model configured by LLM_MODEL>
 3) Ingest documents from ./data:
    - Run: uv run main.py ingest "./data"
 4) Run a quick sanity question:

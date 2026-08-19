@@ -164,6 +164,23 @@ class TestRetrieveConfigResolution:
         results = retriever.retrieve("q")
         assert results == []
 
+    def test_dense_only_does_not_query_bm25(self):
+        vector_store = MagicMock()
+        bm25_store = MagicMock()
+        meta = make_meta("docs/dense.md", 0)
+        vector_store.query.return_value = {
+            "documents": [["dense result"]],
+            "metadatas": [[meta]],
+            "distances": [[0.1]],
+        }
+        retriever = make_retriever(vector_store=vector_store, bm25_store=bm25_store)
+
+        results = retriever.retrieve("exact acronym CI", config=base_config(dense_weight=1.0, sparse_weight=0.0))
+
+        assert results[0][0] == "dense result"
+        assert results[0][2] == pytest.approx(1.0)
+        bm25_store.query.assert_not_called()
+
 
 class TestRerankingSwitch:
     def test_reranker_invoked_when_enabled(self):

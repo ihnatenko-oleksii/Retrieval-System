@@ -146,6 +146,36 @@ class TestRetrievalMetrics:
         assert details[0]["source_hit"] is False
         assert details[0]["first_relevant_rank"] is None
 
+    def test_chunk_level_graded_labels_use_total_relevance_for_recall_and_ndcg(self, tmp_path):
+        evaluator = make_evaluator(top_k=3)
+        meta_miss = make_meta("c.md", 0, file_name="c.md")
+        meta_relevant = make_meta("b.md", 0, file_name="b.md")
+        evaluator.retriever = FakeRetriever(
+            [
+                ("unrelated", meta_miss, 0.9),
+                ("related", meta_relevant, 0.8),
+            ]
+        )
+        evaluator.generator = FakeGenerator("some answer")
+
+        jsonl = write_jsonl(
+            tmp_path,
+            [
+                {
+                    "question": "q",
+                    "relevance": {"a.md::0": 3, "b.md::0": 1},
+                    "expected_keywords": [],
+                }
+            ],
+        )
+        metrics, details = evaluator.evaluate_cases(jsonl)
+
+        assert metrics["recall@3"] == pytest.approx(0.5)
+        assert metrics["precision@3"] == pytest.approx(1 / 3, abs=1e-4)
+        assert metrics["mrr"] == pytest.approx(0.5)
+        assert 0.0 < metrics["ndcg"] < 1.0
+        assert details[0]["relevant_chunk_ids"] == "a.md::0 | b.md::0"
+
 
 class TestKeywordHitRate:
     def test_all_keywords_present_scores_one(self, tmp_path):

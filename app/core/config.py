@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     embedding_model: str = "intfloat/multilingual-e5-base"
 
     # LLM Model
-    llm_model: str = "llama3.2"
+    llm_model: str = "qwen3.5:4b-mlx"
 
     # Chunking
     chunk_size: int = 1000
@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     retrieval_top_k: int = 3
 
     # Reranking (Phase 2)
+    reranker_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
     rerank_top_n: int = 3
     reranker_on: bool = False
 

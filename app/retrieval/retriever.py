@@ -38,7 +38,7 @@ class Retriever:
         for content, meta, score in results:
             norm_score = 1.0 if max_score == min_score else (score - min_score) / (max_score - min_score)
 
-            if invert:
+            if invert and max_score != min_score:
                 norm_score = 1.0 - norm_score
 
             normalized.append((content, meta, norm_score))
@@ -53,6 +53,9 @@ class Retriever:
         (headers, boilerplate, short code snippets), and keying on content
         would silently collapse them into one result.
         """
+        explicit_chunk_id = meta.get("chunk_id") if meta else None
+        if explicit_chunk_id:
+            return (explicit_chunk_id,)
         file_path = meta.get("file_path") if meta else None
         chunk_index = meta.get("chunk_index") if meta else None
         if file_path is not None and chunk_index is not None:
@@ -125,16 +128,18 @@ class Retriever:
         sparse_results = []
 
         for q in queries:
-            chroma_res = self.vector_store.query(query_text=q, n_results=initial_k)
-            if chroma_res and chroma_res.get("documents") and len(chroma_res["documents"]) > 0:
-                docs = chroma_res["documents"][0]
-                metas = chroma_res["metadatas"][0] if chroma_res.get("metadatas") else [{}] * len(docs)
-                dists = chroma_res["distances"][0] if chroma_res.get("distances") else [0.0] * len(docs)
-                for d, m, c in zip(docs, metas, dists, strict=True):
-                    dense_results.append((d, m, c))
+            if dense_weight > 0:
+                chroma_res = self.vector_store.query(query_text=q, n_results=initial_k)
+                if chroma_res and chroma_res.get("documents") and len(chroma_res["documents"]) > 0:
+                    docs = chroma_res["documents"][0]
+                    metas = chroma_res["metadatas"][0] if chroma_res.get("metadatas") else [{}] * len(docs)
+                    dists = chroma_res["distances"][0] if chroma_res.get("distances") else [0.0] * len(docs)
+                    for d, m, c in zip(docs, metas, dists, strict=True):
+                        dense_results.append((d, m, c))
 
-            bm25_res = self.bm25_store.query(query_text=q, n_results=initial_k)
-            sparse_results.extend(bm25_res)
+            if sparse_weight > 0:
+                bm25_res = self.bm25_store.query(query_text=q, n_results=initial_k)
+                sparse_results.extend(bm25_res)
 
         # 3. Normalize
         norm_dense = self._normalize_scores(dense_results, invert=True)
@@ -143,7 +148,7 @@ class Retriever:
         # 4. Hybrid fusion (weights are overridable).
         wd = dense_weight
         ws = sparse_weight
-        if self._extract_acronyms(query):
+        if dense_weight > 0 and sparse_weight > 0 and self._extract_acronyms(query):
             # Acronym lookups work better with lexical emphasis.
             wd, ws = 0.35, 0.65
 
@@ -160,7 +165,8 @@ class Retriever:
                 combined_scores[key] = [content, meta, 0.0]
             combined_scores[key][2] += score * ws
 
-        self._apply_query_intent_boost(query, combined_scores)
+        if sparse_weight > 0:
+            self._apply_query_intent_boost(query, combined_scores)
 
         final_results = sorted(combined_scores.values(), key=lambda x: x[2], reverse=True)
 

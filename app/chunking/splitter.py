@@ -17,8 +17,10 @@ class TextSplitter:
         texts = self.split_text(document.content)
         chunks = []
         for i, text in enumerate(texts):
+            stable_source = str(document.metadata.file_name or document.metadata.file_path).replace("\\", "/").strip()
             chunk_metadata = ChunkMetadata(
                 document_id=document.id,
+                chunk_id=f"{stable_source}::{i}",
                 file_path=document.metadata.file_path,
                 file_name=document.metadata.file_name,
                 extension=document.metadata.extension,

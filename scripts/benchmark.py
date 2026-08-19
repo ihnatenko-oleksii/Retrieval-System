@@ -19,10 +19,12 @@ indexed under ./storage.
 """
 
 import argparse
+import json
 import re
 import shutil
 import sys
 import time
+from collections import Counter
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -36,6 +38,41 @@ CONFIGS = {
     "B. Hybrid (dense + BM25)": {"dense_weight": 0.7, "sparse_weight": 0.3, "reranker_on": False},
     "C. Hybrid + reranking": {"dense_weight": 0.7, "sparse_weight": 0.3, "reranker_on": True},
 }
+
+
+def load_jsonl(path: Path) -> list[dict]:
+    with path.open(encoding="utf-8") as handle:
+        return [json.loads(line) for line in handle if line.strip()]
+
+
+def validate_chunk_labels(cases: list[dict], chunks: list) -> None:
+    """Fail early when a label points at a chunk absent from the corpus."""
+    from app.evals.evaluator import Evaluator
+
+    known_ids = {
+        Evaluator.chunk_id_for_metadata(chunk.metadata.model_dump())
+        for chunk in chunks
+    }
+    missing: list[str] = []
+    for case in cases:
+        labels = Evaluator._parse_relevance(case)
+        if labels is None:
+            continue
+        for chunk_id in labels:
+            if chunk_id not in known_ids:
+                missing.append(f"{case.get('id', '<unnamed>')}: {chunk_id}")
+    if missing:
+        preview = ", ".join(missing[:5])
+        suffix = " ..." if len(missing) > 5 else ""
+        raise SystemExit(f"Eval file contains chunk IDs absent from the corpus: {preview}{suffix}")
+
+
+def corpus_stats(chunks: list) -> tuple[int, int]:
+    documents = {
+        str(chunk.metadata.file_name)
+        for chunk in chunks
+    }
+    return len(documents), len(chunks)
 
 
 def run(args: argparse.Namespace) -> None:
@@ -68,6 +105,10 @@ def run(args: argparse.Namespace) -> None:
     chunks = pipeline.process_directory(str(corpus_dir))
     if not chunks:
         raise SystemExit("No chunks were produced from the benchmark corpus.")
+    cases = load_jsonl(eval_path)
+    if not cases:
+        raise SystemExit("No evaluation cases were found in the eval file.")
+    validate_chunk_labels(cases, chunks)
 
     vector_store = VectorStore()
     bm25_store = BM25Store(persist_dir=str(bench_storage))
@@ -107,10 +148,10 @@ def run(args: argparse.Namespace) -> None:
         rows.append((label, metrics, elapsed))
         print(f"  done in {elapsed:.1f}s: {metrics}")
 
-    write_report(args, corpus_dir, eval_path, rows)
+    write_report(args, corpus_dir, eval_path, rows, chunks)
 
 
-def write_report(args: argparse.Namespace, corpus_dir: Path, eval_path: Path, rows: list) -> None:
+def write_report(args: argparse.Namespace, corpus_dir: Path, eval_path: Path, rows: list, chunks: list) -> None:
     from app.core.config import settings
 
     metric_keys = [f"recall@{args.top_k}", f"precision@{args.top_k}", "mrr", "ndcg"]
@@ -125,16 +166,23 @@ def write_report(args: argparse.Namespace, corpus_dir: Path, eval_path: Path, ro
         lines.append("| " + label + " | " + " | ".join(cells) + " |")
     table = "\n".join(lines)
 
-    n_cases = sum(1 for _ in eval_path.open(encoding="utf-8") if _.strip())
+    cases = load_jsonl(eval_path)
+    n_cases = len(cases)
+    n_documents, n_chunks = corpus_stats(chunks)
+    category_counts = Counter(case.get("category", "uncategorized") for case in cases)
+    category_summary = ", ".join(f"{category}={count}" for category, count in sorted(category_counts.items()))
     generation_note = (
-        "keyword_hit_rate omitted (`--skip-generation`): no LLM calls were made."
+        f"keyword_hit_rate omitted (`--skip-generation`): no LLM calls were made; configured generation model is `{settings.llm_model}`."
         if args.skip_generation
-        else "keyword_hit_rate requires a running local LLM via Ollama."
+        else f"keyword_hit_rate uses the configured local Ollama model `{settings.llm_model}`."
     )
 
     block = f"""{RESULTS_START}
 _Last run: {time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime())}_
-_Corpus: `{corpus_dir.relative_to(REPO_ROOT)}` ({n_cases} eval cases) — embedding model: `{settings.embedding_model}`, top_k={args.top_k}._
+_Corpus: `{corpus_dir.relative_to(REPO_ROOT)}` ({n_documents} documents, {n_chunks} chunks, {n_cases} eval cases)._
+_Question categories: {category_summary}._
+_Settings: embedding_model=`{settings.embedding_model}`, top_k={args.top_k}, chunk_size={settings.chunk_size}, chunk_overlap={settings.chunk_overlap}, dense_weight=0.7, sparse_weight=0.3, rerank_top_n={args.top_k}, reranker_model=`{settings.reranker_model}`, llm_model=`{settings.llm_model}`._
+_Configurations: A dense=1.0/sparse=0.0/rerank=off; B dense=0.7/sparse=0.3/rerank=off; C dense=0.7/sparse=0.3/rerank=on._
 _{generation_note}_
 
 {table}
@@ -146,11 +194,37 @@ _{generation_note}_
         raise SystemExit(f"{benchmark_md} is missing the {RESULTS_START}/{RESULTS_END} markers.")
     new_text = re.sub(
         re.escape(RESULTS_START) + r".*?" + re.escape(RESULTS_END),
-        block.replace("\\", "\\\\"),
+        lambda _: block,
         text,
         flags=re.DOTALL,
     )
     benchmark_md.write_text(new_text, encoding="utf-8")
+    if not getattr(args, "no_history", False):
+        history_path = REPO_ROOT / "docs" / "benchmark_history.jsonl"
+        history_record = {
+            "run_id": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "corpus": str(corpus_dir.relative_to(REPO_ROOT)),
+            "documents": n_documents,
+            "chunks": n_chunks,
+            "eval_cases": n_cases,
+            "question_categories": dict(sorted(category_counts.items())),
+            "settings": {
+                "embedding_model": settings.embedding_model,
+                "top_k": args.top_k,
+                "chunk_size": settings.chunk_size,
+                "chunk_overlap": settings.chunk_overlap,
+                "dense_weight": 0.7,
+                "sparse_weight": 0.3,
+                "rerank_top_n": args.top_k,
+                "reranker_model": settings.reranker_model,
+                "llm_model": settings.llm_model,
+                "generation_skipped": args.skip_generation,
+            },
+            "results": {label: metrics for label, metrics, _ in rows},
+        }
+        with history_path.open("a", encoding="utf-8") as history_file:
+            history_file.write(json.dumps(history_record, sort_keys=True) + "\n")
+        print(f"Recorded run history in {history_path}")
     print(f"\nWrote results into {benchmark_md}")
 
 
@@ -172,6 +246,11 @@ def parse_args() -> argparse.Namespace:
         "--keep-index",
         action="store_true",
         help="Reuse an existing benchmark index instead of re-ingesting from scratch.",
+    )
+    parser.add_argument(
+        "--no-history",
+        action="store_true",
+        help="Do not append this run to docs/benchmark_history.jsonl.",
     )
     return parser.parse_args()
 

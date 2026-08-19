@@ -22,6 +22,10 @@ class Document(BaseModel):
 
 class ChunkMetadata(BaseModel):
     document_id: str
+    # Stable, human-readable identity used by evaluation labels. `Chunk.id`
+    # remains an ingestion-time identifier, while this value survives a fresh
+    # benchmark index rebuild.
+    chunk_id: str | None = None
     file_path: str
     file_name: str
     extension: str

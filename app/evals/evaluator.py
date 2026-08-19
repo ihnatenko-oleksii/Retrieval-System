@@ -15,6 +15,14 @@ logger = logging.getLogger(__name__)
 
 
 class Evaluator:
+    """Evaluate retrieval with document-, chunk-, or graded relevance labels.
+
+    New benchmark cases should use a ``relevance`` mapping from stable chunk
+    IDs to positive gains, for example ``{"atlas/api-retries.md::1": 3}``.
+    The older ``expected_source`` field remains supported for existing users
+    and tests, but it can only provide binary, source-level relevance.
+    """
+
     def __init__(
         self,
         top_k: int = 5,
@@ -45,39 +53,143 @@ class Evaluator:
         with open(jsonl_path, encoding="utf-8") as f:
             return [json.loads(line) for line in f if line.strip()]
 
-    def _norm_source(self, value: str) -> str:
+    @staticmethod
+    def _norm_source(value: Any) -> str:
         if not value:
             return ""
         # Normalize slashes + case for robust matching across OS / ingestion formats.
         return str(value).replace("\\", "/").strip().lower()
 
-    def _source_matches(self, expected_source: str, retrieved_meta: dict) -> bool:
+    @classmethod
+    def chunk_id_for_metadata(cls, retrieved_meta: dict[str, Any]) -> str:
+        """Return the stable evaluation ID exposed by a retrieved chunk."""
+        explicit_chunk_id = retrieved_meta.get("chunk_id") if retrieved_meta else None
+        if explicit_chunk_id:
+            return cls._norm_source(explicit_chunk_id)
+
+        source = (retrieved_meta.get("file_name") or retrieved_meta.get("file_path", "")) if retrieved_meta else ""
+        source = cls._norm_source(source)
+        chunk_index = retrieved_meta.get("chunk_index") if retrieved_meta else None
+        if source and chunk_index is not None:
+            return f"{source}::{chunk_index}"
+        return source
+
+    @classmethod
+    def _chunk_id_aliases(cls, retrieved_meta: dict[str, Any]) -> set[str]:
+        """Return stable and legacy aliases that may identify one chunk."""
+        aliases: set[str] = set()
+        explicit_chunk_id = retrieved_meta.get("chunk_id") if retrieved_meta else None
+        if explicit_chunk_id:
+            aliases.add(cls._norm_source(explicit_chunk_id))
+
+        chunk_index = retrieved_meta.get("chunk_index") if retrieved_meta else None
+        for source_key in ("file_name", "file_path"):
+            source = cls._norm_source(retrieved_meta.get(source_key, "") if retrieved_meta else "")
+            if source and chunk_index is not None:
+                aliases.add(f"{source}::{chunk_index}")
+        return aliases
+
+    @staticmethod
+    def _source_matches(expected_source: str, retrieved_meta: dict) -> bool:
         """
         Match eval `expected_source` against retrieved metadata.
-        Supports:
-        - full relative paths (preferred)
-        - basename-only (legacy ingestions)
-        - endswith matching for cases where expected_source includes folders
+        Supports full relative paths, basename-only legacy ingestions, and
+        suffix matching when the expected value includes folders.
         """
-        exp = self._norm_source(expected_source)
+        exp = Evaluator._norm_source(expected_source)
         if not exp:
             return False
 
-        file_name = self._norm_source(retrieved_meta.get("file_name", ""))
-        file_path = self._norm_source(retrieved_meta.get("file_path", ""))
+        file_name = Evaluator._norm_source(retrieved_meta.get("file_name", ""))
+        file_path = Evaluator._norm_source(retrieved_meta.get("file_path", ""))
         candidates = [c for c in (file_name, file_path) if c]
         if not candidates:
             return False
 
-        exp_base = self._norm_source(os.path.basename(exp))
+        exp_base = Evaluator._norm_source(os.path.basename(exp))
         for cand in candidates:
             if exp in cand:
                 return True
-            if exp_base and (exp_base == os.path.basename(cand)):
+            if exp_base and exp_base == os.path.basename(cand):
                 return True
-            if exp and cand.endswith(exp):
+            if cand.endswith(exp):
                 return True
         return False
+
+    @classmethod
+    def _parse_relevance(cls, case: dict[str, Any]) -> dict[str, float] | None:
+        """Parse new graded labels and the binary chunk-ID shorthand."""
+        raw_relevance = case.get("relevance")
+        raw_chunk_ids = case.get("expected_chunk_ids")
+        if raw_relevance is None and raw_chunk_ids is None:
+            return None
+
+        labels: dict[str, float] = {}
+        if isinstance(raw_relevance, dict):
+            for chunk_id, gain in raw_relevance.items():
+                try:
+                    numeric_gain = float(gain)
+                except (TypeError, ValueError):
+                    continue
+                if numeric_gain > 0:
+                    labels[cls._norm_source(chunk_id)] = numeric_gain
+        elif isinstance(raw_relevance, list):
+            for entry in raw_relevance:
+                if isinstance(entry, str):
+                    labels[cls._norm_source(entry)] = 1.0
+                    continue
+                if not isinstance(entry, dict):
+                    continue
+                chunk_id = entry.get("chunk_id") or entry.get("id")
+                if not chunk_id:
+                    continue
+                gain = entry.get("gain", entry.get("relevance", 1))
+                try:
+                    numeric_gain = float(gain)
+                except (TypeError, ValueError):
+                    continue
+                if numeric_gain > 0:
+                    labels[cls._norm_source(chunk_id)] = numeric_gain
+
+        if raw_chunk_ids is not None:
+            if isinstance(raw_chunk_ids, dict):
+                for chunk_id, gain in raw_chunk_ids.items():
+                    try:
+                        numeric_gain = float(gain)
+                    except (TypeError, ValueError):
+                        numeric_gain = 1.0
+                    if numeric_gain > 0:
+                        labels[cls._norm_source(chunk_id)] = numeric_gain
+            elif isinstance(raw_chunk_ids, list):
+                for chunk_id in raw_chunk_ids:
+                    if isinstance(chunk_id, str) and chunk_id.strip():
+                        labels[cls._norm_source(chunk_id)] = 1.0
+
+        return labels
+
+    @classmethod
+    def _match_label(
+        cls, labels: dict[str, float], retrieved_meta: dict[str, Any]
+    ) -> tuple[str | None, float]:
+        aliases = cls._chunk_id_aliases(retrieved_meta)
+        for label_id, gain in labels.items():
+            if label_id in aliases:
+                return label_id, gain
+        return None, 0.0
+
+    @staticmethod
+    def _dcg(gains: list[float]) -> float:
+        return sum((2**gain - 1) / math.log2(rank + 2) for rank, gain in enumerate(gains))
+
+    @classmethod
+    def _expected_sources(cls, case: dict[str, Any]) -> list[str]:
+        expected_sources = case.get("expected_sources")
+        if expected_sources is None:
+            expected_source = case.get("expected_source", "")
+            return [expected_source] if isinstance(expected_source, str) else list(expected_source or [])
+        if isinstance(expected_sources, str):
+            return [expected_sources]
+        return list(expected_sources)
 
     def evaluate_cases(self, jsonl_path: str) -> tuple[dict[str, float], list[dict[str, Any]]]:
         try:
@@ -99,35 +211,60 @@ class Evaluator:
         }
         case_details: list[dict[str, Any]] = []
 
-        for case in cases:
+        for case_index, case in enumerate(cases, start=1):
             question = case.get("question", "")
             expected_source = case.get("expected_source", "")
             expected_keywords = case.get("expected_keywords", [])
+            labels = self._parse_relevance(case)
+            expected_sources = self._expected_sources(case)
 
             chunks = self.retriever.retrieve(question, top_k=self.top_k, config=self.config)
             retrieved_sources = [chunk[1].get("file_name", "") for chunk in chunks]
+            retrieved_chunk_ids = [self.chunk_id_for_metadata(chunk[1]) for chunk in chunks]
 
-            relevant_ranks = []
-            for rank, _src in enumerate(retrieved_sources, start=1):
-                meta = chunks[rank - 1][1] if rank - 1 < len(chunks) else {}
-                if self._source_matches(expected_source, meta):
-                    relevant_ranks.append(rank)
+            relevant_ranks: list[int] = []
+            matched_label_ids: list[str] = []
+            gains_by_rank: list[float] = []
+            for rank, (_, meta, _) in enumerate(chunks, start=1):
+                if labels is not None:
+                    matched_label_id, gain = self._match_label(labels, meta)
+                    gains_by_rank.append(gain)
+                    if matched_label_id is not None and gain > 0:
+                        relevant_ranks.append(rank)
+                        matched_label_ids.append(matched_label_id)
+                else:
+                    is_relevant = any(self._source_matches(source, meta) for source in expected_sources)
+                    gains_by_rank.append(1.0 if is_relevant else 0.0)
+                    if is_relevant:
+                        relevant_ranks.append(rank)
 
             source_hit = bool(relevant_ranks)
             first_relevant_rank = relevant_ranks[0] if source_hit else None
 
-            if source_hit:
+            if labels is not None:
+                relevant_label_ids = {label_id for label_id, gain in labels.items() if gain > 0}
+                matched_ids = set(matched_label_ids)
+                metrics[f"recall@{self.top_k}"] += (
+                    len(matched_ids & relevant_label_ids) / len(relevant_label_ids) if relevant_label_ids else 0.0
+                )
+                metrics[f"precision@{self.top_k}"] += len(relevant_ranks) / self.top_k
+
+                if first_relevant_rank is not None:
+                    metrics["mrr"] += 1.0 / first_relevant_rank
+
+                ideal_gains = sorted((labels[label_id] for label_id in relevant_label_ids), reverse=True)
+                idcg = self._dcg(ideal_gains[: self.top_k])
+                metrics["ndcg"] += self._dcg(gains_by_rank[: self.top_k]) / idcg if idcg else 0.0
+            elif source_hit:
+                # Legacy source-only cases cannot know how many relevant chunks
+                # exist outside the retrieved list. Preserve their historical
+                # binary recall and found-hit nDCG semantics.
                 metrics[f"recall@{self.top_k}"] += 1.0
                 metrics[f"precision@{self.top_k}"] += len(relevant_ranks) / self.top_k
                 metrics["mrr"] += 1.0 / first_relevant_rank
-
                 dcg = sum(1.0 / math.log2(rank + 1) for rank in relevant_ranks)
-                # Ideal DCG places every relevant chunk we actually found at the
-                # front of the ranking. We don't know the true total number of
-                # relevant chunks in the corpus, so the number found (already
-                # capped at top_k by construction) is the best available bound.
-                idcg = sum(1.0 / math.log2(rank + 1) for rank in range(1, len(relevant_ranks) + 1))
-                metrics["ndcg"] += dcg / idcg
+                idcg = self._dcg([1.0] * len(relevant_ranks))
+                metrics["ndcg"] += dcg / idcg if idcg else 0.0
 
             case_keyword_score = None
             if not getattr(self, "skip_generation", False):
@@ -142,8 +279,12 @@ class Evaluator:
 
             case_details.append(
                 {
+                    "case_id": case.get("id", f"case-{case_index:03d}"),
+                    "category": case.get("category", "uncategorized"),
                     "question": question,
                     "expected_source": expected_source,
+                    "relevant_chunk_ids": " | ".join(sorted(labels or {})),
+                    "retrieved_chunk_ids": " | ".join(retrieved_chunk_ids),
                     "source_hit": source_hit,
                     "first_relevant_rank": first_relevant_rank,
                     "retrieved_sources": " | ".join(retrieved_sources),
@@ -154,8 +295,8 @@ class Evaluator:
         num_cases = len(cases)
         if getattr(self, "skip_generation", False):
             del metrics["keyword_hit_rate"]
-        for k in metrics:
-            metrics[k] = round(metrics[k] / num_cases, 4)
+        for key in metrics:
+            metrics[key] = round(metrics[key] / num_cases, 4)
 
         return metrics, case_details
 
