@@ -44,6 +44,24 @@ class Settings(BaseSettings):
     confidence_routing: bool = False
     confidence_threshold: float = 0.35
 
+    # Phase 3 optional retrieval components
+    prf_on: bool = False
+    prf_depth: int = 1
+    prf_min_confidence: float = 0.35
+    prf_max_terms: int = 8
+    prf_weight: float = 0.35
+    native_bge_on: bool = False
+    native_bge_dense_weight: float = 0.4
+    native_bge_sparse_weight: float = 0.3
+    native_bge_colbert_weight: float = 0.3
+    ltr_on: bool = False
+    ltr_model: str = "auto"
+    ltr_candidate_depth: int = 50
+    embedding_query_instruction: str | None = None
+    diversity_on: bool = False
+    diversity_relevance_weight: float = 0.7
+    lexical_overlap_weight: float = 0.0
+
     # Hybrid Search (Phase 2)
     hybrid_search_weights_dense: float = 0.7
     hybrid_search_weights_sparse: float = 0.3

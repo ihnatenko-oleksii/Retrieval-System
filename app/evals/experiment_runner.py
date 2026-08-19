@@ -12,12 +12,17 @@ from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
 from app.core.runtime_config import RetrievalConfig
 from app.evals.benchmark_protocol import BenchmarkSplit, load_jsonl, load_or_create_split
+from app.retrieval.ltr import GroupedLTR, LTRFeatureExtractor, grouped_query_folds
 
 DEFAULT_EMBEDDING_MODEL = "intfloat/multilingual-e5-base"
 DEFAULT_RERANKER_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 DEFAULT_BGE_RERANKER_MODEL = "BAAI/bge-reranker-v2-m3"
+DEFAULT_QWEN3_EMBEDDING_MODEL = "Qwen/Qwen3-Embedding-0.6B"
+DEFAULT_QWEN3_RERANKER_MODEL = "Qwen/Qwen3-Reranker-0.6B"
 DEFAULT_CHUNK_SIZE = 1000
 DEFAULT_CHUNK_OVERLAP = 200
 DEFAULT_TOP_K = 5
@@ -28,6 +33,10 @@ METRICS = ("recall@5", "precision@5", "mrr", "ndcg")
 
 class InvalidChunkMapping(ValueError):
     """Raised before evaluation when a chunking candidate invalidates labels."""
+
+
+class UnavailableModel(ValueError):
+    """Raised when an explicitly requested optional model cannot load."""
 
 
 @dataclass(frozen=True)
@@ -57,8 +66,33 @@ class ExperimentSpec:
     confidence_routing: bool = False
     confidence_threshold: float = 0.35
     llm_model: str | None = None
+    sparse_backend: str = "bm25"
+    native_bge_on: bool = False
+    native_bge_dense_weight: float = 0.4
+    native_bge_sparse_weight: float = 0.3
+    native_bge_colbert_weight: float = 0.3
+    late_interaction_model: str | None = None
+    qwen_instruction_mode: str = "none"
+    prf_on: bool = False
+    prf_depth: int = 1
+    prf_min_confidence: float = 0.35
+    prf_max_terms: int = 8
+    prf_weight: float = 0.35
+    ltr_on: bool = False
+    ltr_model: str = "auto"
+    ltr_candidate_depth: int = 50
+    diversity_on: bool = False
+    diversity_relevance_weight: float = 0.7
+    lexical_overlap_weight: float = 0.0
 
     def to_retrieval_config(self) -> RetrievalConfig:
+        query_instruction = None
+        if self.qwen_instruction_mode == "generic":
+            from app.embeddings.embedder import DEFAULT_QWEN3_QUERY_INSTRUCTION
+
+            query_instruction = DEFAULT_QWEN3_QUERY_INSTRUCTION
+        elif self.qwen_instruction_mode == "none":
+            query_instruction = ""
         return RetrievalConfig(
             top_k=self.top_k,
             dense_weight=self.dense_weight,
@@ -84,6 +118,22 @@ class ExperimentSpec:
             embedding_model=self.embedding_model,
             chunk_size=self.chunk_size,
             chunk_overlap=self.chunk_overlap,
+            prf_on=self.prf_on,
+            prf_depth=self.prf_depth,
+            prf_min_confidence=self.prf_min_confidence,
+            prf_max_terms=self.prf_max_terms,
+            prf_weight=self.prf_weight,
+            native_bge_on=self.native_bge_on,
+            native_bge_dense_weight=self.native_bge_dense_weight,
+            native_bge_sparse_weight=self.native_bge_sparse_weight,
+            native_bge_colbert_weight=self.native_bge_colbert_weight,
+            ltr_on=self.ltr_on,
+            ltr_model=self.ltr_model,
+            ltr_candidate_depth=self.ltr_candidate_depth,
+            embedding_query_instruction=query_instruction,
+            diversity_on=self.diversity_on,
+            diversity_relevance_weight=self.diversity_relevance_weight,
+            lexical_overlap_weight=self.lexical_overlap_weight,
         )
 
     def as_dict(self) -> dict[str, Any]:
@@ -92,7 +142,7 @@ class ExperimentSpec:
 
 @dataclass(frozen=True)
 class IndexedCorpus:
-    key: tuple[str, int, int]
+    key: tuple[str, int, int, str]
     storage_dir: Path
     chunks: tuple[Any, ...]
     vector_store: Any
@@ -125,6 +175,7 @@ class ExperimentResult:
     error: str | None = None
     index_reused: bool = False
     routing_metrics: dict[str, float] | None = None
+    metadata: dict[str, Any] | None = None
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -139,6 +190,7 @@ class ExperimentResult:
             "index_reused": self.index_reused,
             "error": self.error,
             "routing_metrics": self.routing_metrics or {},
+            "metadata": self.metadata or {},
         }
 
 
@@ -160,6 +212,17 @@ def previous_final_spec() -> ExperimentSpec:
     )
 
 
+def phase2_final_spec() -> ExperimentSpec:
+    """Frozen Phase 2 winner used as the current-main control in TEST."""
+    return ExperimentSpec(
+        name="bge-m3-hybrid-adaptive",
+        embedding_model="BAAI/bge-m3",
+        dense_weight=0.7,
+        sparse_weight=0.3,
+        adaptive_routing=True,
+    )
+
+
 def _unique_specs(specs: list[ExperimentSpec]) -> list[ExperimentSpec]:
     seen: set[str] = set()
     unique: list[ExperimentSpec] = []
@@ -172,7 +235,7 @@ def _unique_specs(specs: list[ExperimentSpec]) -> list[ExperimentSpec]:
     return unique
 
 
-def default_retrieval_specs() -> list[ExperimentSpec]:
+def default_retrieval_specs(*, include_qwen_reranker: bool = True) -> list[ExperimentSpec]:
     """Return the non-LLM matrix required by the retrieval protocol."""
     specs: list[ExperimentSpec] = [baseline_spec()]
 
@@ -258,13 +321,89 @@ def default_retrieval_specs() -> list[ExperimentSpec]:
                 sparse_weight=0.3,
                 adaptive_routing=True,
             ),
+            ExperimentSpec(
+                name="bge-m3-native-dense",
+                embedding_model="BAAI/bge-m3",
+                dense_weight=1.0,
+                sparse_weight=0.0,
+                native_bge_on=True,
+                native_bge_dense_weight=1.0,
+                native_bge_sparse_weight=0.0,
+                native_bge_colbert_weight=0.0,
+                sparse_backend="bge-m3-learned-sparse",
+                late_interaction_model="BAAI/bge-m3",
+            ),
+            ExperimentSpec(
+                name="bge-m3-native-dense-sparse",
+                embedding_model="BAAI/bge-m3",
+                dense_weight=0.7,
+                sparse_weight=0.3,
+                native_bge_on=True,
+                native_bge_dense_weight=0.55,
+                native_bge_sparse_weight=0.45,
+                native_bge_colbert_weight=0.0,
+                sparse_backend="bge-m3-learned-sparse",
+                late_interaction_model="BAAI/bge-m3",
+            ),
+            ExperimentSpec(
+                name="bge-m3-native-dense-sparse-colbert",
+                embedding_model="BAAI/bge-m3",
+                dense_weight=0.7,
+                sparse_weight=0.3,
+                native_bge_on=True,
+                native_bge_dense_weight=0.4,
+                native_bge_sparse_weight=0.3,
+                native_bge_colbert_weight=0.3,
+                sparse_backend="bge-m3-learned-sparse",
+                late_interaction_model="BAAI/bge-m3",
+            ),
+            ExperimentSpec(
+                name="qwen3-dense-no-instruction",
+                embedding_model=DEFAULT_QWEN3_EMBEDDING_MODEL,
+                dense_weight=1.0,
+                sparse_weight=0.0,
+                qwen_instruction_mode="none",
+            ),
+            ExperimentSpec(
+                name="qwen3-dense-generic-instruction",
+                embedding_model=DEFAULT_QWEN3_EMBEDDING_MODEL,
+                dense_weight=1.0,
+                sparse_weight=0.0,
+                qwen_instruction_mode="generic",
+            ),
+            ExperimentSpec(
+                name="qwen3-hybrid-generic-instruction",
+                embedding_model=DEFAULT_QWEN3_EMBEDDING_MODEL,
+                dense_weight=0.7,
+                sparse_weight=0.3,
+                qwen_instruction_mode="generic",
+            ),
         ]
     )
 
-    for model_name, model_label in (
+    if include_qwen_reranker:
+        for candidate_pool in (10, 20, 30, 50):
+            specs.append(
+                ExperimentSpec(
+                    name=f"qwen3-hybrid-generic-instruction-qwen-reranker-pool-{candidate_pool}",
+                    embedding_model=DEFAULT_QWEN3_EMBEDDING_MODEL,
+                    dense_weight=0.7,
+                    sparse_weight=0.3,
+                    candidate_depth=50,
+                    reranker_on=True,
+                    reranker_model=DEFAULT_QWEN3_RERANKER_MODEL,
+                    rerank_candidate_pool=candidate_pool,
+                    qwen_instruction_mode="generic",
+                )
+            )
+
+    reranker_candidates = [
         (DEFAULT_RERANKER_MODEL, "minilm-reranker"),
         (DEFAULT_BGE_RERANKER_MODEL, "bge-reranker"),
-    ):
+    ]
+    if include_qwen_reranker:
+        reranker_candidates.append((DEFAULT_QWEN3_RERANKER_MODEL, "qwen3-reranker"))
+    for model_name, model_label in reranker_candidates:
         for candidate_pool in (10, 20, 30, 50):
             specs.append(
                 ExperimentSpec(
@@ -287,6 +426,104 @@ def default_retrieval_specs() -> list[ExperimentSpec]:
                 sparse_weight=0.3,
             )
         )
+
+    for depth in (1, 2, 3):
+        specs.append(
+            ExperimentSpec(
+                name=f"bge-m3-hybrid-adaptive-prf-depth-{depth}",
+                embedding_model="BAAI/bge-m3",
+                dense_weight=0.7,
+                sparse_weight=0.3,
+                adaptive_routing=True,
+                prf_on=True,
+                prf_depth=depth,
+                prf_min_confidence=0.45,
+                prf_max_terms=8,
+                prf_weight=0.35,
+            )
+        )
+
+    for relevance_weight in (0.5, 0.6, 0.7, 0.8):
+        specs.append(
+            ExperimentSpec(
+                name=f"bge-m3-hybrid-adaptive-mmr-{relevance_weight:.1f}",
+                embedding_model="BAAI/bge-m3",
+                dense_weight=0.7,
+                sparse_weight=0.3,
+                adaptive_routing=True,
+                diversity_on=True,
+                diversity_relevance_weight=relevance_weight,
+                candidate_depth=50,
+            )
+        )
+
+    for lexical_weight in (0.05, 0.1, 0.15, 0.2, 0.25):
+        specs.append(
+            ExperimentSpec(
+                name=f"bge-m3-hybrid-adaptive-lexical-{lexical_weight:.2f}",
+                embedding_model="BAAI/bge-m3",
+                dense_weight=0.7,
+                sparse_weight=0.3,
+                adaptive_routing=True,
+                lexical_overlap_weight=lexical_weight,
+                candidate_depth=50,
+            )
+        )
+
+    for dense_weight in (0.5, 0.6, 0.8, 0.9):
+        specs.append(
+            ExperimentSpec(
+                name=f"bge-m3-adaptive-d{dense_weight:.1f}-s{1.0 - dense_weight:.1f}",
+                embedding_model="BAAI/bge-m3",
+                dense_weight=dense_weight,
+                sparse_weight=round(1.0 - dense_weight, 1),
+                adaptive_routing=True,
+                candidate_depth=50,
+            )
+        )
+
+    specs.extend(
+        [
+            ExperimentSpec(
+                name="bge-m3-adaptive-prf2-mmr08",
+                embedding_model="BAAI/bge-m3",
+                dense_weight=0.7,
+                sparse_weight=0.3,
+                adaptive_routing=True,
+                candidate_depth=50,
+                prf_on=True,
+                prf_depth=2,
+                prf_min_confidence=0.45,
+                diversity_on=True,
+                diversity_relevance_weight=0.8,
+            ),
+            ExperimentSpec(
+                name="bge-m3-adaptive-lexical10-mmr08",
+                embedding_model="BAAI/bge-m3",
+                dense_weight=0.7,
+                sparse_weight=0.3,
+                adaptive_routing=True,
+                candidate_depth=50,
+                lexical_overlap_weight=0.1,
+                diversity_on=True,
+                diversity_relevance_weight=0.8,
+            ),
+            *[
+                ExperimentSpec(
+                    name=f"bge-m3-adaptive-lexical{lexical_weight:.2f}-mmr08",
+                    embedding_model="BAAI/bge-m3",
+                    dense_weight=0.7,
+                    sparse_weight=0.3,
+                    adaptive_routing=True,
+                    candidate_depth=50,
+                    lexical_overlap_weight=lexical_weight,
+                    diversity_on=True,
+                    diversity_relevance_weight=0.8,
+                )
+                for lexical_weight in (0.15, 0.2, 0.25, 0.3)
+            ],
+        ]
+    )
 
     return _unique_specs(specs)
 
@@ -426,6 +663,8 @@ def _routing_metrics(details: list[dict[str, Any]]) -> dict[str, float]:
             "rewrite_rate_percent": 0.0,
             "expansion_count": 0.0,
             "expansion_rate_percent": 0.0,
+            "prf_count": 0.0,
+            "prf_rate_percent": 0.0,
             "confidence_trigger_count": 0.0,
             "average_confidence": 0.0,
             "average_query_variant_count": 0.0,
@@ -447,6 +686,8 @@ def _routing_metrics(details: list[dict[str, Any]]) -> dict[str, float]:
             sum(bool(detail.get("expansion_applied")) for detail in details) / case_count * 100,
             4,
         ),
+        "prf_count": float(sum(bool(detail.get("prf_applied")) for detail in details)),
+        "prf_rate_percent": round(sum(bool(detail.get("prf_applied")) for detail in details) / case_count * 100, 4),
         "confidence_trigger_count": float(sum(bool(detail.get("confidence_triggered")) for detail in details)),
         "average_confidence": round(sum(confidence_values) / len(confidence_values), 4) if confidence_values else 0.0,
         "average_query_variant_count": round(
@@ -522,9 +763,12 @@ class ExperimentRunner:
         self.corpus_dir = corpus_dir.resolve()
         self.index_root = index_root.resolve()
         self.skip_generation = skip_generation
-        self._index_cache: dict[tuple[str, int, int], IndexedCorpus] = {}
+        self._index_cache: dict[tuple[str, int, int, str], IndexedCorpus] = {}
         self._reranker_cache: dict[str, Any] = {}
         self._reranker_errors: dict[str, str] = {}
+        self._native_backend_cache: dict[str, Any] = {}
+        self._native_backend_errors: dict[str, str] = {}
+        self._ltr_rankers: dict[str, GroupedLTR] = {}
         self._rewriter_cache: dict[str, Any] = {}
         self._canonical_chunks: tuple[Any, ...] | None = None
         self._corpus_hash = _corpus_fingerprint(self.corpus_dir)
@@ -542,7 +786,7 @@ class ExperimentRunner:
         return self._canonical_chunks
 
     def _get_index(self, spec: ExperimentSpec, cases: list[dict[str, Any]]) -> tuple[IndexedCorpus, bool]:
-        key = (spec.embedding_model, spec.chunk_size, spec.chunk_overlap)
+        key = (spec.embedding_model, spec.chunk_size, spec.chunk_overlap, spec.qwen_instruction_mode)
         if key in self._index_cache:
             return self._index_cache[key], True
 
@@ -570,6 +814,11 @@ class ExperimentRunner:
         vector_store = VectorStore(
             persist_dir=str(storage_dir / "chroma"),
             embedding_model=spec.embedding_model,
+            query_instruction=(
+                spec.to_retrieval_config().embedding_query_instruction
+                if spec.embedding_model.lower().startswith("qwen/")
+                else None
+            ),
         )
         bm25_store = BM25Store(persist_dir=str(storage_dir))
         reused = marker_path.exists()
@@ -581,6 +830,7 @@ class ExperimentRunner:
                     {
                         "corpus_sha256": self._corpus_hash,
                         "embedding_model": spec.embedding_model,
+                        "qwen_instruction_mode": spec.qwen_instruction_mode,
                         "chunk_size": spec.chunk_size,
                         "chunk_overlap": spec.chunk_overlap,
                         "chunks": len(chunks),
@@ -605,7 +855,7 @@ class ExperimentRunner:
         if not spec.reranker_on:
             return None
         if spec.reranker_model in self._reranker_errors:
-            raise RuntimeError(self._reranker_errors[spec.reranker_model])
+            raise UnavailableModel(self._reranker_errors[spec.reranker_model])
         if spec.reranker_model not in self._reranker_cache:
             from app.retrieval.reranker import Reranker
 
@@ -617,13 +867,30 @@ class ExperimentRunner:
             except Exception as exc:
                 message = f"Reranker model {spec.reranker_model} unavailable: {type(exc).__name__}: {exc}"
                 self._reranker_errors[spec.reranker_model] = message
-                raise RuntimeError(message) from exc
+                raise UnavailableModel(message) from exc
             if getattr(reranker, "model", None) is None:
                 message = f"Reranker model {spec.reranker_model} could not be loaded"
                 self._reranker_errors[spec.reranker_model] = message
-                raise RuntimeError(message)
+                raise UnavailableModel(message)
             self._reranker_cache[spec.reranker_model] = reranker
         return self._reranker_cache[spec.reranker_model]
+
+    def _get_native_backend(self, spec: ExperimentSpec) -> Any | None:
+        if not spec.native_bge_on:
+            return None
+        model_name = spec.embedding_model
+        if model_name in self._native_backend_errors:
+            raise UnavailableModel(self._native_backend_errors[model_name])
+        if model_name not in self._native_backend_cache:
+            from app.retrieval.native_bge import NativeBGEBackend
+
+            backend = NativeBGEBackend.from_pretrained(model_name)
+            if not backend.available:
+                message = backend.unavailable_reason or f"Native BGE backend unavailable for {model_name}"
+                self._native_backend_errors[model_name] = message
+                raise UnavailableModel(message)
+            self._native_backend_cache[model_name] = backend
+        return self._native_backend_cache[model_name]
 
     def _get_rewriter(self, spec: ExperimentSpec) -> Any | None:
         if not (spec.query_rewriting_on or spec.query_expansion_on):
@@ -670,6 +937,12 @@ class ExperimentRunner:
                 rewriter=self._get_rewriter(spec),
                 skip_generation=self.skip_generation,
             )
+            evaluator.retriever.native_backend = self._get_native_backend(spec)
+            if spec.native_bge_on:
+                evaluator.retriever.native_chunks = [
+                    (chunk.content, chunk.metadata.model_dump()) for chunk in index.chunks
+                ]
+            evaluator.retriever.ltr_ranker = self._ltr_rankers.get(spec.name)
             metrics, details = evaluator.evaluate_cases(str(eval_path))
             if not metrics:
                 raise RuntimeError("Evaluation produced no metrics")
@@ -699,12 +972,26 @@ class ExperimentRunner:
                 index_reused=index_reused,
                 routing_metrics={},
             )
+        except UnavailableModel as exc:
+            elapsed = round(time.perf_counter() - started, 4)
+            return ExperimentResult(
+                phase=phase,
+                spec=spec,
+                status="unavailable",
+                metrics={},
+                category_metrics={},
+                elapsed_seconds=elapsed,
+                seconds_per_case=None,
+                error=str(exc),
+                index_reused=index_reused,
+                routing_metrics={},
+            )
         except Exception as exc:  # Record failed configurations without losing the matrix.
             elapsed = round(time.perf_counter() - started, 4)
             return ExperimentResult(
                 phase=phase,
                 spec=spec,
-                status="error",
+                status="unavailable" if spec.embedding_model.lower().startswith("qwen/") else "error",
                 metrics={},
                 category_metrics={},
                 elapsed_seconds=elapsed,
@@ -713,6 +1000,231 @@ class ExperimentRunner:
                 index_reused=index_reused,
                 routing_metrics={},
             )
+
+    def _collect_ltr_examples(self, spec: ExperimentSpec, eval_path: Path) -> tuple[list[dict[str, Any]], bool]:
+        """Collect candidate evidence and labels without fitting or using TEST."""
+        cases = load_jsonl(eval_path)
+        base_spec = replace(
+            spec,
+            ltr_on=False,
+            candidate_depth=max(spec.candidate_depth, spec.ltr_candidate_depth),
+        )
+        index, index_reused = self._get_index(base_spec, cases)
+        from app.evals.evaluator import Evaluator
+
+        evaluator = Evaluator(
+            config=base_spec.to_retrieval_config(),
+            vector_store=index.vector_store,
+            bm25_store=index.bm25_store,
+            reranker=self._get_reranker(base_spec),
+            rewriter=None,
+            skip_generation=True,
+        )
+        evaluator.retriever.native_backend = self._get_native_backend(base_spec)
+        if base_spec.native_bge_on:
+            evaluator.retriever.native_chunks = [
+                (chunk.content, chunk.metadata.model_dump()) for chunk in index.chunks
+            ]
+
+        examples: list[dict[str, Any]] = []
+        for case in cases:
+            question = str(case.get("question", ""))
+            evaluator.retriever.retrieve(question, top_k=spec.top_k, config=base_spec.to_retrieval_config())
+            trace = list(evaluator.retriever.last_trace.get("candidate_features", []))
+            labels = Evaluator._parse_relevance(case)
+            row_labels: list[float] = []
+            row_features: list[dict[str, float]] = []
+            for record in trace:
+                metadata = record.get("metadata", {})
+                gain = 0.0
+                if isinstance(metadata, dict):
+                    if labels is not None:
+                        _, gain = Evaluator._match_label(labels, metadata)
+                    else:
+                        gain = 1.0 if any(
+                            Evaluator._source_matches(source, metadata)
+                            for source in Evaluator._expected_sources(case)
+                        ) else 0.0
+                row_labels.append(float(gain))
+                row_features.append(LTRFeatureExtractor.extract(question, record))
+            examples.append(
+                {
+                    "case": case,
+                    "records": trace,
+                    "features": LTRFeatureExtractor.matrix(row_features),
+                    "labels": np.asarray(row_labels, dtype=float),
+                    "query_id": str(case.get("id", "")),
+                }
+            )
+        return examples, index_reused
+
+    @staticmethod
+    def _metrics_for_ranked_records(
+        case: dict[str, Any], records: list[dict[str, Any]], top_k: int
+    ) -> dict[str, float]:
+        from app.evals.evaluator import Evaluator
+
+        labels = Evaluator._parse_relevance(case)
+        gains: list[float] = []
+        relevant_ranks: list[int] = []
+        matched_ids: list[str] = []
+        for rank, record in enumerate(records[:top_k], start=1):
+            metadata = record.get("metadata", {})
+            gain = 0.0
+            matched_id = None
+            if isinstance(metadata, dict):
+                if labels is not None:
+                    matched_id, gain = Evaluator._match_label(labels, metadata)
+                else:
+                    gain = 1.0 if any(
+                        Evaluator._source_matches(source, metadata)
+                        for source in Evaluator._expected_sources(case)
+                    ) else 0.0
+            gains.append(float(gain))
+            if gain > 0:
+                relevant_ranks.append(rank)
+                if matched_id is not None:
+                    matched_ids.append(matched_id)
+
+        if labels is not None:
+            relevant_ids = {label_id for label_id, gain in labels.items() if gain > 0}
+            recall = len(set(matched_ids) & relevant_ids) / len(relevant_ids) if relevant_ids else 0.0
+            precision = len(relevant_ranks) / top_k
+            mrr = 1.0 / relevant_ranks[0] if relevant_ranks else 0.0
+            ideal = sorted((labels[label_id] for label_id in relevant_ids), reverse=True)[:top_k]
+            idcg = Evaluator._dcg(ideal)
+            ndcg = Evaluator._dcg(gains) / idcg if idcg else 0.0
+        elif relevant_ranks:
+            recall = 1.0
+            precision = len(relevant_ranks) / top_k
+            mrr = 1.0 / relevant_ranks[0]
+            ndcg = sum(1.0 / np.log2(rank + 1) for rank in relevant_ranks) / Evaluator._dcg(
+                [1.0] * len(relevant_ranks)
+            )
+        else:
+            recall = precision = mrr = ndcg = 0.0
+        return {
+            f"recall@{top_k}": recall,
+            f"precision@{top_k}": precision,
+            "mrr": mrr,
+            "ndcg": ndcg,
+        }
+
+    @staticmethod
+    def _aggregate_ltr_metrics(case_metrics: list[dict[str, float]], top_k: int) -> dict[str, float]:
+        if not case_metrics:
+            return {f"recall@{top_k}": 0.0, f"precision@{top_k}": 0.0, "mrr": 0.0, "ndcg": 0.0}
+        keys = (f"recall@{top_k}", f"precision@{top_k}", "mrr", "ndcg")
+        return {key: round(sum(item[key] for item in case_metrics) / len(case_metrics), 4) for key in keys}
+
+    def run_ltr_dev(self, spec: ExperimentSpec, eval_path: Path, *, seed: int = 1729) -> ExperimentResult:
+        """Score an LTR candidate using grouped query-level DEV cross-validation."""
+        started = time.perf_counter()
+        try:
+            examples, index_reused = self._collect_ltr_examples(spec, eval_path)
+            row_query_ids = [example["query_id"] for example in examples for _ in example["labels"]]
+            folds = grouped_query_folds(row_query_ids, n_splits=5, seed=seed)
+            row_offsets: list[tuple[int, int]] = []
+            cursor = 0
+            for example in examples:
+                end = cursor + len(example["labels"])
+                row_offsets.append((cursor, end))
+                cursor = end
+            row_lookup = [
+                (example_index, local_index)
+                for example_index, example in enumerate(examples)
+                for local_index in range(len(example["labels"]))
+            ]
+
+            fold_summaries: list[dict[str, Any]] = []
+            all_case_metrics: list[dict[str, float]] = []
+            backend_name = "unfitted"
+            for fold_index, (train_rows, validation_rows) in enumerate(folds, start=1):
+                ranker = GroupedLTR(model_name=spec.ltr_model)
+                train_lookup = [row_lookup[row_index] for row_index in train_rows]
+                ranker.fit(
+                    np.vstack([examples[example_index]["features"][local_index] for example_index, local_index in train_lookup]),
+                    np.asarray(
+                        [examples[example_index]["labels"][local_index] for example_index, local_index in train_lookup],
+                        dtype=float,
+                    ),
+                    [row_query_ids[row_index] for row_index in train_rows],
+                )
+                backend_name = ranker.backend_name
+                validation_set = set(validation_rows)
+                fold_case_metrics: list[dict[str, float]] = []
+                validation_query_ids = sorted({row_query_ids[index] for index in validation_rows})
+                train_query_ids = sorted({row_query_ids[index] for index in train_rows})
+                for example_index, example in enumerate(examples):
+                    start, end = row_offsets[example_index]
+                    case_rows = set(range(start, end))
+                    if not case_rows & validation_set:
+                        continue
+                    predictions = ranker.predict(example["features"])
+                    ranked_records = [
+                        record
+                        for _, record in sorted(
+                            zip(predictions, example["records"], strict=True),
+                            key=lambda item: float(item[0]),
+                            reverse=True,
+                        )
+                    ]
+                    metrics = self._metrics_for_ranked_records(example["case"], ranked_records, spec.top_k)
+                    fold_case_metrics.append(metrics)
+                    all_case_metrics.append(metrics)
+                fold_summaries.append(
+                    {
+                        "fold": fold_index,
+                        "train_query_ids": train_query_ids,
+                        "validation_query_ids": validation_query_ids,
+                        "metrics": self._aggregate_ltr_metrics(fold_case_metrics, spec.top_k),
+                    }
+                )
+
+            fold_metrics = [summary["metrics"] for summary in fold_summaries]
+            mean_metrics = self._aggregate_ltr_metrics(
+                [self._aggregate_ltr_metrics([metrics], spec.top_k) for metrics in fold_metrics], spec.top_k
+            )
+            elapsed = round(time.perf_counter() - started, 4)
+            return ExperimentResult(
+                phase="dev_ltr_cv",
+                spec=spec,
+                status="ok",
+                metrics=mean_metrics,
+                category_metrics={},
+                elapsed_seconds=elapsed,
+                seconds_per_case=round(elapsed / len(examples), 4) if examples else None,
+                index_reused=index_reused,
+                metadata={
+                    "model_backend": backend_name,
+                    "grouped_cv": {"n_splits": 5, "folds": fold_summaries},
+                    "case_count": len(examples),
+                },
+            )
+        except (InvalidChunkMapping, UnavailableModel) as exc:
+            elapsed = round(time.perf_counter() - started, 4)
+            return ExperimentResult(
+                phase="dev_ltr_cv",
+                spec=spec,
+                status="unavailable" if isinstance(exc, UnavailableModel) else "invalid_label_mapping",
+                metrics={},
+                category_metrics={},
+                elapsed_seconds=elapsed,
+                seconds_per_case=None,
+                error=str(exc),
+                metadata={"grouped_cv": {"n_splits": 5, "folds": []}},
+            )
+
+    def fit_ltr_on_dev(self, spec: ExperimentSpec, eval_path: Path) -> GroupedLTR:
+        """Fit the frozen LTR candidate on complete DEV immediately before TEST."""
+        examples, _ = self._collect_ltr_examples(spec, eval_path)
+        features = np.vstack([example["features"] for example in examples if len(example["features"])])
+        labels = np.concatenate([example["labels"] for example in examples if len(example["labels"])])
+        query_ids = [example["query_id"] for example in examples for _ in example["labels"]]
+        ranker = GroupedLTR(model_name=spec.ltr_model)
+        ranker.fit(features, labels, query_ids)
+        self._ltr_rankers[spec.name] = ranker
+        return ranker
 
     def run_phase(self, specs: list[ExperimentSpec], eval_path: Path, phase: str) -> list[ExperimentResult]:
         results: list[ExperimentResult] = []
@@ -745,6 +1257,24 @@ def _flatten_result(result: ExperimentResult) -> dict[str, Any]:
         "reranker_on": result.spec.reranker_on,
         "reranker_model": result.spec.reranker_model if result.spec.reranker_on else "",
         "rerank_candidate_pool": result.spec.rerank_candidate_pool if result.spec.reranker_on else "",
+        "sparse_backend": result.spec.sparse_backend,
+        "native_bge_on": result.spec.native_bge_on,
+        "native_bge_dense_weight": result.spec.native_bge_dense_weight,
+        "native_bge_sparse_weight": result.spec.native_bge_sparse_weight,
+        "native_bge_colbert_weight": result.spec.native_bge_colbert_weight,
+        "late_interaction_model": result.spec.late_interaction_model or "",
+        "qwen_instruction_mode": result.spec.qwen_instruction_mode,
+        "prf_on": result.spec.prf_on,
+        "prf_depth": result.spec.prf_depth,
+        "prf_min_confidence": result.spec.prf_min_confidence,
+        "prf_max_terms": result.spec.prf_max_terms,
+        "prf_weight": result.spec.prf_weight,
+        "ltr_on": result.spec.ltr_on,
+        "ltr_model": result.spec.ltr_model,
+        "ltr_candidate_depth": result.spec.ltr_candidate_depth,
+        "diversity_on": result.spec.diversity_on,
+        "diversity_relevance_weight": result.spec.diversity_relevance_weight,
+        "lexical_overlap_weight": result.spec.lexical_overlap_weight,
         "query_rewriting_on": result.spec.query_rewriting_on,
         "query_expansion_on": result.spec.query_expansion_on,
         "rewrite_policy": result.spec.rewrite_policy,
@@ -757,6 +1287,7 @@ def _flatten_result(result: ExperimentResult) -> dict[str, Any]:
         "seconds_per_case": result.seconds_per_case,
         "index_reused": result.index_reused,
         "error": result.error or "",
+        "metadata": json.dumps(result.metadata or {}, ensure_ascii=False, sort_keys=True),
     }
     row.update({metric: result.metrics.get(metric, "") for metric in METRICS})
     row.update({key: value for key, value in (result.routing_metrics or {}).items()})
@@ -833,6 +1364,45 @@ def write_final_comparison(
         metric: relative_improvement(baseline.metrics, final.metrics, metric)
         for metric in METRICS
     }
+    all_dev_results = [*(dev_results or []), *(llm_results or [])]
+    unavailable_results = [result for result in all_dev_results if result.status != "ok"]
+    grouped_cv_results = [
+        result
+        for result in all_dev_results
+        if result.spec.ltr_on and result.metadata and result.metadata.get("grouped_cv")
+    ]
+    phase3_architecture = {
+        "embedding_model": final.spec.embedding_model,
+        "dense_weight": final.spec.dense_weight,
+        "sparse_weight": final.spec.sparse_weight,
+        "sparse_backend": final.spec.sparse_backend,
+        "native_bge": final.spec.native_bge_on,
+        "native_bge_weights": {
+            "dense": final.spec.native_bge_dense_weight,
+            "sparse": final.spec.native_bge_sparse_weight,
+            "colbert": final.spec.native_bge_colbert_weight,
+        },
+        "late_interaction_model": final.spec.late_interaction_model,
+        "reranker": final.spec.reranker_model if final.spec.reranker_on else None,
+        "rerank_candidate_pool": final.spec.rerank_candidate_pool if final.spec.reranker_on else None,
+        "qwen_instruction_mode": final.spec.qwen_instruction_mode,
+        "prf": {
+            "on": final.spec.prf_on,
+            "depth": final.spec.prf_depth,
+            "min_confidence": final.spec.prf_min_confidence,
+            "max_terms": final.spec.prf_max_terms,
+        },
+        "ltr": {
+            "on": final.spec.ltr_on,
+            "model": final.spec.ltr_model,
+            "candidate_depth": final.spec.ltr_candidate_depth,
+        },
+        "diversity": {
+            "on": final.spec.diversity_on,
+            "relevance_weight": final.spec.diversity_relevance_weight,
+        },
+        "lexical_overlap_weight": final.spec.lexical_overlap_weight,
+    }
     payload = {
         "phase": "frozen_test_final_comparison",
         "command": command,
@@ -853,9 +1423,12 @@ def write_final_comparison(
             "selected": final.spec.name,
             "ranking": [
                 result.as_dict()
-                for result in rank_dev_results([*(dev_results or []), *(llm_results or [])])
+                for result in rank_dev_results(all_dev_results)
             ],
         },
+        "phase3_architecture": phase3_architecture,
+        "grouped_dev_validation": [result.as_dict() for result in grouped_cv_results],
+        "unavailable_experiments": [result.as_dict() for result in unavailable_results],
     }
     (output_dir / "final_test_results.json").write_text(
         json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
@@ -886,7 +1459,9 @@ def write_final_comparison(
         f"candidate depth `{final.spec.candidate_depth}`, reranking `{final.spec.reranker_on}`, "
         f"query rewriting `{final.spec.query_rewriting_on}` (`{final.spec.rewrite_policy}`), query expansion "
         f"`{final.spec.query_expansion_on}` (`{final.spec.expansion_policy}`), original preserved `{final.spec.include_original_query}`, "
-        f"stage-2 fusion `{final.spec.multi_query_fusion_strategy}`, confidence routing `{final.spec.confidence_routing}`.",
+        f"stage-2 fusion `{final.spec.multi_query_fusion_strategy}`, confidence routing `{final.spec.confidence_routing}`, "
+        f"Qwen instruction `{final.spec.qwen_instruction_mode}`, PRF `{final.spec.prf_on}`, "
+        f"LTR `{final.spec.ltr_on}`, diversity `{final.spec.diversity_on}`, lexical boost `{final.spec.lexical_overlap_weight}`.",
         "",
         "## TEST metrics",
         "",
@@ -902,6 +1477,7 @@ def write_final_comparison(
         "|---|---:|",
         ]
     )
+
     for metric in METRICS:
         lines.append(f"| {metric} | {relative[metric] if relative[metric] is not None else '-'}% |")
 
@@ -916,6 +1492,16 @@ def write_final_comparison(
         ("Weighted RRF", "hybrid-static-weighted-rrf"),
         ("BGE-M3 dense", "bge-m3-dense"),
         ("BGE-M3 hybrid", "bge-m3-hybrid-static"),
+        ("BGE-M3 native dense", "bge-m3-native-dense"),
+        ("BGE-M3 native dense+sparse", "bge-m3-native-dense-sparse"),
+        ("BGE-M3 native dense+sparse+ColBERT", "bge-m3-native-dense-sparse-colbert"),
+        ("Qwen3 dense without instruction", "qwen3-dense-no-instruction"),
+        ("Qwen3 dense with generic instruction", "qwen3-dense-generic-instruction"),
+        ("Qwen3 hybrid with generic instruction", "qwen3-hybrid-generic-instruction"),
+        ("Qwen3 hybrid + reranker pool 10", "qwen3-hybrid-generic-instruction-qwen-reranker-pool-10"),
+        ("Qwen3 hybrid + reranker pool 20", "qwen3-hybrid-generic-instruction-qwen-reranker-pool-20"),
+        ("Qwen3 hybrid + reranker pool 30", "qwen3-hybrid-generic-instruction-qwen-reranker-pool-30"),
+        ("Qwen3 hybrid + reranker pool 50", "qwen3-hybrid-generic-instruction-qwen-reranker-pool-50"),
         ("Retrieval depth 30", "hybrid-static-depth-30"),
         ("MiniLM rerank pool 10", "hybrid-minilm-reranker-pool-10"),
         ("MiniLM rerank pool 20", "hybrid-minilm-reranker-pool-20"),
@@ -926,6 +1512,11 @@ def write_final_comparison(
         ("Chunk 600/100", "hybrid-chunks-600-100"),
         ("Chunk 800/150", "hybrid-chunks-800-150"),
         ("Chunk 1200/200", "hybrid-chunks-1200-200"),
+        ("PRF depth 1", "bge-m3-hybrid-adaptive-prf-depth-1"),
+        ("PRF depth 2", "bge-m3-hybrid-adaptive-prf-depth-2"),
+        ("PRF depth 3", "bge-m3-hybrid-adaptive-prf-depth-3"),
+        ("MMR relevance 0.8", "bge-m3-hybrid-adaptive-mmr-0.8"),
+        ("Lexical overlap 0.25", "bge-m3-hybrid-adaptive-lexical-0.25"),
     ]
     dev_by_name = {result.spec.name: result for result in [*(dev_results or []), *(llm_results or [])]}
     lines.extend(
@@ -992,12 +1583,11 @@ def write_final_comparison(
         lines.append(
             f"- Query-expansion ensemble retrieval introduced measurable noise on this benchmark: the selective expansion ensemble reached DEV nDCG {expansion_result.metrics.get('ndcg', '-')} and MRR {expansion_result.metrics.get('mrr', '-')}, below the selected adaptive route."
         )
-    lines.extend(
-        [
-            "- Chunk-boundary changes were rejected when labeled chunk content no longer matched the canonical 1000/200 mapping; no invalid-label score entered selection.",
-            "- BGE cross-encoder reranker candidates were recorded as unavailable because the offline cache lacked model weights; no silent fallback score was used.",
-        ]
+    lines.append(
+        "- Chunk-boundary changes were rejected when labeled chunk content no longer matched the canonical 1000/200 mapping; no invalid-label score entered selection."
     )
+    if unavailable_results:
+        lines.append("- Explicitly requested models and invalid configurations were recorded as unavailable or invalid with their actual reasons; no fallback score entered those result rows.")
     payload["query_routing"] = {
         "description": routing_description,
         "selected_new_final": final.spec.name,
@@ -1005,10 +1595,11 @@ def write_final_comparison(
         "previous_final_routing_metrics": previous_route_metrics if previous_final is not None else None,
     }
 
+    routing_label = "query-adaptive" if final.spec.adaptive_routing else "fixed-weight"
     cv_bullet = (
         f"Improved retrieval nDCG by {relative['ndcg']}% ({baseline.metrics.get('ndcg')} to {final.metrics.get('ndcg')}) "
         f"and MRR by {relative['mrr']}% ({baseline.metrics.get('mrr')} to {final.metrics.get('mrr')}) on a frozen {len(split.test_cases)}-query TEST set, "
-        f"selecting {final.spec.embedding_model} with query-adaptive {final.spec.fusion_strategy} dense/BM25 fusion "
+        f"selecting {final.spec.embedding_model} with {routing_label} {final.spec.fusion_strategy} dense/BM25 fusion "
         f"({final.spec.dense_weight}/{final.spec.sparse_weight}) from a {len(split.dev_cases)}-query DEV split; "
         f"latency was {final.seconds_per_case}s/query versus {baseline.seconds_per_case}s/query for the dense baseline."
     )
@@ -1023,6 +1614,28 @@ def write_final_comparison(
             f"plus {' and '.join(preprocessing)} from a {len(split.dev_cases)}-query DEV split;",
         )
     lines.extend(["", "## Recommended CV bullet", "", f"> {cv_bullet}"])
+
+    if grouped_cv_results:
+        lines.extend(
+            [
+                "",
+                "## Grouped DEV validation",
+                "",
+                "LTR rows below are query-grouped 5-fold DEV validation results; validation queries are disjoint from training queries in every fold.",
+                "",
+                "| Configuration | Backend | Mean nDCG | Mean MRR | Fold nDCG | Fold MRR |",
+                "|---|---|---:|---:|---|---|",
+            ]
+        )
+        for result in grouped_cv_results:
+            cv = (result.metadata or {}).get("grouped_cv", {})
+            folds = cv.get("folds", [])
+            fold_ndcg = ", ".join(str(fold.get("metrics", {}).get("ndcg", "-")) for fold in folds)
+            fold_mrr = ", ".join(str(fold.get("metrics", {}).get("mrr", "-")) for fold in folds)
+            lines.append(
+                f"| {result.spec.name} | {(result.metadata or {}).get('model_backend', '-')} | "
+                f"{result.metrics.get('ndcg', '-')} | {result.metrics.get('mrr', '-')} | {fold_ndcg} | {fold_mrr} |"
+            )
 
     category_sets = [set(baseline.category_metrics), set(final.category_metrics)]
     if previous_final is not None:
@@ -1141,24 +1754,76 @@ def run_protocol(
     include_llm: bool,
     llm_model: str | None,
     command: str,
+    include_qwen_reranker: bool = True,
 ) -> dict[str, Any]:
     split = load_or_create_split(eval_path, split_dir, seed=seed)
     runner = ExperimentRunner(corpus_dir=corpus_dir, index_root=index_root, skip_generation=True)
 
-    dev_results = runner.run_phase(default_retrieval_specs(), split_dir / "dev.jsonl", "dev")
+    dev_results = runner.run_phase(
+        default_retrieval_specs(include_qwen_reranker=include_qwen_reranker),
+        split_dir / "dev.jsonl",
+        "dev",
+    )
+    if not include_qwen_reranker:
+        blocked_reason = (
+            "Qwen3 reranker loaded and passed the ordered-pair scorer smoke test, but full DEV candidate-pool "
+            "evaluation was blocked by the local CPU budget (16 real corpus chunks took 51.58s); no ranking metric "
+            "was used for selection."
+        )
+        for candidate_pool in (10, 20, 30, 50):
+            dev_results.append(
+                ExperimentResult(
+                    phase="dev",
+                    spec=ExperimentSpec(
+                        name=f"qwen3-hybrid-generic-instruction-qwen-reranker-pool-{candidate_pool}",
+                        embedding_model=DEFAULT_QWEN3_EMBEDDING_MODEL,
+                        dense_weight=0.7,
+                        sparse_weight=0.3,
+                        candidate_depth=50,
+                        reranker_on=True,
+                        reranker_model=DEFAULT_QWEN3_RERANKER_MODEL,
+                        rerank_candidate_pool=candidate_pool,
+                        qwen_instruction_mode="generic",
+                    ),
+                    status="blocked",
+                    metrics={},
+                    category_metrics={},
+                    elapsed_seconds=0.0,
+                    seconds_per_case=None,
+                    error=blocked_reason,
+                    metadata={"scorer_smoke_test": "passed", "selection_eligible": False},
+                )
+            )
     write_phase_artifacts(dev_results, output_dir, "dev", command=command, split=split)
-    control_names = {baseline_spec().name, previous_final_spec().name}
+    phase2_control = phase2_final_spec()
+    control_names = {baseline_spec().name, previous_final_spec().name, phase2_control.name}
     new_candidates = [result for result in dev_results if result.spec.name not in control_names]
     ranked = rank_dev_results(new_candidates)
     if not ranked:
         raise RuntimeError("No new retrieval configuration completed successfully on DEV")
     selected = ranked[0].spec
 
+    ltr_results: list[ExperimentResult] = []
+    ltr_spec = replace(
+        selected,
+        name=f"{selected.name}+ltr-grouped-cv",
+        ltr_on=True,
+        ltr_candidate_depth=max(selected.candidate_depth, 50),
+        candidate_depth=max(selected.candidate_depth, 50),
+    )
+    ltr_result = runner.run_ltr_dev(ltr_spec, split_dir / "dev.jsonl", seed=seed)
+    ltr_results.append(ltr_result)
+    dev_results.extend(ltr_results)
+    write_phase_artifacts(dev_results, output_dir, "dev", command=command, split=split)
+    ranked = rank_dev_results([result for result in dev_results if result.spec.name not in control_names])
+    selected = ranked[0].spec
+
     llm_results: list[ExperimentResult] = []
     if include_llm:
+        llm_base = replace(selected, ltr_on=False) if selected.ltr_on else selected
         llm_specs = [
             replace(previous_final_spec(), llm_model=llm_model),
-            *[replace(spec, llm_model=llm_model) for spec in llm_variants(selected)],
+            *[replace(spec, llm_model=llm_model) for spec in llm_variants(llm_base)],
         ]
         if _ollama_available():
             llm_results = runner.run_phase(llm_specs, split_dir / "dev.jsonl", "dev_llm")
@@ -1191,14 +1856,10 @@ def run_protocol(
             selected = llm_ranked[0].spec
 
     baseline = baseline_spec()
-    previous_final = (
-        replace(previous_final_spec(), llm_model=llm_model)
-        if include_llm
-        else previous_final_spec()
-    )
-    test_specs = [baseline, selected]
-    if include_llm:
-        test_specs = [baseline, previous_final, selected]
+    previous_final = phase2_control
+    if selected.ltr_on:
+        runner.fit_ltr_on_dev(selected, split_dir / "dev.jsonl")
+    test_specs = [baseline, previous_final, selected]
     test_results = runner.run_phase(test_specs, split_dir / "test.jsonl", "test")
     write_phase_artifacts(test_results, output_dir, "test", command=command, split=split)
     test_by_name = {result.spec.name: result for result in test_results}

@@ -1,0 +1,253 @@
+{
+  "artifact": "independent_challenge_set",
+  "selection_eligible": false,
+  "command": "uv run scripts/evaluate_benchmark_v2.py --offline-models",
+  "manifest": {
+    "protocol_version": 2,
+    "artifact": "independent_challenge_set",
+    "created_after_phase3_selection": true,
+    "created_at": "2026-08-19",
+    "evaluation_file": "docs/benchmark_v2/eval.jsonl",
+    "evaluation_sha256": "8ada76a1b4b5571fd5690b5ab4dc4a7830ddc829b8f8c34be10c3792d48e3f21",
+    "corpus_fingerprint": "05d22b65e580442b09ef806b7335009097295cdfad86a672e5029f8f531f30df",
+    "case_count": 50,
+    "category_counts": {
+      "ambiguous": 10,
+      "fine_grained": 10,
+      "lexical": 10,
+      "multiple_relevant": 10,
+      "semantic": 10
+    },
+    "labels_validated_against_default_chunks": true,
+    "selection_eligible": false,
+    "frozen_phase3_configuration": "qwen3-hybrid-generic-instruction"
+  },
+  "results": [
+    {
+      "phase": "benchmark_v2",
+      "name": "baseline-dense-e5",
+      "status": "ok",
+      "parameters": {
+        "name": "baseline-dense-e5",
+        "embedding_model": "intfloat/multilingual-e5-base",
+        "chunk_size": 1000,
+        "chunk_overlap": 200,
+        "top_k": 5,
+        "dense_weight": 1.0,
+        "sparse_weight": 0.0,
+        "fusion_strategy": "weighted_linear",
+        "adaptive_routing": false,
+        "candidate_depth": 20,
+        "reranker_on": false,
+        "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+        "rerank_candidate_pool": 20,
+        "query_rewriting_on": false,
+        "query_expansion_on": false,
+        "rewrite_policy": "never",
+        "expansion_policy": "never",
+        "include_original_query": false,
+        "multi_query_fusion_strategy": "weighted_rrf",
+        "original_query_weight": 1.0,
+        "rewrite_query_weight": 0.7,
+        "expansion_query_weight": 0.5,
+        "confidence_routing": false,
+        "confidence_threshold": 0.35,
+        "llm_model": null,
+        "sparse_backend": "bm25",
+        "native_bge_on": false,
+        "native_bge_dense_weight": 0.4,
+        "native_bge_sparse_weight": 0.3,
+        "native_bge_colbert_weight": 0.3,
+        "late_interaction_model": null,
+        "qwen_instruction_mode": "none",
+        "prf_on": false,
+        "prf_depth": 1,
+        "prf_min_confidence": 0.35,
+        "prf_max_terms": 8,
+        "prf_weight": 0.35,
+        "ltr_on": false,
+        "ltr_model": "auto",
+        "ltr_candidate_depth": 50,
+        "diversity_on": false,
+        "diversity_relevance_weight": 0.7,
+        "lexical_overlap_weight": 0.0
+      },
+      "metrics": {
+        "recall@5": 0.7693,
+        "precision@5": 0.328,
+        "mrr": 0.845,
+        "ndcg": 0.7736
+      },
+      "category_metrics": {
+        "ambiguous": {
+          "recall@5": 0.5,
+          "precision@5": 0.34,
+          "mrr": 0.7333,
+          "ndcg": 0.5598,
+          "cases": 10
+        },
+        "fine_grained": {
+          "recall@5": 0.875,
+          "precision@5": 0.34,
+          "mrr": 1.0,
+          "ndcg": 0.9402,
+          "cases": 10
+        },
+        "lexical": {
+          "recall@5": 1.0,
+          "precision@5": 0.22,
+          "mrr": 0.925,
+          "ndcg": 0.9386,
+          "cases": 10
+        },
+        "multiple_relevant": {
+          "recall@5": 0.6717,
+          "precision@5": 0.58,
+          "mrr": 0.8833,
+          "ndcg": 0.7161,
+          "cases": 10
+        },
+        "semantic": {
+          "recall@5": 0.8,
+          "precision@5": 0.16,
+          "mrr": 0.6833,
+          "ndcg": 0.7131,
+          "cases": 10
+        }
+      },
+      "elapsed_seconds": 5.9785,
+      "seconds_per_case": 0.1196,
+      "index_reused": false,
+      "error": null,
+      "routing_metrics": {
+        "cases": 50.0,
+        "rewrite_count": 0.0,
+        "rewrite_rate_percent": 0.0,
+        "expansion_count": 0.0,
+        "expansion_rate_percent": 0.0,
+        "prf_count": 0.0,
+        "prf_rate_percent": 0.0,
+        "confidence_trigger_count": 0.0,
+        "average_confidence": 0.0,
+        "average_query_variant_count": 1.0
+      },
+      "metadata": {}
+    },
+    {
+      "phase": "benchmark_v2",
+      "name": "qwen3-hybrid-generic-instruction",
+      "status": "ok",
+      "parameters": {
+        "name": "qwen3-hybrid-generic-instruction",
+        "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+        "chunk_size": 1000,
+        "chunk_overlap": 200,
+        "top_k": 5,
+        "dense_weight": 0.7,
+        "sparse_weight": 0.3,
+        "fusion_strategy": "weighted_linear",
+        "adaptive_routing": false,
+        "candidate_depth": 20,
+        "reranker_on": false,
+        "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+        "rerank_candidate_pool": 20,
+        "query_rewriting_on": false,
+        "query_expansion_on": false,
+        "rewrite_policy": "never",
+        "expansion_policy": "never",
+        "include_original_query": false,
+        "multi_query_fusion_strategy": "weighted_rrf",
+        "original_query_weight": 1.0,
+        "rewrite_query_weight": 0.7,
+        "expansion_query_weight": 0.5,
+        "confidence_routing": false,
+        "confidence_threshold": 0.35,
+        "llm_model": null,
+        "sparse_backend": "bm25",
+        "native_bge_on": false,
+        "native_bge_dense_weight": 0.4,
+        "native_bge_sparse_weight": 0.3,
+        "native_bge_colbert_weight": 0.3,
+        "late_interaction_model": null,
+        "qwen_instruction_mode": "generic",
+        "prf_on": false,
+        "prf_depth": 1,
+        "prf_min_confidence": 0.35,
+        "prf_max_terms": 8,
+        "prf_weight": 0.35,
+        "ltr_on": false,
+        "ltr_model": "auto",
+        "ltr_candidate_depth": 50,
+        "diversity_on": false,
+        "diversity_relevance_weight": 0.7,
+        "lexical_overlap_weight": 0.0
+      },
+      "metrics": {
+        "recall@5": 0.8273,
+        "precision@5": 0.352,
+        "mrr": 0.905,
+        "ndcg": 0.8372
+      },
+      "category_metrics": {
+        "ambiguous": {
+          "recall@5": 0.3417,
+          "precision@5": 0.24,
+          "mrr": 0.625,
+          "ndcg": 0.3999,
+          "cases": 10
+        },
+        "fine_grained": {
+          "recall@5": 0.925,
+          "precision@5": 0.36,
+          "mrr": 1.0,
+          "ndcg": 0.9533,
+          "cases": 10
+        },
+        "lexical": {
+          "recall@5": 1.0,
+          "precision@5": 0.22,
+          "mrr": 1.0,
+          "ndcg": 1.0,
+          "cases": 10
+        },
+        "multiple_relevant": {
+          "recall@5": 0.87,
+          "precision@5": 0.74,
+          "mrr": 0.95,
+          "ndcg": 0.8697,
+          "cases": 10
+        },
+        "semantic": {
+          "recall@5": 1.0,
+          "precision@5": 0.2,
+          "mrr": 0.95,
+          "ndcg": 0.9631,
+          "cases": 10
+        }
+      },
+      "elapsed_seconds": 132.5193,
+      "seconds_per_case": 2.6504,
+      "index_reused": false,
+      "error": null,
+      "routing_metrics": {
+        "cases": 50.0,
+        "rewrite_count": 0.0,
+        "rewrite_rate_percent": 0.0,
+        "expansion_count": 0.0,
+        "expansion_rate_percent": 0.0,
+        "prf_count": 0.0,
+        "prf_rate_percent": 0.0,
+        "confidence_trigger_count": 0.0,
+        "average_confidence": 0.0,
+        "average_query_variant_count": 1.0
+      },
+      "metadata": {}
+    }
+  ],
+  "relative_improvement_percent": {
+    "recall@5": 7.5393,
+    "precision@5": 7.3171,
+    "mrr": 7.1006,
+    "ndcg": 8.2213
+  }
+}

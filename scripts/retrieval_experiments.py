@@ -31,6 +31,11 @@ def parse_args() -> argparse.Namespace:
         help="Prevent model loaders from making network requests; unavailable models are recorded as failed experiments.",
     )
     parser.add_argument(
+        "--skip-qwen-reranker",
+        action="store_true",
+        help="Record Qwen3 reranker pools as blocked by local CPU budget after the scorer smoke test; do not run the multi-minute DEV sweep.",
+    )
+    parser.add_argument(
         "--llm-model",
         default=None,
         help="Model used only for the post-retrieval rewrite/expansion DEV experiments.",
@@ -55,6 +60,7 @@ def main() -> None:
         seed=args.seed,
         include_llm=args.include_llm,
         llm_model=args.llm_model,
+        include_qwen_reranker=not args.skip_qwen_reranker,
         command=command,
     )
     selected = result["selected"]

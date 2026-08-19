@@ -1,0 +1,20 @@
+{
+  "protocol_version": 2,
+  "artifact": "independent_challenge_set",
+  "created_after_phase3_selection": true,
+  "created_at": "2026-08-19",
+  "evaluation_file": "docs/benchmark_v2/eval.jsonl",
+  "evaluation_sha256": "8ada76a1b4b5571fd5690b5ab4dc4a7830ddc829b8f8c34be10c3792d48e3f21",
+  "corpus_fingerprint": "05d22b65e580442b09ef806b7335009097295cdfad86a672e5029f8f531f30df",
+  "case_count": 50,
+  "category_counts": {
+    "ambiguous": 10,
+    "fine_grained": 10,
+    "lexical": 10,
+    "multiple_relevant": 10,
+    "semantic": 10
+  },
+  "labels_validated_against_default_chunks": true,
+  "selection_eligible": false,
+  "frozen_phase3_configuration": "qwen3-hybrid-generic-instruction"
+}

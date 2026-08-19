@@ -1,4 +1,6 @@
-from app.retrieval.reranker import Reranker
+import pytest
+
+from app.retrieval.reranker import Reranker, RerankerUnavailable
 from tests.conftest import make_meta
 
 
@@ -94,3 +96,17 @@ def test_no_model_available_falls_back_without_loading(monkeypatch):
     result = reranker.rerank("query", chunks, top_n=5, enabled=True)
 
     assert result == chunks
+
+
+def test_qwen_prediction_failure_is_not_silently_replaced_by_original_order():
+    reranker = Reranker(model_name="Qwen/Qwen3-Reranker-0.6B", force_load=False)
+
+    class ExplodingQwenReranker:
+        def predict(self, pairs):
+            raise RuntimeError("model backend unavailable")
+
+    reranker.model = ExplodingQwenReranker()
+    chunks = [("a", make_meta("a.md", 0), 0.0)]
+
+    with pytest.raises(RerankerUnavailable, match="Qwen3 reranker"):
+        reranker.rerank("query", chunks, top_n=5, enabled=True)

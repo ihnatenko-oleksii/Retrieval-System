@@ -1,5 +1,11 @@
 import app.embeddings.embedder as embedder_module
-from app.embeddings.embedder import PrefixedSentenceTransformerEmbeddingFunction, _is_e5_model, get_embedding_function
+from app.embeddings.embedder import (
+    DEFAULT_QWEN3_QUERY_INSTRUCTION,
+    PrefixedSentenceTransformerEmbeddingFunction,
+    _is_e5_model,
+    _is_qwen3_model,
+    get_embedding_function,
+)
 
 
 class FakeInnerEmbeddingFunction:
@@ -29,6 +35,11 @@ class TestIsE5Model:
     def test_none_or_empty_is_safe(self):
         assert _is_e5_model(None) is False
         assert _is_e5_model("") is False
+
+
+def test_qwen3_models_are_detected_for_instruction_aware_queries():
+    assert _is_qwen3_model("Qwen/Qwen3-Embedding-0.6B") is True
+    assert _is_qwen3_model("BAAI/bge-m3") is False
 
 
 class TestPrefixing:
@@ -75,6 +86,17 @@ class TestPrefixing:
     def test_name_includes_model_name(self, monkeypatch):
         ef = self._make(monkeypatch, "BAAI/bge-m3")
         assert ef.name() == "prefixed::BAAI/bge-m3"
+
+    def test_qwen3_instruction_is_query_only(self, monkeypatch):
+        ef = self._make(monkeypatch, "Qwen/Qwen3-Embedding-0.6B")
+
+        ef(["document passage"])
+        ef.embed_query("technical question")
+
+        assert ef._inner.calls[0] == ["document passage"]
+        assert ef._inner.calls[1] == [
+            f"Instruct: {DEFAULT_QWEN3_QUERY_INSTRUCTION}\nQuery: technical question"
+        ]
 
 
 def test_get_embedding_function_uses_configured_model(monkeypatch):

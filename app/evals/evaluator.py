@@ -315,6 +315,12 @@ class Evaluator:
                     "query_variant_count": int(routing_trace.get("query_variant_count", 1)),
                     "confidence_score": routing_trace.get("confidence_score"),
                     "confidence_triggered": bool(routing_trace.get("confidence_triggered", False)),
+                    "prf_applied": bool(routing_trace.get("prf_applied", False)),
+                    "prf_terms": " | ".join(str(term) for term in routing_trace.get("prf_terms", ())),
+                    "ltr_applied": bool(routing_trace.get("ltr_applied", False)),
+                    "retrieval_trace": json.dumps(
+                        routing_trace.get("candidate_features", []), ensure_ascii=False, sort_keys=True
+                    ),
                     "gate_reasons": " | ".join(str(reason) for reason in routing_trace.get("gate_reasons", ())),
                 }
             )

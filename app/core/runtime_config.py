@@ -33,6 +33,22 @@ class RetrievalConfig:
     rerank_candidate_pool: int | None = None
     adaptive_routing: bool = True
     rrf_k: int = 60
+    prf_on: bool = False
+    prf_depth: int = 1
+    prf_min_confidence: float = 0.35
+    prf_max_terms: int = 8
+    prf_weight: float = 0.35
+    native_bge_on: bool = False
+    native_bge_dense_weight: float = 0.4
+    native_bge_sparse_weight: float = 0.3
+    native_bge_colbert_weight: float = 0.3
+    ltr_on: bool = False
+    ltr_model: str = "auto"
+    ltr_candidate_depth: int = 50
+    embedding_query_instruction: str | None = None
+    diversity_on: bool = False
+    diversity_relevance_weight: float = 0.7
+    lexical_overlap_weight: float = 0.0
     embedding_model: str | None = None
     chunk_size: int | None = None
     chunk_overlap: int | None = None
@@ -46,8 +62,28 @@ class RetrievalConfig:
             raise ValueError("rerank_candidate_pool must be at least 1 when provided")
         if self.rrf_k < 1:
             raise ValueError("rrf_k must be at least 1")
+        if self.prf_depth < 1:
+            raise ValueError("prf_depth must be at least 1")
+        if self.prf_max_terms < 1:
+            raise ValueError("prf_max_terms must be at least 1")
+        if self.ltr_candidate_depth < self.top_k:
+            raise ValueError("ltr_candidate_depth must be at least top_k")
+        if not 0.0 <= self.diversity_relevance_weight <= 1.0:
+            raise ValueError("diversity_relevance_weight must be between 0 and 1")
+        if self.lexical_overlap_weight < 0:
+            raise ValueError("lexical_overlap_weight cannot be negative")
         if self.dense_weight < 0 or self.sparse_weight < 0:
             raise ValueError("retrieval weights cannot be negative")
+        if any(
+            weight < 0
+            for weight in (
+                self.prf_weight,
+                self.native_bge_dense_weight,
+                self.native_bge_sparse_weight,
+                self.native_bge_colbert_weight,
+            )
+        ):
+            raise ValueError("Phase 3 retrieval weights cannot be negative")
         if self.fusion_strategy not in {"weighted_linear", "rrf", "weighted_rrf"}:
             raise ValueError(f"Unsupported fusion strategy: {self.fusion_strategy}")
         if self.rewrite_policy not in {"never", "always", "selective"}:
@@ -94,4 +130,20 @@ class RetrievalConfig:
             candidate_depth=settings.retrieval_candidate_depth,
             rerank_candidate_pool=settings.rerank_candidate_pool,
             adaptive_routing=settings.adaptive_routing,
+            prf_on=settings.prf_on,
+            prf_depth=settings.prf_depth,
+            prf_min_confidence=settings.prf_min_confidence,
+            prf_max_terms=settings.prf_max_terms,
+            prf_weight=settings.prf_weight,
+            native_bge_on=settings.native_bge_on,
+            native_bge_dense_weight=settings.native_bge_dense_weight,
+            native_bge_sparse_weight=settings.native_bge_sparse_weight,
+            native_bge_colbert_weight=settings.native_bge_colbert_weight,
+            ltr_on=settings.ltr_on,
+            ltr_model=settings.ltr_model,
+            ltr_candidate_depth=settings.ltr_candidate_depth,
+            embedding_query_instruction=settings.embedding_query_instruction,
+            diversity_on=settings.diversity_on,
+            diversity_relevance_weight=settings.diversity_relevance_weight,
+            lexical_overlap_weight=settings.lexical_overlap_weight,
         )

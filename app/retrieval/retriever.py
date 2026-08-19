@@ -3,6 +3,10 @@ import re
 
 from app.core.config import settings
 from app.core.runtime_config import RetrievalConfig
+from app.retrieval.diversity import mmr_select
+from app.retrieval.ltr import LTRFeatureExtractor
+from app.retrieval.native_bge import NativeBGEBackend
+from app.retrieval.prf import PseudoRelevanceFeedback
 from app.retrieval.query_router import QueryDecision, QueryGate
 from app.retrieval.reranker import Reranker
 from app.retrieval.rewriter import QueryRewriter
@@ -20,12 +24,21 @@ class Retriever:
         reranker: Reranker | None = None,
         rewriter: QueryRewriter | None = None,
         query_gate: QueryGate | None = None,
+        native_backend: NativeBGEBackend | None = None,
+        native_chunks: list[tuple[str, dict]] | None = None,
+        prf: PseudoRelevanceFeedback | None = None,
+        ltr_ranker: object | None = None,
     ):
         self.vector_store = vector_store
         self.bm25_store = bm25_store or BM25Store()
         self.rewriter = rewriter or QueryRewriter()
         self.query_gate = query_gate or QueryGate()
         self.last_trace: dict[str, object] = {}
+        self.native_backend = native_backend
+        self.native_chunks = native_chunks or []
+        self.prf = prf or PseudoRelevanceFeedback()
+        self.ltr_ranker = ltr_ranker
+        self._last_component_trace: list[dict[str, object]] = []
         # Allow the caller (e.g. tuning UI) to supply a preloaded reranker so
         # we don't pay the CrossEncoder load cost on every trial.
         self.reranker = reranker or Reranker()
@@ -81,6 +94,25 @@ class Retriever:
             or re.search(r"\b[A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)+\b", query)
         )
 
+    @staticmethod
+    def _content_token_set(text: str) -> set[str]:
+        stopwords = {"a", "and", "are", "for", "how", "in", "is", "of", "or", "the", "to", "what", "with"}
+        return {
+            token.casefold()
+            for token in re.findall(r"\b[A-Za-z0-9][A-Za-z0-9_-]*\b", text or "")
+            if len(token) > 1 and token.casefold() not in stopwords
+        }
+
+    def _apply_lexical_overlap_boost(self, query: str, results: list[list], weight: float) -> None:
+        if weight <= 0 or not results:
+            return
+        query_tokens = self._content_token_set(query)
+        if not query_tokens:
+            return
+        for value in results:
+            overlap = len(query_tokens & self._content_token_set(str(value[0]))) / len(query_tokens)
+            value[2] = float(value[2]) + weight * overlap
+
     def _adaptive_weights(self, query: str, dense_weight: float, sparse_weight: float) -> tuple[float, float]:
         """Route only from raw query text; benchmark labels never reach this method."""
         if dense_weight <= 0 or sparse_weight <= 0:
@@ -116,6 +148,67 @@ class Retriever:
                         value[2] = score + (2.0 if is_definition_query else 1.0)
                     else:
                         value[2] = score + 0.15
+
+    def _component_trace(
+        self,
+        query: str,
+        dense_results: list[tuple[str, dict, float]],
+        sparse_results: list[tuple[str, dict, float]],
+        fused_results: list[list],
+        native_trace: list[dict[str, object]] | None = None,
+    ) -> list[dict[str, object]]:
+        """Expose candidate evidence for diagnostics and learned fusion."""
+        dense_normalized = self._normalize_scores(dense_results, invert=True)
+        sparse_normalized = self._normalize_scores(sparse_results)
+        by_key: dict[tuple, dict[str, object]] = {}
+
+        def record(content: str, meta: dict) -> dict[str, object]:
+            key = self._chunk_identity(meta, content)
+            if key not in by_key:
+                by_key[key] = {"content": content, "metadata": meta, "stream_count": 0}
+            return by_key[key]
+
+        for rank, (content, meta, score) in enumerate(dense_normalized, start=1):
+            value = record(content, meta)
+            value.update({"dense_score": score, "dense_rank": rank})
+            value["stream_count"] = int(value["stream_count"]) + 1
+        for rank, (content, meta, score) in enumerate(sparse_normalized, start=1):
+            value = record(content, meta)
+            value.update({"sparse_score": score, "sparse_rank": rank})
+            value["stream_count"] = int(value["stream_count"]) + 1
+
+        native_by_key: dict[tuple, dict[str, object]] = {}
+        if native_trace:
+            for item in native_trace:
+                metadata = item.get("metadata")
+                content = item.get("content")
+                if isinstance(metadata, dict) and isinstance(content, str):
+                    native_by_key[self._chunk_identity(metadata, content)] = item
+
+        for rank, (content, meta, score) in enumerate(fused_results, start=1):
+            value = record(content, meta)
+            value["final_score"] = float(score)
+            value["candidate_rank"] = rank
+            native = native_by_key.get(self._chunk_identity(meta, content))
+            if native:
+                for key in (
+                    "native_dense_score",
+                    "native_sparse_score",
+                    "late_interaction_score",
+                    "native_dense_rank",
+                    "native_sparse_rank",
+                    "late_interaction_rank",
+                ):
+                    if key in native:
+                        value[key] = native[key]
+
+        return [
+            {
+                **value,
+                "query": query,
+            }
+            for value in sorted(by_key.values(), key=lambda item: int(item.get("candidate_rank", 10**9)))
+        ]
 
     def _fuse_results(
         self,
@@ -205,6 +298,10 @@ class Retriever:
         adaptive_routing: bool,
         raw_query: str,
         rrf_k: int,
+        native_bge_on: bool = False,
+        native_bge_dense_weight: float = 0.4,
+        native_bge_sparse_weight: float = 0.3,
+        native_bge_colbert_weight: float = 0.3,
     ) -> tuple[list[list], list[tuple[str, dict, float]], list[tuple[str, dict, float]]]:
         """Run stage 1 dense/sparse retrieval for one query variant."""
         initial_k = max(resolved_top_k, candidate_depth)
@@ -230,6 +327,46 @@ class Retriever:
         if effective_sparse_weight > 0:
             sparse_results = self.bm25_store.query(query_text=query, n_results=initial_k)
 
+        native_trace: list[dict[str, object]] = []
+        if native_bge_on:
+            if self.native_backend is None:
+                raise RuntimeError("native BGE-M3 retrieval requested but no backend was configured")
+            seen: set[tuple] = set()
+            native_candidates: list[tuple[str, dict]] = []
+            for content, meta, _ in [*dense_results, *sparse_results]:
+                key = self._chunk_identity(meta, content)
+                if key not in seen:
+                    seen.add(key)
+                    native_candidates.append((content, meta))
+            if not native_candidates:
+                native_candidates = list(self.native_chunks)
+            native_result = self.native_backend.search(
+                query,
+                native_candidates,
+                top_n=initial_k,
+                dense_weight=native_bge_dense_weight,
+                sparse_weight=native_bge_sparse_weight,
+                colbert_weight=native_bge_colbert_weight,
+            )
+            dense_results = [
+                (content, meta, -score)
+                for content, meta, score in native_result.results
+            ]
+            native_trace = [
+                {
+                    **trace,
+                    "content": candidate.content,
+                    "metadata": candidate.metadata,
+                    "native_dense_score": candidate.dense_score,
+                    "native_sparse_score": candidate.sparse_score,
+                    "late_interaction_score": candidate.late_interaction_score,
+                    "native_dense_rank": candidate.dense_rank,
+                    "native_sparse_rank": candidate.sparse_rank,
+                    "late_interaction_rank": candidate.late_interaction_rank,
+                }
+                for candidate, trace in zip(native_result.candidate_scores, native_result.trace, strict=True)
+            ]
+
         final_results = self._fuse_results(
             dense_results,
             sparse_results,
@@ -245,6 +382,13 @@ class Retriever:
             }
             self._apply_query_intent_boost(raw_query, combined_scores)
             final_results = sorted(combined_scores.values(), key=lambda value: value[2], reverse=True)
+        self._last_component_trace = self._component_trace(
+            query,
+            dense_results,
+            sparse_results,
+            final_results,
+            native_trace=native_trace,
+        )
         return final_results, dense_results, sparse_results
 
     @staticmethod
@@ -310,6 +454,20 @@ class Retriever:
             candidate_depth = settings.retrieval_candidate_depth
             adaptive_routing = settings.adaptive_routing
             rrf_k = 60
+            prf_on = settings.prf_on
+            prf_depth = settings.prf_depth
+            prf_min_confidence = settings.prf_min_confidence
+            prf_max_terms = settings.prf_max_terms
+            prf_weight = settings.prf_weight
+            native_bge_on = settings.native_bge_on
+            native_bge_dense_weight = settings.native_bge_dense_weight
+            native_bge_sparse_weight = settings.native_bge_sparse_weight
+            native_bge_colbert_weight = settings.native_bge_colbert_weight
+            ltr_on = settings.ltr_on
+            ltr_candidate_depth = settings.ltr_candidate_depth
+            diversity_on = settings.diversity_on
+            diversity_relevance_weight = settings.diversity_relevance_weight
+            lexical_overlap_weight = settings.lexical_overlap_weight
         else:
             resolved_top_k = top_k if top_k is not None else config.top_k
             dense_weight = config.dense_weight
@@ -332,6 +490,23 @@ class Retriever:
             candidate_depth = config.candidate_depth or max(resolved_top_k * 6, 20)
             adaptive_routing = config.adaptive_routing
             rrf_k = config.rrf_k
+            prf_on = config.prf_on
+            prf_depth = config.prf_depth
+            prf_min_confidence = config.prf_min_confidence
+            prf_max_terms = config.prf_max_terms
+            prf_weight = config.prf_weight
+            native_bge_on = config.native_bge_on
+            native_bge_dense_weight = config.native_bge_dense_weight
+            native_bge_sparse_weight = config.native_bge_sparse_weight
+            native_bge_colbert_weight = config.native_bge_colbert_weight
+            ltr_on = config.ltr_on
+            ltr_candidate_depth = config.ltr_candidate_depth
+            diversity_on = config.diversity_on
+            diversity_relevance_weight = config.diversity_relevance_weight
+            lexical_overlap_weight = config.lexical_overlap_weight
+
+        if ltr_on:
+            candidate_depth = max(candidate_depth, ltr_candidate_depth)
 
         if resolved_top_k < 1:
             raise ValueError("top_k must be at least 1")
@@ -354,10 +529,11 @@ class Retriever:
         # generated variants; retain that behavior unless a rewrite is the
         # explicit replacement-only control.
         include_original_effective = include_original_query or (expansion_requested and not rewrite_requested)
-        need_original = include_original_effective or confidence_routing or not potential_variant
+        need_original = include_original_effective or confidence_routing or prf_on or not potential_variant
         original_results: list[list] = []
         original_dense: list[tuple[str, dict, float]] = []
         original_sparse: list[tuple[str, dict, float]] = []
+        original_component_trace: list[dict[str, object]] = []
         if need_original:
             original_results, original_dense, original_sparse = self._retrieve_single_query(
                 query,
@@ -369,11 +545,16 @@ class Retriever:
                 adaptive_routing=adaptive_routing,
                 raw_query=query,
                 rrf_k=rrf_k,
+                native_bge_on=native_bge_on,
+                native_bge_dense_weight=native_bge_dense_weight,
+                native_bge_sparse_weight=native_bge_sparse_weight,
+                native_bge_colbert_weight=native_bge_colbert_weight,
             )
+            original_component_trace = list(self._last_component_trace)
 
         confidence_score = None
         confidence_triggered = False
-        if confidence_routing and need_original:
+        if (confidence_routing or prf_on) and need_original:
             confidence_score = self._confidence_score(
                 original_results,
                 original_dense,
@@ -388,8 +569,48 @@ class Retriever:
                     expansion_requested = True
                     confidence_triggered = True
 
+        prf_results: list[list] = []
+        prf_applied = False
+        prf_terms: tuple[str, ...] = ()
+        prf_feedback_query: str | None = None
+        if prf_on and need_original and original_results:
+            feedback = PseudoRelevanceFeedback(max_terms=prf_max_terms).build_query(
+                query,
+                [str(result[0]) for result in original_results],
+                depth=prf_depth,
+            )
+            should_apply = self.prf.should_apply(
+                query,
+                confidence=float(confidence_score or 0.0),
+                threshold=prf_min_confidence,
+                has_results=bool(original_results),
+                protected_signals=tuple(decision.protected_signals),
+            )
+            if should_apply and feedback.terms:
+                prf_feedback_query = feedback.query
+                prf_terms = feedback.terms
+                prf_results, _, _ = self._retrieve_single_query(
+                    feedback.query,
+                    resolved_top_k=resolved_top_k,
+                    dense_weight=dense_weight,
+                    sparse_weight=sparse_weight,
+                    fusion_strategy=fusion_strategy,
+                    candidate_depth=candidate_depth,
+                    adaptive_routing=adaptive_routing,
+                    raw_query=query,
+                    rrf_k=rrf_k,
+                    native_bge_on=native_bge_on,
+                    native_bge_dense_weight=native_bge_dense_weight,
+                    native_bge_sparse_weight=native_bge_sparse_weight,
+                    native_bge_colbert_weight=native_bge_colbert_weight,
+                )
+                prf_applied = bool(prf_results)
+
         streams: list[tuple[str, list[tuple[str, dict, float]], float]] = []
-        if include_original_effective or not (rewrite_requested or expansion_requested):
+        if prf_results:
+            streams.append(("original", original_results, original_query_weight))
+            streams.append(("prf", prf_results, prf_weight))
+        elif include_original_effective or not (rewrite_requested or expansion_requested):
             streams.append(("original", original_results, original_query_weight))
 
         rewrite_applied = False
@@ -412,6 +633,10 @@ class Retriever:
                     adaptive_routing=adaptive_routing,
                     raw_query=query,
                     rrf_k=rrf_k,
+                    native_bge_on=native_bge_on,
+                    native_bge_dense_weight=native_bge_dense_weight,
+                    native_bge_sparse_weight=native_bge_sparse_weight,
+                    native_bge_colbert_weight=native_bge_colbert_weight,
                 )
                 streams.append(("rewrite", rewritten_results, rewrite_query_weight))
 
@@ -431,6 +656,10 @@ class Retriever:
                     adaptive_routing=adaptive_routing,
                     raw_query=query,
                     rrf_k=rrf_k,
+                    native_bge_on=native_bge_on,
+                    native_bge_dense_weight=native_bge_dense_weight,
+                    native_bge_sparse_weight=native_bge_sparse_weight,
+                    native_bge_colbert_weight=native_bge_colbert_weight,
                 )
                 streams.append(("expansion", expanded_results, expansion_query_weight))
 
@@ -447,6 +676,10 @@ class Retriever:
                     adaptive_routing=adaptive_routing,
                     raw_query=query,
                     rrf_k=rrf_k,
+                    native_bge_on=native_bge_on,
+                    native_bge_dense_weight=native_bge_dense_weight,
+                    native_bge_sparse_weight=native_bge_sparse_weight,
+                    native_bge_colbert_weight=native_bge_colbert_weight,
                 )
             streams.append(("original", original_results, original_query_weight))
         final_results = self._fuse_query_variants(
@@ -454,6 +687,35 @@ class Retriever:
             strategy=multi_query_fusion_strategy,
             rrf_k=rrf_k,
         )
+        self._apply_lexical_overlap_boost(query, final_results, lexical_overlap_weight)
+        final_results = sorted(final_results, key=lambda value: value[2], reverse=True)
+        ltr_applied = False
+        if ltr_on:
+            if self.ltr_ranker is None:
+                raise RuntimeError("learned ranking requested but no fitted LTR ranker was configured")
+            feature_records = [LTRFeatureExtractor.extract(query, record) for record in original_component_trace]
+            if feature_records:
+                predictions = self.ltr_ranker.predict(LTRFeatureExtractor.matrix(feature_records))
+                predictions_by_key = {
+                    self._chunk_identity(record["metadata"], str(record["content"])): float(prediction)
+                    for record, prediction in zip(original_component_trace, predictions, strict=True)
+                }
+                final_results = sorted(
+                    final_results,
+                    key=lambda result: predictions_by_key.get(
+                        self._chunk_identity(result[1], result[0]), float("-inf")
+                    ),
+                    reverse=True,
+                )
+                ltr_applied = True
+        diversity_applied = False
+        if diversity_on:
+            final_results = mmr_select(
+                final_results,
+                top_k=resolved_top_k,
+                relevance_weight=diversity_relevance_weight,
+            )
+            diversity_applied = True
         self.last_trace = {
             "rewrite_applied": rewrite_applied,
             "expansion_applied": expansion_applied,
@@ -465,6 +727,15 @@ class Retriever:
             "gate_reasons": decision.reasons,
             "confidence_score": confidence_score,
             "confidence_triggered": confidence_triggered,
+            "prf_applied": prf_applied,
+            "prf_terms": prf_terms,
+            "prf_feedback_query": prf_feedback_query,
+            "prf_depth": prf_depth if prf_on else None,
+            "candidate_features": original_component_trace,
+            "ltr_applied": ltr_applied,
+            "ltr_backend": getattr(self.ltr_ranker, "backend_name", None) if ltr_applied else None,
+            "diversity_applied": diversity_applied,
+            "lexical_overlap_weight": lexical_overlap_weight,
         }
 
         # 4. Rerank only the requested candidate pool, always returning the

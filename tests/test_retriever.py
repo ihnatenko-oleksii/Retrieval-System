@@ -231,6 +231,39 @@ class TestFusionAndRouting:
         rewriter.rewrite_query.assert_called_once()
         assert retriever.last_trace["confidence_triggered"] is True
 
+    def test_low_confidence_prf_preserves_original_query_and_records_feedback(self):
+        vector_store = MagicMock()
+        bm25_store = MagicMock()
+        meta = make_meta("docs/retries.md", 0)
+
+        def dense_query(*, query_text, n_results):
+            content = "retry policy API-Retry-After"
+            return {
+                "documents": [[content]],
+                "metadatas": [[meta]],
+                "distances": [[0.7]],
+            }
+
+        vector_store.query.side_effect = dense_query
+        bm25_store.query.return_value = []
+        retriever = make_retriever(vector_store=vector_store, bm25_store=bm25_store)
+
+        retriever.retrieve(
+            "short query",
+            config=base_config(
+                dense_weight=1.0,
+                sparse_weight=0.0,
+                candidate_depth=2,
+                prf_on=True,
+                prf_min_confidence=0.9,
+                prf_depth=1,
+            ),
+        )
+
+        assert retriever.last_trace["prf_applied"] is True
+        assert retriever.last_trace["prf_feedback_query"].startswith("short query")
+        assert "API-Retry-After" in retriever.last_trace["prf_terms"]
+
     def test_empty_or_unchanged_rewrite_falls_back_to_original_results(self):
         vector_store = MagicMock()
         bm25_store = MagicMock()
@@ -256,6 +289,61 @@ class TestFusionAndRouting:
         )
 
         assert results[0][0] == "original hit"
+
+
+def test_fitted_ltr_ranker_can_reorder_stage_one_candidates():
+    vector_store = MagicMock()
+    bm25_store = MagicMock()
+    meta_a = make_meta("docs/a.md", 0)
+    meta_b = make_meta("docs/b.md", 0)
+    vector_store.query.return_value = {
+        "documents": [["first candidate", "second candidate"]],
+        "metadatas": [[meta_a, meta_b]],
+        "distances": [[0.1, 0.2]],
+    }
+    bm25_store.query.return_value = []
+
+    class ReorderingRanker:
+        backend_name = "test-ranker"
+
+        @staticmethod
+        def predict(features):
+            return list(range(len(features)))
+
+    retriever = Retriever(
+        vector_store=vector_store,
+        bm25_store=bm25_store,
+        reranker=MagicMock(),
+        ltr_ranker=ReorderingRanker(),
+    )
+
+    results = retriever.retrieve(
+        "candidate question",
+        config=base_config(
+            top_k=2,
+            dense_weight=1.0,
+            sparse_weight=0.0,
+            candidate_depth=2,
+            ltr_on=True,
+            ltr_candidate_depth=2,
+        ),
+    )
+
+    assert [content for content, _, _ in results] == ["second candidate", "first candidate"]
+    assert retriever.last_trace["ltr_applied"] is True
+
+
+def test_lexical_overlap_boost_uses_only_query_and_chunk_text():
+    retriever = make_retriever()
+    results = [
+        ["retry backoff", make_meta("a.md", 0), 0.4],
+        ["unrelated passage", make_meta("b.md", 0), 0.5],
+    ]
+
+    retriever._apply_lexical_overlap_boost("retry", results, 0.2)
+
+    assert results[0][2] == pytest.approx(0.6)
+    assert results[1][2] == pytest.approx(0.5)
 
 
 class TestChunkIdentity:

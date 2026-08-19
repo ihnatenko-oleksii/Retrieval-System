@@ -15,13 +15,14 @@ class VectorStore:
         self,
         persist_dir: str | None = None,
         embedding_model: str | None = None,
+        query_instruction: str | None = None,
         collection_name: str = "documents",
     ):
         self.client = chromadb.PersistentClient(
             path=persist_dir or settings.vector_db_path,
             settings=Settings(allow_reset=True),
         )
-        self.embedding_function = get_embedding_function(embedding_model)
+        self.embedding_function = get_embedding_function(embedding_model, query_instruction=query_instruction)
         self.collection_name = collection_name
         self.collection = self.client.get_or_create_collection(
             name=self.collection_name, embedding_function=self.embedding_function, metadata={"hnsw:space": "cosine"}
