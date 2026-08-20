@@ -1,0 +1,5642 @@
+[
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#python-standard-library-argparse",
+    "heading": "Python standard library: `argparse`",
+    "level": 1,
+    "start": 0,
+    "end": 105
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#argumentparser-objects",
+    "heading": "ArgumentParser objects",
+    "level": 3,
+    "start": 105,
+    "end": 2329
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#prog",
+    "heading": "prog",
+    "level": 4,
+    "start": 2329,
+    "end": 3812
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#usage",
+    "heading": "usage",
+    "level": 4,
+    "start": 3812,
+    "end": 4705
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#description",
+    "heading": "description",
+    "level": 4,
+    "start": 4705,
+    "end": 5179
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#epilog",
+    "heading": "epilog",
+    "level": 4,
+    "start": 5179,
+    "end": 5807
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#parents",
+    "heading": "parents",
+    "level": 4,
+    "start": 5807,
+    "end": 7089
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#formatterclass",
+    "heading": "formatter_class",
+    "level": 4,
+    "start": 7089,
+    "end": 10188
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#prefixchars",
+    "heading": "prefix_chars",
+    "level": 4,
+    "start": 10188,
+    "end": 10816
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#fromfileprefixchars",
+    "heading": "fromfile_prefix_chars",
+    "level": 4,
+    "start": 10816,
+    "end": 12476
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#argumentdefault",
+    "heading": "argument_default",
+    "level": 4,
+    "start": 12476,
+    "end": 13231
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#allowabbrev",
+    "heading": "allow_abbrev",
+    "level": 4,
+    "start": 13231,
+    "end": 13778
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#conflicthandler",
+    "heading": "conflict_handler",
+    "level": 4,
+    "start": 13778,
+    "end": 15110
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#addhelp",
+    "heading": "add_help",
+    "level": 4,
+    "start": 15110,
+    "end": 16091
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#exitonerror",
+    "heading": "exit_on_error",
+    "level": 4,
+    "start": 16091,
+    "end": 16841
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#suggestonerror",
+    "heading": "suggest_on_error",
+    "level": 4,
+    "start": 16841,
+    "end": 18054
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#color",
+    "heading": "color",
+    "level": 4,
+    "start": 18054,
+    "end": 19049
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#the-addargument-method",
+    "heading": "The add_argument() method",
+    "level": 3,
+    "start": 19049,
+    "end": 20449
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#name-or-flags",
+    "heading": "name or flags",
+    "level": 4,
+    "start": 20449,
+    "end": 22169
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#action",
+    "heading": "action",
+    "level": 4,
+    "start": 22169,
+    "end": 27362
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#nargs",
+    "heading": "nargs",
+    "level": 4,
+    "start": 27362,
+    "end": 30629
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#const",
+    "heading": "const",
+    "level": 4,
+    "start": 30629,
+    "end": 31628
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#default",
+    "heading": "default",
+    "level": 4,
+    "start": 31628,
+    "end": 33950
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#type",
+    "heading": "type",
+    "level": 4,
+    "start": 33950,
+    "end": 36751
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#choices",
+    "heading": "choices",
+    "level": 4,
+    "start": 36751,
+    "end": 38339
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#required",
+    "heading": "required",
+    "level": 4,
+    "start": 38339,
+    "end": 39150
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#help",
+    "heading": "help",
+    "level": 4,
+    "start": 39150,
+    "end": 40428
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#metavar",
+    "heading": "metavar",
+    "level": 4,
+    "start": 40428,
+    "end": 42291
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#dest",
+    "heading": "dest",
+    "level": 4,
+    "start": 42291,
+    "end": 43984
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#deprecated",
+    "heading": "deprecated",
+    "level": 4,
+    "start": 43984,
+    "end": 44780
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#action-classes",
+    "heading": "Action classes",
+    "level": 4,
+    "start": 44780,
+    "end": 47302
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#the-parseargs-method",
+    "heading": "The parse_args() method",
+    "level": 3,
+    "start": 47302,
+    "end": 47822
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#option-value-syntax",
+    "heading": "Option value syntax",
+    "level": 4,
+    "start": 47822,
+    "end": 49073
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#invalid-arguments",
+    "heading": "Invalid arguments",
+    "level": 4,
+    "start": 49073,
+    "end": 49942
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#arguments-containing",
+    "heading": "Arguments containing -",
+    "level": 4,
+    "start": 49942,
+    "end": 51973
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#argument-abbreviations-prefix-matching",
+    "heading": "Argument abbreviations (prefix matching)",
+    "level": 4,
+    "start": 51973,
+    "end": 52751
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#beyond-sys-argv",
+    "heading": "Beyond sys.argv",
+    "level": 4,
+    "start": 52751,
+    "end": 53566
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#the-namespace-object",
+    "heading": "The Namespace object",
+    "level": 4,
+    "start": 53566,
+    "end": 54458
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#subcommands",
+    "heading": "Subcommands",
+    "level": 4,
+    "start": 54458,
+    "end": 62121
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#filetype-objects",
+    "heading": "FileType objects",
+    "level": 4,
+    "start": 62121,
+    "end": 63676
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#argument-groups",
+    "heading": "Argument groups",
+    "level": 4,
+    "start": 63676,
+    "end": 66143
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#mutual-exclusion",
+    "heading": "Mutual exclusion",
+    "level": 4,
+    "start": 66143,
+    "end": 68393
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#parser-defaults",
+    "heading": "Parser defaults",
+    "level": 4,
+    "start": 68393,
+    "end": 69743
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#printing-help",
+    "heading": "Printing help",
+    "level": 4,
+    "start": 69743,
+    "end": 70713
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#partial-parsing",
+    "heading": "Partial parsing",
+    "level": 4,
+    "start": 70713,
+    "end": 71718
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#customizing-file-parsing",
+    "heading": "Customizing file parsing",
+    "level": 4,
+    "start": 71718,
+    "end": 72640
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#exiting-methods",
+    "heading": "Exiting methods",
+    "level": 4,
+    "start": 72640,
+    "end": 73250
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#intermixed-parsing",
+    "heading": "Intermixed parsing",
+    "level": 4,
+    "start": 73250,
+    "end": 74696
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#registering-custom-types-or-actions",
+    "heading": "Registering custom types or actions",
+    "level": 4,
+    "start": 74696,
+    "end": 76002
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#exceptions",
+    "heading": "Exceptions",
+    "level": 3,
+    "start": 76002,
+    "end": 76353
+  },
+  {
+    "document_id": "python_stdlib/argparse.md",
+    "span_id": "python_stdlib/argparse.md#guides-and-tutorials",
+    "heading": "Guides and Tutorials",
+    "level": 3,
+    "start": 76353,
+    "end": 76434
+  },
+  {
+    "document_id": "python_stdlib/array.md",
+    "span_id": "python_stdlib/array.md#python-standard-library-array",
+    "heading": "Python standard library: `array`",
+    "level": 1,
+    "start": 0,
+    "end": 99
+  },
+  {
+    "document_id": "python_stdlib/array.md",
+    "span_id": "python_stdlib/array.md#reference-overview-1",
+    "heading": "Reference overview 1",
+    "level": 2,
+    "start": 99,
+    "end": 1242
+  },
+  {
+    "document_id": "python_stdlib/array.md",
+    "span_id": "python_stdlib/array.md#reference-overview-2",
+    "heading": "Reference overview 2",
+    "level": 2,
+    "start": 1242,
+    "end": 2364
+  },
+  {
+    "document_id": "python_stdlib/array.md",
+    "span_id": "python_stdlib/array.md#reference-overview-3",
+    "heading": "Reference overview 3",
+    "level": 2,
+    "start": 2364,
+    "end": 3815
+  },
+  {
+    "document_id": "python_stdlib/array.md",
+    "span_id": "python_stdlib/array.md#reference-overview-4",
+    "heading": "Reference overview 4",
+    "level": 2,
+    "start": 3815,
+    "end": 5001
+  },
+  {
+    "document_id": "python_stdlib/array.md",
+    "span_id": "python_stdlib/array.md#reference-overview-5",
+    "heading": "Reference overview 5",
+    "level": 2,
+    "start": 5001,
+    "end": 5779
+  },
+  {
+    "document_id": "python_stdlib/array.md",
+    "span_id": "python_stdlib/array.md#reference-overview-6",
+    "heading": "Reference overview 6",
+    "level": 2,
+    "start": 5779,
+    "end": 6984
+  },
+  {
+    "document_id": "python_stdlib/array.md",
+    "span_id": "python_stdlib/array.md#reference-overview-7",
+    "heading": "Reference overview 7",
+    "level": 2,
+    "start": 6984,
+    "end": 7215
+  },
+  {
+    "document_id": "python_stdlib/asyncio.md",
+    "span_id": "python_stdlib/asyncio.md#python-standard-library-asyncio",
+    "heading": "Python standard library: `asyncio`",
+    "level": 1,
+    "start": 0,
+    "end": 103
+  },
+  {
+    "document_id": "python_stdlib/asyncio.md",
+    "span_id": "python_stdlib/asyncio.md#asyncio-repl",
+    "heading": "asyncio REPL",
+    "level": 3,
+    "start": 103,
+    "end": 852
+  },
+  {
+    "document_id": "python_stdlib/asyncio.md",
+    "span_id": "python_stdlib/asyncio.md#reference",
+    "heading": "Reference",
+    "level": 3,
+    "start": 852,
+    "end": 1356
+  },
+  {
+    "document_id": "python_stdlib/contextlib.md",
+    "span_id": "python_stdlib/contextlib.md#python-standard-library-contextlib",
+    "heading": "Python standard library: `contextlib`",
+    "level": 1,
+    "start": 0,
+    "end": 109
+  },
+  {
+    "document_id": "python_stdlib/contextlib.md",
+    "span_id": "python_stdlib/contextlib.md#utilities",
+    "heading": "Utilities",
+    "level": 3,
+    "start": 109,
+    "end": 18770
+  },
+  {
+    "document_id": "python_stdlib/contextlib.md",
+    "span_id": "python_stdlib/contextlib.md#examples-and-recipes",
+    "heading": "Examples and Recipes",
+    "level": 3,
+    "start": 18770,
+    "end": 18908
+  },
+  {
+    "document_id": "python_stdlib/contextlib.md",
+    "span_id": "python_stdlib/contextlib.md#supporting-a-variable-number-of-context-managers",
+    "heading": "Supporting a variable number of context managers",
+    "level": 4,
+    "start": 18908,
+    "end": 19767
+  },
+  {
+    "document_id": "python_stdlib/contextlib.md",
+    "span_id": "python_stdlib/contextlib.md#catching-exceptions-from-enter-methods",
+    "heading": "Catching exceptions from __enter__ methods",
+    "level": 4,
+    "start": 19767,
+    "end": 20691
+  },
+  {
+    "document_id": "python_stdlib/contextlib.md",
+    "span_id": "python_stdlib/contextlib.md#cleaning-up-in-an-enter-implementation",
+    "heading": "Cleaning up in an __enter__ implementation",
+    "level": 4,
+    "start": 20691,
+    "end": 22115
+  },
+  {
+    "document_id": "python_stdlib/contextlib.md",
+    "span_id": "python_stdlib/contextlib.md#replacing-any-use-of-try-finally-and-flag-variables",
+    "heading": "Replacing any use of try-finally and flag variables",
+    "level": 4,
+    "start": 22115,
+    "end": 24196
+  },
+  {
+    "document_id": "python_stdlib/contextlib.md",
+    "span_id": "python_stdlib/contextlib.md#using-a-context-manager-as-a-function-decorator",
+    "heading": "Using a context manager as a function decorator",
+    "level": 4,
+    "start": 24196,
+    "end": 25703
+  },
+  {
+    "document_id": "python_stdlib/contextlib.md",
+    "span_id": "python_stdlib/contextlib.md#single-use-reusable-and-reentrant-context-managers",
+    "heading": "Single use, reusable and reentrant context managers",
+    "level": 3,
+    "start": 25703,
+    "end": 26932
+  },
+  {
+    "document_id": "python_stdlib/contextlib.md",
+    "span_id": "python_stdlib/contextlib.md#reentrant-context-managers",
+    "heading": "Reentrant context managers",
+    "level": 4,
+    "start": 26932,
+    "end": 28244
+  },
+  {
+    "document_id": "python_stdlib/contextlib.md",
+    "span_id": "python_stdlib/contextlib.md#reusable-context-managers",
+    "heading": "Reusable context managers",
+    "level": 4,
+    "start": 28244,
+    "end": 30564
+  },
+  {
+    "document_id": "python_stdlib/dataclasses.md",
+    "span_id": "python_stdlib/dataclasses.md#python-standard-library-dataclasses",
+    "heading": "Python standard library: `dataclasses`",
+    "level": 1,
+    "start": 0,
+    "end": 111
+  },
+  {
+    "document_id": "python_stdlib/dataclasses.md",
+    "span_id": "python_stdlib/dataclasses.md#module-contents",
+    "heading": "Module contents",
+    "level": 3,
+    "start": 111,
+    "end": 18378
+  },
+  {
+    "document_id": "python_stdlib/dataclasses.md",
+    "span_id": "python_stdlib/dataclasses.md#post-init-processing",
+    "heading": "Post-init processing",
+    "level": 3,
+    "start": 18378,
+    "end": 19804
+  },
+  {
+    "document_id": "python_stdlib/dataclasses.md",
+    "span_id": "python_stdlib/dataclasses.md#class-variables",
+    "heading": "Class variables",
+    "level": 3,
+    "start": 19804,
+    "end": 20242
+  },
+  {
+    "document_id": "python_stdlib/dataclasses.md",
+    "span_id": "python_stdlib/dataclasses.md#init-only-variables",
+    "heading": "Init-only variables",
+    "level": 3,
+    "start": 20242,
+    "end": 21231
+  },
+  {
+    "document_id": "python_stdlib/dataclasses.md",
+    "span_id": "python_stdlib/dataclasses.md#frozen-instances",
+    "heading": "Frozen instances",
+    "level": 3,
+    "start": 21231,
+    "end": 21713
+  },
+  {
+    "document_id": "python_stdlib/dataclasses.md",
+    "span_id": "python_stdlib/dataclasses.md#inheritance",
+    "heading": "Inheritance",
+    "level": 3,
+    "start": 21713,
+    "end": 22592
+  },
+  {
+    "document_id": "python_stdlib/dataclasses.md",
+    "span_id": "python_stdlib/dataclasses.md#re-ordering-of-keyword-only-parameters-in-init",
+    "heading": "Re-ordering of keyword-only parameters in __init__()",
+    "level": 3,
+    "start": 22592,
+    "end": 23631
+  },
+  {
+    "document_id": "python_stdlib/dataclasses.md",
+    "span_id": "python_stdlib/dataclasses.md#default-factory-functions",
+    "heading": "Default factory functions",
+    "level": 3,
+    "start": 23631,
+    "end": 24162
+  },
+  {
+    "document_id": "python_stdlib/dataclasses.md",
+    "span_id": "python_stdlib/dataclasses.md#mutable-default-values",
+    "heading": "Mutable default values",
+    "level": 3,
+    "start": 24162,
+    "end": 25847
+  },
+  {
+    "document_id": "python_stdlib/dataclasses.md",
+    "span_id": "python_stdlib/dataclasses.md#descriptor-typed-fields",
+    "heading": "Descriptor-typed fields",
+    "level": 3,
+    "start": 25847,
+    "end": 27440
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#python-standard-library-datetime",
+    "heading": "Python standard library: `datetime`",
+    "level": 1,
+    "start": 0,
+    "end": 105
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#aware-and-naive-objects",
+    "heading": "Aware and naive objects",
+    "level": 3,
+    "start": 105,
+    "end": 1844
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#constants",
+    "heading": "Constants",
+    "level": 3,
+    "start": 1844,
+    "end": 2207
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#available-types",
+    "heading": "Available types",
+    "level": 3,
+    "start": 2207,
+    "end": 3346
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#common-properties",
+    "heading": "Common properties",
+    "level": 4,
+    "start": 3346,
+    "end": 3646
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#determining-if-an-object-is-aware-or-naive",
+    "heading": "Determining if an object is aware or naive",
+    "level": 4,
+    "start": 3646,
+    "end": 4177
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#timedelta-objects",
+    "heading": "timedelta objects",
+    "level": 3,
+    "start": 4177,
+    "end": 10923
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#examples-of-usage-timedelta",
+    "heading": "Examples of usage: timedelta",
+    "level": 4,
+    "start": 10923,
+    "end": 11660
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#date-objects",
+    "heading": "date objects",
+    "level": 3,
+    "start": 11660,
+    "end": 20718
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#examples-of-usage-date",
+    "heading": "Examples of usage: date",
+    "level": 4,
+    "start": 20718,
+    "end": 22150
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#datetime-objects",
+    "heading": "datetime objects",
+    "level": 3,
+    "start": 22150,
+    "end": 46061
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#examples-of-usage-datetime",
+    "heading": "Examples of usage: datetime",
+    "level": 4,
+    "start": 46061,
+    "end": 49537
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#time-objects",
+    "heading": "time objects",
+    "level": 3,
+    "start": 49537,
+    "end": 57021
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#examples-of-usage-time",
+    "heading": "Examples of usage: time",
+    "level": 4,
+    "start": 57021,
+    "end": 57673
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#tzinfo-objects",
+    "heading": "tzinfo objects",
+    "level": 3,
+    "start": 57673,
+    "end": 73875
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#timezone-objects",
+    "heading": "timezone objects",
+    "level": 3,
+    "start": 73875,
+    "end": 75839
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#strftime-and-strptime-behavior",
+    "heading": "strftime() and strptime() behavior",
+    "level": 3,
+    "start": 75839,
+    "end": 76550
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#strftime-and-strptime-format-codes",
+    "heading": "strftime() and strptime() format codes",
+    "level": 4,
+    "start": 76550,
+    "end": 80471
+  },
+  {
+    "document_id": "python_stdlib/datetime.md",
+    "span_id": "python_stdlib/datetime.md#technical-detail",
+    "heading": "Technical detail",
+    "level": 4,
+    "start": 80471,
+    "end": 86770
+  },
+  {
+    "document_id": "python_stdlib/decimal.md",
+    "span_id": "python_stdlib/decimal.md#python-standard-library-decimal",
+    "heading": "Python standard library: `decimal`",
+    "level": 1,
+    "start": 0,
+    "end": 103
+  },
+  {
+    "document_id": "python_stdlib/decimal.md",
+    "span_id": "python_stdlib/decimal.md#quick-start-tutorial",
+    "heading": "Quick-start tutorial",
+    "level": 3,
+    "start": 103,
+    "end": 6947
+  },
+  {
+    "document_id": "python_stdlib/decimal.md",
+    "span_id": "python_stdlib/decimal.md#decimal-objects",
+    "heading": "Decimal objects",
+    "level": 3,
+    "start": 6947,
+    "end": 28011
+  },
+  {
+    "document_id": "python_stdlib/decimal.md",
+    "span_id": "python_stdlib/decimal.md#logical-operands",
+    "heading": "Logical operands",
+    "level": 4,
+    "start": 28011,
+    "end": 28278
+  },
+  {
+    "document_id": "python_stdlib/decimal.md",
+    "span_id": "python_stdlib/decimal.md#context-objects",
+    "heading": "Context objects",
+    "level": 3,
+    "start": 28278,
+    "end": 42361
+  },
+  {
+    "document_id": "python_stdlib/decimal.md",
+    "span_id": "python_stdlib/decimal.md#constants",
+    "heading": "Constants",
+    "level": 3,
+    "start": 42361,
+    "end": 43198
+  },
+  {
+    "document_id": "python_stdlib/decimal.md",
+    "span_id": "python_stdlib/decimal.md#rounding-modes",
+    "heading": "Rounding modes",
+    "level": 3,
+    "start": 43198,
+    "end": 43763
+  },
+  {
+    "document_id": "python_stdlib/decimal.md",
+    "span_id": "python_stdlib/decimal.md#signals",
+    "heading": "Signals",
+    "level": 3,
+    "start": 43763,
+    "end": 47642
+  },
+  {
+    "document_id": "python_stdlib/decimal.md",
+    "span_id": "python_stdlib/decimal.md#mitigating-round-off-error-with-increased-precision",
+    "heading": "Mitigating round-off error with increased precision",
+    "level": 4,
+    "start": 47642,
+    "end": 48264
+  },
+  {
+    "document_id": "python_stdlib/decimal.md",
+    "span_id": "python_stdlib/decimal.md#examples-from-seminumerical-algorithms-section-4-2-2-from-decimal-import-decimal-getcontext-getcontext-prec-8-u-v-w-decimal-11111113-decimal-11111111-decimal-7-51111111-u-v-w-decimal-9-5111111-u-v-w-decimal-10-u-v-w-decimal-20000-decimal-6-decimal-6-0000003-uv-uw-decimal-0-01-u-v-w-decimal-0-0060000",
+    "heading": "Examples from Seminumerical Algorithms, Section 4.2.2. >>> from decimal import Decimal, getcontext >>> getcontext().prec = 8 >>> u, v, w = Decimal(11111113), Decimal(-11111111), Decimal('7.51111111') >>> (u + v) + w Decimal('9.5111111') >>> u + (v + w) Decimal('10') >>> u, v, w = Decimal(20000), Decimal(-6), Decimal('6.0000003') >>> (u*v) + (u*w) Decimal('0.01') >>> u * (v+w) Decimal('0.0060000')",
+    "level": 1,
+    "start": 48264,
+    "end": 49123
+  },
+  {
+    "document_id": "python_stdlib/decimal.md",
+    "span_id": "python_stdlib/decimal.md#special-values",
+    "heading": "Special values",
+    "level": 4,
+    "start": 49123,
+    "end": 51945
+  },
+  {
+    "document_id": "python_stdlib/decimal.md",
+    "span_id": "python_stdlib/decimal.md#working-with-threads",
+    "heading": "Working with threads",
+    "level": 3,
+    "start": 51945,
+    "end": 53177
+  },
+  {
+    "document_id": "python_stdlib/decimal.md",
+    "span_id": "python_stdlib/decimal.md#set-applicationwide-defaults-for-all-threads-about-to-be-launched-defaultcontext-prec-12-defaultcontext-rounding-rounddown-defaultcontext-traps-extendedcontext-traps-copy-defaultcontext-traps-invalidoperation-1-setcontext-defaultcontext-afterwards-the-threads-can-be-started-t1-start-t2-start-t3-start",
+    "heading": "Set applicationwide defaults for all threads about to be launched DefaultContext.prec = 12 DefaultContext.rounding = ROUND_DOWN DefaultContext.traps = ExtendedContext.traps.copy() DefaultContext.traps[InvalidOperation] = 1 setcontext(DefaultContext) # Afterwards, the threads can be started t1.start() t2.start() t3.start() . . .",
+    "level": 1,
+    "start": 53177,
+    "end": 53510
+  },
+  {
+    "document_id": "python_stdlib/decimal.md",
+    "span_id": "python_stdlib/decimal.md#recipes",
+    "heading": "Recipes",
+    "level": 3,
+    "start": 53510,
+    "end": 56983
+  },
+  {
+    "document_id": "python_stdlib/decimal.md",
+    "span_id": "python_stdlib/decimal.md#decimal-faq",
+    "heading": "Decimal FAQ",
+    "level": 3,
+    "start": 56983,
+    "end": 65005
+  },
+  {
+    "document_id": "python_stdlib/enum.md",
+    "span_id": "python_stdlib/enum.md#python-standard-library-enum",
+    "heading": "Python standard library: `enum`",
+    "level": 1,
+    "start": 0,
+    "end": 97
+  },
+  {
+    "document_id": "python_stdlib/enum.md",
+    "span_id": "python_stdlib/enum.md#module-contents",
+    "heading": "Module contents",
+    "level": 3,
+    "start": 97,
+    "end": 2534
+  },
+  {
+    "document_id": "python_stdlib/enum.md",
+    "span_id": "python_stdlib/enum.md#data-types",
+    "heading": "Data types",
+    "level": 3,
+    "start": 2534,
+    "end": 20225
+  },
+  {
+    "document_id": "python_stdlib/enum.md",
+    "span_id": "python_stdlib/enum.md#supported-dunder-names",
+    "heading": "Supported __dunder__ names",
+    "level": 4,
+    "start": 20225,
+    "end": 20559
+  },
+  {
+    "document_id": "python_stdlib/enum.md",
+    "span_id": "python_stdlib/enum.md#supported-sunder-names",
+    "heading": "Supported _sunder_ names",
+    "level": 4,
+    "start": 20559,
+    "end": 21610
+  },
+  {
+    "document_id": "python_stdlib/enum.md",
+    "span_id": "python_stdlib/enum.md#utilities-and-decorators",
+    "heading": "Utilities and decorators",
+    "level": 3,
+    "start": 21610,
+    "end": 24809
+  },
+  {
+    "document_id": "python_stdlib/enum.md",
+    "span_id": "python_stdlib/enum.md#notes",
+    "heading": "Notes",
+    "level": 3,
+    "start": 24809,
+    "end": 25514
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#python-standard-library-functools",
+    "heading": "Python standard library: `functools`",
+    "level": 1,
+    "start": 0,
+    "end": 107
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-1",
+    "heading": "Reference overview 1",
+    "level": 2,
+    "start": 107,
+    "end": 1226
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-2",
+    "heading": "Reference overview 2",
+    "level": 2,
+    "start": 1226,
+    "end": 2555
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-3",
+    "heading": "Reference overview 3",
+    "level": 2,
+    "start": 2555,
+    "end": 4627
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-4",
+    "heading": "Reference overview 4",
+    "level": 2,
+    "start": 4627,
+    "end": 5596
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-5",
+    "heading": "Reference overview 5",
+    "level": 2,
+    "start": 5596,
+    "end": 7109
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-6",
+    "heading": "Reference overview 6",
+    "level": 2,
+    "start": 7109,
+    "end": 8740
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-7",
+    "heading": "Reference overview 7",
+    "level": 2,
+    "start": 8740,
+    "end": 9818
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-8",
+    "heading": "Reference overview 8",
+    "level": 2,
+    "start": 9818,
+    "end": 11515
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-9",
+    "heading": "Reference overview 9",
+    "level": 2,
+    "start": 11515,
+    "end": 12747
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-10",
+    "heading": "Reference overview 10",
+    "level": 2,
+    "start": 12747,
+    "end": 14184
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-11",
+    "heading": "Reference overview 11",
+    "level": 2,
+    "start": 14184,
+    "end": 15550
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-12",
+    "heading": "Reference overview 12",
+    "level": 2,
+    "start": 15550,
+    "end": 16862
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-13",
+    "heading": "Reference overview 13",
+    "level": 2,
+    "start": 16862,
+    "end": 18504
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-14",
+    "heading": "Reference overview 14",
+    "level": 2,
+    "start": 18504,
+    "end": 19936
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-15",
+    "heading": "Reference overview 15",
+    "level": 2,
+    "start": 19936,
+    "end": 21258
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-16",
+    "heading": "Reference overview 16",
+    "level": 2,
+    "start": 21258,
+    "end": 22530
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-17",
+    "heading": "Reference overview 17",
+    "level": 2,
+    "start": 22530,
+    "end": 24583
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-18",
+    "heading": "Reference overview 18",
+    "level": 2,
+    "start": 24583,
+    "end": 25977
+  },
+  {
+    "document_id": "python_stdlib/functools.md",
+    "span_id": "python_stdlib/functools.md#reference-overview-19",
+    "heading": "Reference overview 19",
+    "level": 2,
+    "start": 25977,
+    "end": 26437
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#python-standard-library-hashlib",
+    "heading": "Python standard library: `hashlib`",
+    "level": 1,
+    "start": 0,
+    "end": 103
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#hash-algorithms",
+    "heading": "Hash algorithms",
+    "level": 3,
+    "start": 103,
+    "end": 2375
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#usage",
+    "heading": "Usage",
+    "level": 3,
+    "start": 2375,
+    "end": 2951
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#constructors",
+    "heading": "Constructors",
+    "level": 3,
+    "start": 2951,
+    "end": 4039
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#attributes",
+    "heading": "Attributes",
+    "level": 3,
+    "start": 4039,
+    "end": 4764
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#hash-objects",
+    "heading": "Hash Objects",
+    "level": 3,
+    "start": 4764,
+    "end": 6216
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#shake-variable-length-digests",
+    "heading": "SHAKE variable length digests",
+    "level": 3,
+    "start": 6216,
+    "end": 7151
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#file-hashing",
+    "heading": "File hashing",
+    "level": 3,
+    "start": 7151,
+    "end": 8627
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#key-derivation",
+    "heading": "Key derivation",
+    "level": 3,
+    "start": 8627,
+    "end": 10978
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#blake2",
+    "heading": "BLAKE2",
+    "level": 3,
+    "start": 10978,
+    "end": 11489
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#creating-hash-objects",
+    "heading": "Creating hash objects",
+    "level": 4,
+    "start": 11489,
+    "end": 13949
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#constants",
+    "heading": "Constants",
+    "level": 4,
+    "start": 13949,
+    "end": 14344
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#simple-hashing",
+    "heading": "Simple hashing",
+    "level": 5,
+    "start": 14344,
+    "end": 15609
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#using-different-digest-sizes",
+    "heading": "Using different digest sizes",
+    "level": 5,
+    "start": 15609,
+    "end": 16616
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#keyed-hashing",
+    "heading": "Keyed hashing",
+    "level": 5,
+    "start": 16616,
+    "end": 18338
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#randomized-hashing",
+    "heading": "Randomized hashing",
+    "level": 5,
+    "start": 18338,
+    "end": 20661
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#personalization",
+    "heading": "Personalization",
+    "level": 5,
+    "start": 20661,
+    "end": 22442
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#tree-mode",
+    "heading": "Tree mode",
+    "level": 5,
+    "start": 22442,
+    "end": 23438
+  },
+  {
+    "document_id": "python_stdlib/hashlib.md",
+    "span_id": "python_stdlib/hashlib.md#credits",
+    "heading": "Credits",
+    "level": 4,
+    "start": 23438,
+    "end": 25586
+  },
+  {
+    "document_id": "python_stdlib/heapq.md",
+    "span_id": "python_stdlib/heapq.md#python-standard-library-heapq",
+    "heading": "Python standard library: `heapq`",
+    "level": 1,
+    "start": 0,
+    "end": 99
+  },
+  {
+    "document_id": "python_stdlib/heapq.md",
+    "span_id": "python_stdlib/heapq.md#basic-examples",
+    "heading": "Basic Examples",
+    "level": 3,
+    "start": 99,
+    "end": 887
+  },
+  {
+    "document_id": "python_stdlib/heapq.md",
+    "span_id": "python_stdlib/heapq.md#other-applications",
+    "heading": "Other Applications",
+    "level": 3,
+    "start": 887,
+    "end": 1924
+  },
+  {
+    "document_id": "python_stdlib/heapq.md",
+    "span_id": "python_stdlib/heapq.md#priority-queue-implementation-notes",
+    "heading": "Priority Queue Implementation Notes",
+    "level": 3,
+    "start": 1924,
+    "end": 4418
+  },
+  {
+    "document_id": "python_stdlib/heapq.md",
+    "span_id": "python_stdlib/heapq.md#theory",
+    "heading": "Theory",
+    "level": 3,
+    "start": 4418,
+    "end": 8214
+  },
+  {
+    "document_id": "python_stdlib/http.md",
+    "span_id": "python_stdlib/http.md#python-standard-library-http",
+    "heading": "Python standard library: `http`",
+    "level": 1,
+    "start": 0,
+    "end": 97
+  },
+  {
+    "document_id": "python_stdlib/http.md",
+    "span_id": "python_stdlib/http.md#http-status-codes",
+    "heading": "HTTP status codes",
+    "level": 3,
+    "start": 97,
+    "end": 4965
+  },
+  {
+    "document_id": "python_stdlib/http.md",
+    "span_id": "python_stdlib/http.md#http-status-category",
+    "heading": "HTTP status category",
+    "level": 3,
+    "start": 4965,
+    "end": 6166
+  },
+  {
+    "document_id": "python_stdlib/http.md",
+    "span_id": "python_stdlib/http.md#http-methods",
+    "heading": "HTTP methods",
+    "level": 3,
+    "start": 6166,
+    "end": 6744
+  },
+  {
+    "document_id": "python_stdlib/http_client.md",
+    "span_id": "python_stdlib/http_client.md#python-standard-library-http-client",
+    "heading": "Python standard library: `http.client`",
+    "level": 1,
+    "start": 0,
+    "end": 111
+  },
+  {
+    "document_id": "python_stdlib/http_client.md",
+    "span_id": "python_stdlib/http_client.md#httpconnection-objects",
+    "heading": "HTTPConnection Objects",
+    "level": 3,
+    "start": 111,
+    "end": 8540
+  },
+  {
+    "document_id": "python_stdlib/http_client.md",
+    "span_id": "python_stdlib/http_client.md#httpresponse-objects",
+    "heading": "HTTPResponse Objects",
+    "level": 3,
+    "start": 8540,
+    "end": 10634
+  },
+  {
+    "document_id": "python_stdlib/http_client.md",
+    "span_id": "python_stdlib/http_client.md#examples",
+    "heading": "Examples",
+    "level": 3,
+    "start": 10634,
+    "end": 13132
+  },
+  {
+    "document_id": "python_stdlib/http_client.md",
+    "span_id": "python_stdlib/http_client.md#httpmessage-objects",
+    "heading": "HTTPMessage Objects",
+    "level": 3,
+    "start": 13132,
+    "end": 13345
+  },
+  {
+    "document_id": "python_stdlib/http_server.md",
+    "span_id": "python_stdlib/http_server.md#python-standard-library-http-server",
+    "heading": "Python standard library: `http.server`",
+    "level": 1,
+    "start": 0,
+    "end": 111
+  },
+  {
+    "document_id": "python_stdlib/http_server.md",
+    "span_id": "python_stdlib/http_server.md#command-line-interface",
+    "heading": "Command-line interface",
+    "level": 3,
+    "start": 111,
+    "end": 2485
+  },
+  {
+    "document_id": "python_stdlib/http_server.md",
+    "span_id": "python_stdlib/http_server.md#security-considerations",
+    "heading": "Security considerations",
+    "level": 3,
+    "start": 2485,
+    "end": 3316
+  },
+  {
+    "document_id": "python_stdlib/importlib.md",
+    "span_id": "python_stdlib/importlib.md#python-standard-library-importlib",
+    "heading": "Python standard library: `importlib`",
+    "level": 1,
+    "start": 0,
+    "end": 107
+  },
+  {
+    "document_id": "python_stdlib/importlib.md",
+    "span_id": "python_stdlib/importlib.md#introduction",
+    "heading": "Introduction",
+    "level": 3,
+    "start": 107,
+    "end": 1978
+  },
+  {
+    "document_id": "python_stdlib/importlib.md",
+    "span_id": "python_stdlib/importlib.md#functions",
+    "heading": "Functions",
+    "level": 3,
+    "start": 1978,
+    "end": 6766
+  },
+  {
+    "document_id": "python_stdlib/importlib.md",
+    "span_id": "python_stdlib/importlib.md#importlib-abc-abstract-base-classes-related-to-import",
+    "heading": "importlib.abc – Abstract base classes related to import",
+    "level": 3,
+    "start": 6766,
+    "end": 18975
+  },
+  {
+    "document_id": "python_stdlib/importlib.md",
+    "span_id": "python_stdlib/importlib.md#importlib-machinery-importers-and-path-hooks",
+    "heading": "importlib.machinery – Importers and path hooks",
+    "level": 3,
+    "start": 18975,
+    "end": 34004
+  },
+  {
+    "document_id": "python_stdlib/importlib.md",
+    "span_id": "python_stdlib/importlib.md#importlib-util-utility-code-for-importers",
+    "heading": "importlib.util – Utility code for importers",
+    "level": 3,
+    "start": 34004,
+    "end": 42184
+  },
+  {
+    "document_id": "python_stdlib/importlib.md",
+    "span_id": "python_stdlib/importlib.md#importing-programmatically",
+    "heading": "Importing programmatically",
+    "level": 4,
+    "start": 42184,
+    "end": 42353
+  },
+  {
+    "document_id": "python_stdlib/importlib.md",
+    "span_id": "python_stdlib/importlib.md#checking-if-a-module-can-be-imported",
+    "heading": "Checking if a module can be imported",
+    "level": 4,
+    "start": 42353,
+    "end": 43087
+  },
+  {
+    "document_id": "python_stdlib/importlib.md",
+    "span_id": "python_stdlib/importlib.md#importing-a-source-file-directly",
+    "heading": "Importing a source file directly",
+    "level": 4,
+    "start": 43087,
+    "end": 44077
+  },
+  {
+    "document_id": "python_stdlib/importlib.md",
+    "span_id": "python_stdlib/importlib.md#implementing-lazy-imports",
+    "heading": "Implementing lazy imports",
+    "level": 4,
+    "start": 44077,
+    "end": 44647
+  },
+  {
+    "document_id": "python_stdlib/importlib.md",
+    "span_id": "python_stdlib/importlib.md#setting-up-an-importer",
+    "heading": "Setting up an importer",
+    "level": 4,
+    "start": 44647,
+    "end": 45973
+  },
+  {
+    "document_id": "python_stdlib/importlib.md",
+    "span_id": "python_stdlib/importlib.md#approximating-importlib-importmodule",
+    "heading": "Approximating importlib.import_module()",
+    "level": 4,
+    "start": 45973,
+    "end": 47115
+  },
+  {
+    "document_id": "python_stdlib/inspect.md",
+    "span_id": "python_stdlib/inspect.md#python-standard-library-inspect",
+    "heading": "Python standard library: `inspect`",
+    "level": 1,
+    "start": 0,
+    "end": 103
+  },
+  {
+    "document_id": "python_stdlib/inspect.md",
+    "span_id": "python_stdlib/inspect.md#types-and-members",
+    "heading": "Types and members",
+    "level": 3,
+    "start": 103,
+    "end": 14670
+  },
+  {
+    "document_id": "python_stdlib/inspect.md",
+    "span_id": "python_stdlib/inspect.md#retrieving-source-code",
+    "heading": "Retrieving source code",
+    "level": 3,
+    "start": 14670,
+    "end": 17594
+  },
+  {
+    "document_id": "python_stdlib/inspect.md",
+    "span_id": "python_stdlib/inspect.md#introspecting-callables-with-the-signature-object",
+    "heading": "Introspecting callables with the Signature object",
+    "level": 3,
+    "start": 17594,
+    "end": 29267
+  },
+  {
+    "document_id": "python_stdlib/inspect.md",
+    "span_id": "python_stdlib/inspect.md#classes-and-functions",
+    "heading": "Classes and functions",
+    "level": 3,
+    "start": 29267,
+    "end": 35868
+  },
+  {
+    "document_id": "python_stdlib/inspect.md",
+    "span_id": "python_stdlib/inspect.md#the-interpreter-stack",
+    "heading": "The interpreter stack",
+    "level": 3,
+    "start": 35868,
+    "end": 41737
+  },
+  {
+    "document_id": "python_stdlib/inspect.md",
+    "span_id": "python_stdlib/inspect.md#fetching-attributes-statically",
+    "heading": "Fetching attributes statically",
+    "level": 3,
+    "start": 41737,
+    "end": 43183
+  },
+  {
+    "document_id": "python_stdlib/inspect.md",
+    "span_id": "python_stdlib/inspect.md#example-code-for-resolving-the-builtin-descriptor-types-class-foo-slots-foo-slotdescriptor-type-foo-foo-getsetdescriptor-type-type-open-file-name-wrapperdescriptor-type-str-dict-add-descriptortypes-slotdescriptor-getsetdescriptor-wrapperdescriptor-result-getattrstatic-someobject-foo-if-type-result-in-descriptortypes-try-result-result-get-except-attributeerror-descriptors-can-raise-attributeerror-to-indicate-there-is-no-underlying-value-in-which-case-the-descriptor-itself-will-have-to-do-pass",
+    "heading": "example code for resolving the builtin descriptor types class _foo: __slots__ = ['foo'] slot_descriptor = type(_foo.foo) getset_descriptor = type(type(open(__file__)).name) wrapper_descriptor = type(str.__dict__['__add__']) descriptor_types = (slot_descriptor, getset_descriptor, wrapper_descriptor) result = getattr_static(some_object, 'foo') if type(result) in descriptor_types: try: result = result.__get__() except AttributeError: # descriptors can raise AttributeError to # indicate there is no underlying value # in which case the descriptor itself will # have to do pass",
+    "level": 1,
+    "start": 43183,
+    "end": 43764
+  },
+  {
+    "document_id": "python_stdlib/inspect.md",
+    "span_id": "python_stdlib/inspect.md#current-state-of-generators-coroutines-and-asynchronous-generators",
+    "heading": "Current State of Generators, Coroutines, and Asynchronous Generators",
+    "level": 3,
+    "start": 43764,
+    "end": 46855
+  },
+  {
+    "document_id": "python_stdlib/inspect.md",
+    "span_id": "python_stdlib/inspect.md#code-objects-bit-flags",
+    "heading": "Code Objects Bit Flags",
+    "level": 3,
+    "start": 46855,
+    "end": 48875
+  },
+  {
+    "document_id": "python_stdlib/inspect.md",
+    "span_id": "python_stdlib/inspect.md#buffer-flags",
+    "heading": "Buffer flags",
+    "level": 3,
+    "start": 48875,
+    "end": 49332
+  },
+  {
+    "document_id": "python_stdlib/inspect.md",
+    "span_id": "python_stdlib/inspect.md#command-line-interface",
+    "heading": "Command-line interface",
+    "level": 3,
+    "start": 49332,
+    "end": 49740
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#python-standard-library-io",
+    "heading": "Python standard library: `io`",
+    "level": 1,
+    "start": 0,
+    "end": 93
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#overview",
+    "heading": "Overview",
+    "level": 3,
+    "start": 93,
+    "end": 1147
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#text-i-o",
+    "heading": "Text I/O",
+    "level": 4,
+    "start": 1147,
+    "end": 1943
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#binary-i-o",
+    "heading": "Binary I/O",
+    "level": 4,
+    "start": 1943,
+    "end": 2696
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#raw-i-o",
+    "heading": "Raw I/O",
+    "level": 4,
+    "start": 2696,
+    "end": 3478
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#text-encoding",
+    "heading": "Text Encoding",
+    "level": 3,
+    "start": 3478,
+    "end": 3872
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#may-not-work-on-windows-when-non-ascii-characters-in-the-file-with-open-readme-md-as-f-longdescription-f-read",
+    "heading": "May not work on Windows when non-ASCII characters in the file. with open(\"README.md\") as f: long_description = f.read()",
+    "level": 1,
+    "start": 3872,
+    "end": 4425
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#opt-in-encodingwarning",
+    "heading": "Opt-in EncodingWarning",
+    "level": 4,
+    "start": 4425,
+    "end": 5059
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#high-level-module-interface",
+    "heading": "High-level Module Interface",
+    "level": 3,
+    "start": 5059,
+    "end": 7315
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#class-hierarchy",
+    "heading": "Class hierarchy",
+    "level": 3,
+    "start": 7315,
+    "end": 9753
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#i-o-base-classes",
+    "heading": "I/O Base Classes",
+    "level": 4,
+    "start": 9753,
+    "end": 21129
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#raw-file-i-o",
+    "heading": "Raw File I/O",
+    "level": 4,
+    "start": 21129,
+    "end": 23555
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#buffered-streams",
+    "heading": "Buffered Streams",
+    "level": 4,
+    "start": 23555,
+    "end": 28272
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#text-i-o-2",
+    "heading": "Text I/O",
+    "level": 4,
+    "start": 28272,
+    "end": 37064
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#static-typing",
+    "heading": "Static Typing",
+    "level": 3,
+    "start": 37064,
+    "end": 38254
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#performance",
+    "heading": "Performance",
+    "level": 3,
+    "start": 38254,
+    "end": 38357
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#binary-i-o-2",
+    "heading": "Binary I/O",
+    "level": 4,
+    "start": 38357,
+    "end": 38978
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#text-i-o-3",
+    "heading": "Text I/O",
+    "level": 4,
+    "start": 38978,
+    "end": 39467
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#multi-threading",
+    "heading": "Multi-threading",
+    "level": 4,
+    "start": 39467,
+    "end": 39890
+  },
+  {
+    "document_id": "python_stdlib/io.md",
+    "span_id": "python_stdlib/io.md#reentrancy",
+    "heading": "Reentrancy",
+    "level": 4,
+    "start": 39890,
+    "end": 40543
+  },
+  {
+    "document_id": "python_stdlib/itertools.md",
+    "span_id": "python_stdlib/itertools.md#python-standard-library-itertools",
+    "heading": "Python standard library: `itertools`",
+    "level": 1,
+    "start": 0,
+    "end": 107
+  },
+  {
+    "document_id": "python_stdlib/itertools.md",
+    "span_id": "python_stdlib/itertools.md#itertool-functions",
+    "heading": "Itertool Functions",
+    "level": 3,
+    "start": 107,
+    "end": 19688
+  },
+  {
+    "document_id": "python_stdlib/itertools.md",
+    "span_id": "python_stdlib/itertools.md#itertools-recipes",
+    "heading": "Itertools Recipes",
+    "level": 3,
+    "start": 19688,
+    "end": 32513
+  },
+  {
+    "document_id": "python_stdlib/json.md",
+    "span_id": "python_stdlib/json.md#python-standard-library-json",
+    "heading": "Python standard library: `json`",
+    "level": 1,
+    "start": 0,
+    "end": 97
+  },
+  {
+    "document_id": "python_stdlib/json.md",
+    "span_id": "python_stdlib/json.md#basic-usage",
+    "heading": "Basic Usage",
+    "level": 3,
+    "start": 97,
+    "end": 6928
+  },
+  {
+    "document_id": "python_stdlib/json.md",
+    "span_id": "python_stdlib/json.md#encoders-and-decoders",
+    "heading": "Encoders and Decoders",
+    "level": 3,
+    "start": 6928,
+    "end": 13468
+  },
+  {
+    "document_id": "python_stdlib/json.md",
+    "span_id": "python_stdlib/json.md#exceptions",
+    "heading": "Exceptions",
+    "level": 3,
+    "start": 13468,
+    "end": 13827
+  },
+  {
+    "document_id": "python_stdlib/json.md",
+    "span_id": "python_stdlib/json.md#standard-compliance-and-interoperability",
+    "heading": "Standard Compliance and Interoperability",
+    "level": 3,
+    "start": 13827,
+    "end": 14619
+  },
+  {
+    "document_id": "python_stdlib/json.md",
+    "span_id": "python_stdlib/json.md#character-encodings",
+    "heading": "Character Encodings",
+    "level": 4,
+    "start": 14619,
+    "end": 15878
+  },
+  {
+    "document_id": "python_stdlib/json.md",
+    "span_id": "python_stdlib/json.md#infinite-and-nan-number-values",
+    "heading": "Infinite and NaN Number Values",
+    "level": 4,
+    "start": 15878,
+    "end": 16548
+  },
+  {
+    "document_id": "python_stdlib/json.md",
+    "span_id": "python_stdlib/json.md#repeated-names-within-an-object",
+    "heading": "Repeated Names Within an Object",
+    "level": 4,
+    "start": 16548,
+    "end": 17008
+  },
+  {
+    "document_id": "python_stdlib/json.md",
+    "span_id": "python_stdlib/json.md#top-level-non-object-non-array-values",
+    "heading": "Top-level Non-Object, Non-Array Values",
+    "level": 4,
+    "start": 17008,
+    "end": 17543
+  },
+  {
+    "document_id": "python_stdlib/json.md",
+    "span_id": "python_stdlib/json.md#implementation-limitations",
+    "heading": "Implementation Limitations",
+    "level": 4,
+    "start": 17543,
+    "end": 18403
+  },
+  {
+    "document_id": "python_stdlib/json.md",
+    "span_id": "python_stdlib/json.md#command-line-interface",
+    "heading": "Command-line interface",
+    "level": 3,
+    "start": 18403,
+    "end": 19247
+  },
+  {
+    "document_id": "python_stdlib/json.md",
+    "span_id": "python_stdlib/json.md#command-line-options",
+    "heading": "Command-line options",
+    "level": 4,
+    "start": 19247,
+    "end": 20103
+  },
+  {
+    "document_id": "python_stdlib/logging.md",
+    "span_id": "python_stdlib/logging.md#python-standard-library-logging",
+    "heading": "Python standard library: `logging`",
+    "level": 1,
+    "start": 0,
+    "end": 103
+  },
+  {
+    "document_id": "python_stdlib/logging.md",
+    "span_id": "python_stdlib/logging.md#logger-objects",
+    "heading": "Logger Objects",
+    "level": 3,
+    "start": 103,
+    "end": 14383
+  },
+  {
+    "document_id": "python_stdlib/logging.md",
+    "span_id": "python_stdlib/logging.md#logging-levels",
+    "heading": "Logging Levels",
+    "level": 3,
+    "start": 14383,
+    "end": 15616
+  },
+  {
+    "document_id": "python_stdlib/logging.md",
+    "span_id": "python_stdlib/logging.md#handler-objects",
+    "heading": "Handler Objects",
+    "level": 3,
+    "start": 15616,
+    "end": 19882
+  },
+  {
+    "document_id": "python_stdlib/logging.md",
+    "span_id": "python_stdlib/logging.md#formatter-objects",
+    "heading": "Formatter Objects",
+    "level": 3,
+    "start": 19882,
+    "end": 26046
+  },
+  {
+    "document_id": "python_stdlib/logging.md",
+    "span_id": "python_stdlib/logging.md#filter-objects",
+    "heading": "Filter Objects",
+    "level": 3,
+    "start": 26046,
+    "end": 28909
+  },
+  {
+    "document_id": "python_stdlib/logging.md",
+    "span_id": "python_stdlib/logging.md#logrecord-objects",
+    "heading": "LogRecord Objects",
+    "level": 3,
+    "start": 28909,
+    "end": 32047
+  },
+  {
+    "document_id": "python_stdlib/logging.md",
+    "span_id": "python_stdlib/logging.md#logrecord-attributes",
+    "heading": "LogRecord attributes",
+    "level": 3,
+    "start": 32047,
+    "end": 35834
+  },
+  {
+    "document_id": "python_stdlib/logging.md",
+    "span_id": "python_stdlib/logging.md#loggeradapter-objects",
+    "heading": "LoggerAdapter Objects",
+    "level": 3,
+    "start": 35834,
+    "end": 37809
+  },
+  {
+    "document_id": "python_stdlib/logging.md",
+    "span_id": "python_stdlib/logging.md#thread-safety",
+    "heading": "Thread Safety",
+    "level": 3,
+    "start": 37809,
+    "end": 38414
+  },
+  {
+    "document_id": "python_stdlib/logging.md",
+    "span_id": "python_stdlib/logging.md#module-level-functions",
+    "heading": "Module-Level Functions",
+    "level": 3,
+    "start": 38414,
+    "end": 50754
+  },
+  {
+    "document_id": "python_stdlib/logging.md",
+    "span_id": "python_stdlib/logging.md#module-level-attributes",
+    "heading": "Module-Level Attributes",
+    "level": 3,
+    "start": 50754,
+    "end": 51613
+  },
+  {
+    "document_id": "python_stdlib/logging.md",
+    "span_id": "python_stdlib/logging.md#integration-with-the-warnings-module",
+    "heading": "Integration with the warnings module",
+    "level": 3,
+    "start": 51613,
+    "end": 52864
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#python-standard-library-multiprocessing",
+    "heading": "Python standard library: `multiprocessing`",
+    "level": 1,
+    "start": 0,
+    "end": 119
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#introduction",
+    "heading": "Introduction",
+    "level": 3,
+    "start": 119,
+    "end": 1708
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#the-process-class",
+    "heading": "The Process class",
+    "level": 4,
+    "start": 1708,
+    "end": 2872
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#contexts-and-start-methods",
+    "heading": "Contexts and start methods",
+    "level": 4,
+    "start": 2872,
+    "end": 7857
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#exchanging-objects-between-processes",
+    "heading": "Exchanging objects between processes",
+    "level": 4,
+    "start": 7857,
+    "end": 9265
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#synchronization-between-processes",
+    "heading": "Synchronization between processes",
+    "level": 4,
+    "start": 9265,
+    "end": 9814
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#sharing-state-between-processes",
+    "heading": "Sharing state between processes",
+    "level": 4,
+    "start": 9814,
+    "end": 12084
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#using-a-pool-of-workers",
+    "heading": "Using a pool of workers",
+    "level": 4,
+    "start": 12084,
+    "end": 14683
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#reference",
+    "heading": "Reference",
+    "level": 3,
+    "start": 14683,
+    "end": 14778
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#global-start-method",
+    "heading": "Global start method",
+    "level": 4,
+    "start": 14778,
+    "end": 15357
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#process-and-exceptions",
+    "heading": "Process and exceptions",
+    "level": 4,
+    "start": 15357,
+    "end": 24456
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#pipes-and-queues",
+    "heading": "Pipes and Queues",
+    "level": 4,
+    "start": 24456,
+    "end": 33848
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#miscellaneous",
+    "heading": "Miscellaneous",
+    "level": 4,
+    "start": 33848,
+    "end": 38968
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#connection-objects",
+    "heading": "Connection Objects",
+    "level": 4,
+    "start": 38968,
+    "end": 43064
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#synchronization-primitives",
+    "heading": "Synchronization primitives",
+    "level": 4,
+    "start": 43064,
+    "end": 50973
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#shared-ctypes-objects",
+    "heading": "Shared ctypes Objects",
+    "level": 4,
+    "start": 50973,
+    "end": 53712
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#the-multiprocessing-sharedctypes-module",
+    "heading": "The multiprocessing.sharedctypes module",
+    "level": 5,
+    "start": 53712,
+    "end": 59474
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#managers",
+    "heading": "Managers",
+    "level": 4,
+    "start": 59474,
+    "end": 67277
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#customized-managers",
+    "heading": "Customized managers",
+    "level": 5,
+    "start": 67277,
+    "end": 67840
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#using-a-remote-manager",
+    "heading": "Using a remote manager",
+    "level": 5,
+    "start": 67840,
+    "end": 69707
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#proxy-objects",
+    "heading": "Proxy Objects",
+    "level": 4,
+    "start": 69707,
+    "end": 71900
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#create-a-list-proxy-and-append-a-mutable-object-a-dictionary-lproxy-manager-list-lproxy-append-now-mutate-the-dictionary-d-lproxy-0-d-a-1-d-b-2-at-this-point-the-changes-to-d-are-not-yet-synced-but-by-updating-the-dictionary-the-proxy-is-notified-of-the-change-lproxy-0-d",
+    "heading": "create a list proxy and append a mutable object (a dictionary) lproxy = manager.list() lproxy.append({}) # now mutate the dictionary d = lproxy[0] d['a'] = 1 d['b'] = 2 # at this point, the changes to d are not yet synced, but by # updating the dictionary, the proxy is notified of the change lproxy[0] = d",
+    "level": 1,
+    "start": 71900,
+    "end": 74059
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#cleanup",
+    "heading": "Cleanup",
+    "level": 5,
+    "start": 74059,
+    "end": 74326
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#process-pools",
+    "heading": "Process Pools",
+    "level": 4,
+    "start": 74326,
+    "end": 82405
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#listeners-and-clients",
+    "heading": "Listeners and Clients",
+    "level": 4,
+    "start": 82405,
+    "end": 89445
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#address-formats",
+    "heading": "Address Formats",
+    "level": 5,
+    "start": 89445,
+    "end": 90021
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#authentication-keys",
+    "heading": "Authentication keys",
+    "level": 4,
+    "start": 90021,
+    "end": 91636
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#logging",
+    "heading": "Logging",
+    "level": 4,
+    "start": 91636,
+    "end": 93256
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#the-multiprocessing-dummy-module",
+    "heading": "The multiprocessing.dummy module",
+    "level": 4,
+    "start": 93256,
+    "end": 95001
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#programming-guidelines",
+    "heading": "Programming guidelines",
+    "level": 3,
+    "start": 95001,
+    "end": 95125
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#all-start-methods",
+    "heading": "All start methods",
+    "level": 4,
+    "start": 95125,
+    "end": 100168
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#the-spawn-and-forkserver-start-methods",
+    "heading": "The spawn and forkserver start methods",
+    "level": 4,
+    "start": 100168,
+    "end": 101827
+  },
+  {
+    "document_id": "python_stdlib/multiprocessing.md",
+    "span_id": "python_stdlib/multiprocessing.md#examples",
+    "heading": "Examples",
+    "level": 3,
+    "start": 101827,
+    "end": 108025
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#python-standard-library-pathlib",
+    "heading": "Python standard library: `pathlib`",
+    "level": 1,
+    "start": 0,
+    "end": 103
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#basic-use",
+    "heading": "Basic use",
+    "level": 3,
+    "start": 103,
+    "end": 912
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#exceptions",
+    "heading": "Exceptions",
+    "level": 3,
+    "start": 912,
+    "end": 1110
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#pure-paths",
+    "heading": "Pure paths",
+    "level": 3,
+    "start": 1110,
+    "end": 3935
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#general-properties",
+    "heading": "General properties",
+    "level": 4,
+    "start": 3935,
+    "end": 4679
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#operators",
+    "heading": "Operators",
+    "level": 4,
+    "start": 4679,
+    "end": 5995
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#accessing-individual-parts",
+    "heading": "Accessing individual parts",
+    "level": 4,
+    "start": 5995,
+    "end": 6429
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#methods-and-properties",
+    "heading": "Methods and properties",
+    "level": 4,
+    "start": 6429,
+    "end": 18359
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#concrete-paths",
+    "heading": "Concrete paths",
+    "level": 3,
+    "start": 18359,
+    "end": 20319
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#parsing-and-generating-uris",
+    "heading": "Parsing and generating URIs",
+    "level": 4,
+    "start": 20319,
+    "end": 22052
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#expanding-and-resolving-paths",
+    "heading": "Expanding and resolving paths",
+    "level": 4,
+    "start": 22052,
+    "end": 24315
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#querying-file-type-and-status",
+    "heading": "Querying file type and status",
+    "level": 4,
+    "start": 24315,
+    "end": 30410
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#reading-and-writing-files",
+    "heading": "Reading and writing files",
+    "level": 4,
+    "start": 30410,
+    "end": 32087
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#reading-directories",
+    "heading": "Reading directories",
+    "level": 4,
+    "start": 32087,
+    "end": 39070
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#delete-everything-reachable-from-the-directory-top-caution-this-is-dangerous-for-example-if-top-path-it-could-delete-all-of-your-files-for-root-dirs-files-in-top-walk-topdown-false-for-name-in-files-root-name-unlink-for-name-in-dirs-root-name-rmdir",
+    "heading": "Delete everything reachable from the directory \"top\". # CAUTION: This is dangerous! For example, if top == Path('/'), # it could delete all of your files. for root, dirs, files in top.walk(top_down=False): for name in files: (root / name).unlink() for name in dirs: (root / name).rmdir()",
+    "level": 1,
+    "start": 39070,
+    "end": 39385
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#creating-files-and-directories",
+    "heading": "Creating files and directories",
+    "level": 4,
+    "start": 39385,
+    "end": 41931
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#copying-moving-and-deleting",
+    "heading": "Copying, moving and deleting",
+    "level": 4,
+    "start": 41931,
+    "end": 45774
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#permissions-and-ownership",
+    "heading": "Permissions and ownership",
+    "level": 4,
+    "start": 45774,
+    "end": 47406
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#pattern-language",
+    "heading": "Pattern language",
+    "level": 3,
+    "start": 47406,
+    "end": 49082
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#comparison-to-the-glob-module",
+    "heading": "Comparison to the glob module",
+    "level": 3,
+    "start": 49082,
+    "end": 50161
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#comparison-to-the-os-and-os-path-modules",
+    "heading": "Comparison to the os and os.path modules",
+    "level": 3,
+    "start": 50161,
+    "end": 51950
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#corresponding-tools",
+    "heading": "Corresponding tools",
+    "level": 4,
+    "start": 51950,
+    "end": 53166
+  },
+  {
+    "document_id": "python_stdlib/pathlib.md",
+    "span_id": "python_stdlib/pathlib.md#protocols",
+    "heading": "Protocols",
+    "level": 3,
+    "start": 53166,
+    "end": 54612
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#python-standard-library-pickle",
+    "heading": "Python standard library: `pickle`",
+    "level": 1,
+    "start": 0,
+    "end": 101
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#comparison-with-marshal",
+    "heading": "Comparison with marshal",
+    "level": 4,
+    "start": 101,
+    "end": 1235
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#comparison-with-json",
+    "heading": "Comparison with json",
+    "level": 4,
+    "start": 1235,
+    "end": 2213
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#data-stream-format",
+    "heading": "Data stream format",
+    "level": 3,
+    "start": 2213,
+    "end": 4846
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#module-interface",
+    "heading": "Module Interface",
+    "level": 3,
+    "start": 4846,
+    "end": 16384
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#what-can-be-pickled-and-unpickled",
+    "heading": "What can be pickled and unpickled?",
+    "level": 3,
+    "start": 16384,
+    "end": 18800
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#pickling-class-instances",
+    "heading": "Pickling Class Instances",
+    "level": 3,
+    "start": 18800,
+    "end": 26215
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#persistence-of-external-objects",
+    "heading": "Persistence of External Objects",
+    "level": 4,
+    "start": 26215,
+    "end": 27504
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#simple-example-presenting-how-persistent-id-can-be-used-to-pickle-external-objects-by-reference-import-pickle-import-sqlite3-from-collections-import-namedtuple-simple-class-representing-a-record-in-our-database-memorecord-namedtuple-memorecord-key-task-class-dbpickler-pickle-pickler-def-persistentid-self-obj-instead-of-pickling-memorecord-as-a-regular-class-instance-we-emit-a-persistent-id-if-isinstance-obj-memorecord-here-our-persistent-id-is-simply-a-tuple-containing-a-tag-and-a-key-which-refers-to-a-specific-record-in-the-database-return-memorecord-obj-key-else-if-obj-does-not-have-a-persistent-id-return-none-this-means-obj-needs-to-be-pickled-as-usual-return-none-class-dbunpickler-pickle-unpickler-def-init-self-file-connection-super-init-file-self-connection-connection-def-persistentload-self-pid-this-method-is-invoked-whenever-a-persistent-id-is-encountered-here-pid-is-the-tuple-returned-by-dbpickler-cursor-self-connection-cursor-typetag-keyid-pid-if-typetag-memorecord-fetch-the-referenced-record-from-the-database-and-return-it-cursor-execute-select-from-memos-where-key-str-keyid-key-task-cursor-fetchone-return-memorecord-key-task-else-always-raises-an-error-if-you-cannot-return-the-correct-object-otherwise-the-unpickler-will-think-none-is-the-object-referenced-by-the-persistent-id-raise-pickle-unpicklingerror-unsupported-persistent-object-def-main-import-io-import-pprint-initialize-and-populate-our-database-conn-sqlite3-connect-memory-cursor-conn-cursor-cursor-execute-create-table-memos-key-integer-primary-key-task-text-tasks-give-food-to-fish-prepare-group-meeting-fight-with-a-zebra-for-task-in-tasks-cursor-execute-insert-into-memos-values-null-task-fetch-the-records-to-be-pickled-cursor-execute-select-from-memos-memos-memorecord-key-task-for-key-task-in-cursor-save-the-records-using-our-custom-dbpickler-file-io-bytesio-dbpickler-file-dump-memos-print-pickled-records-pprint-pprint-memos-update-a-record-just-for-good-measure-cursor-execute-update-memos-set-task-learn-italian-where-key-1-load-the-records-from-the-pickle-data-stream-file-seek-0-memos-dbunpickler-file-conn-load-print-unpickled-records-pprint-pprint-memos-if-name-main-main",
+    "heading": "Simple example presenting how persistent ID can be used to pickle # external objects by reference. import pickle import sqlite3 from collections import namedtuple # Simple class representing a record in our database. MemoRecord = namedtuple(\"MemoRecord\", \"key, task\") class DBPickler(pickle.Pickler): def persistent_id(self, obj): # Instead of pickling MemoRecord as a regular class instance, we emit a # persistent ID. if isinstance(obj, MemoRecord): # Here, our persistent ID is simply a tuple, containing a tag and a # key, which refers to a specific record in the database. return (\"MemoRecord\", obj.key) else: # If obj does not have a persistent ID, return None. This means obj # needs to be pickled as usual. return None class DBUnpickler(pickle.Unpickler): def __init__(self, file, connection): super().__init__(file) self.connection = connection def persistent_load(self, pid): # This method is invoked whenever a persistent ID is encountered. # Here, pid is the tuple returned by DBPickler. cursor = self.connection.cursor() type_tag, key_id = pid if type_tag == \"MemoRecord\": # Fetch the referenced record from the database and return it. cursor.execute(\"SELECT * FROM memos WHERE key=?\", (str(key_id),)) key, task = cursor.fetchone() return MemoRecord(key, task) else: # Always raises an error if you cannot return the correct object. # Otherwise, the unpickler will think None is the object referenced # by the persistent ID. raise pickle.UnpicklingError(\"unsupported persistent object\") def main(): import io import pprint # Initialize and populate our database. conn = sqlite3.connect(\":memory:\") cursor = conn.cursor() cursor.execute(\"CREATE TABLE memos(key INTEGER PRIMARY KEY, task TEXT)\") tasks = ( 'give food to fish', 'prepare group meeting', 'fight with a zebra', ) for task in tasks: cursor.execute(\"INSERT INTO memos VALUES(NULL, ?)\", (task,)) # Fetch the records to be pickled. cursor.execute(\"SELECT * FROM memos\") memos = [MemoRecord(key, task) for key, task in cursor] # Save the records using our custom DBPickler. file = io.BytesIO() DBPickler(file).dump(memos) print(\"Pickled records:\") pprint.pprint(memos) # Update a record, just for good measure. cursor.execute(\"UPDATE memos SET task='learn italian' WHERE key=1\") # Load the records from the pickle data stream. file.seek(0) memos = DBUnpickler(file, conn).load() print(\"Unpickled records:\") pprint.pprint(memos) if __name__ == '__main__': main()",
+    "level": 1,
+    "start": 27504,
+    "end": 29938
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#dispatch-tables",
+    "heading": "Dispatch Tables",
+    "level": 4,
+    "start": 29938,
+    "end": 31069
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#handling-stateful-objects",
+    "heading": "Handling Stateful Objects",
+    "level": 4,
+    "start": 31069,
+    "end": 32828
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#custom-reduction-for-types-functions-and-other-objects",
+    "heading": "Custom Reduction for Types, Functions, and Other Objects",
+    "level": 3,
+    "start": 32828,
+    "end": 34394
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#out-of-band-buffers",
+    "heading": "Out-of-band Buffers",
+    "level": 3,
+    "start": 34394,
+    "end": 35113
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#provider-api",
+    "heading": "Provider API",
+    "level": 4,
+    "start": 35113,
+    "end": 35614
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#consumer-api",
+    "heading": "Consumer API",
+    "level": 4,
+    "start": 35614,
+    "end": 36761
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#example",
+    "heading": "Example",
+    "level": 4,
+    "start": 36761,
+    "end": 38687
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#restricting-globals",
+    "heading": "Restricting Globals",
+    "level": 3,
+    "start": 38687,
+    "end": 41017
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#performance",
+    "heading": "Performance",
+    "level": 3,
+    "start": 41017,
+    "end": 41253
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#examples",
+    "heading": "Examples",
+    "level": 3,
+    "start": 41253,
+    "end": 41874
+  },
+  {
+    "document_id": "python_stdlib/pickle.md",
+    "span_id": "python_stdlib/pickle.md#command-line-interface",
+    "heading": "Command-line interface",
+    "level": 3,
+    "start": 41874,
+    "end": 42709
+  },
+  {
+    "document_id": "python_stdlib/platform.md",
+    "span_id": "python_stdlib/platform.md#python-standard-library-platform",
+    "heading": "Python standard library: `platform`",
+    "level": 1,
+    "start": 0,
+    "end": 105
+  },
+  {
+    "document_id": "python_stdlib/platform.md",
+    "span_id": "python_stdlib/platform.md#cross-platform",
+    "heading": "Cross platform",
+    "level": 3,
+    "start": 105,
+    "end": 5429
+  },
+  {
+    "document_id": "python_stdlib/platform.md",
+    "span_id": "python_stdlib/platform.md#java-platform",
+    "heading": "Java platform",
+    "level": 3,
+    "start": 5429,
+    "end": 5986
+  },
+  {
+    "document_id": "python_stdlib/platform.md",
+    "span_id": "python_stdlib/platform.md#windows-platform",
+    "heading": "Windows platform",
+    "level": 3,
+    "start": 5986,
+    "end": 7126
+  },
+  {
+    "document_id": "python_stdlib/platform.md",
+    "span_id": "python_stdlib/platform.md#macos-platform",
+    "heading": "macOS platform",
+    "level": 3,
+    "start": 7126,
+    "end": 7456
+  },
+  {
+    "document_id": "python_stdlib/platform.md",
+    "span_id": "python_stdlib/platform.md#ios-platform",
+    "heading": "iOS platform",
+    "level": 3,
+    "start": 7456,
+    "end": 8058
+  },
+  {
+    "document_id": "python_stdlib/platform.md",
+    "span_id": "python_stdlib/platform.md#unix-platforms",
+    "heading": "Unix platforms",
+    "level": 3,
+    "start": 8058,
+    "end": 8615
+  },
+  {
+    "document_id": "python_stdlib/platform.md",
+    "span_id": "python_stdlib/platform.md#linux-platforms",
+    "heading": "Linux platforms",
+    "level": 3,
+    "start": 8615,
+    "end": 9747
+  },
+  {
+    "document_id": "python_stdlib/platform.md",
+    "span_id": "python_stdlib/platform.md#android-platform",
+    "heading": "Android platform",
+    "level": 3,
+    "start": 9747,
+    "end": 10595
+  },
+  {
+    "document_id": "python_stdlib/platform.md",
+    "span_id": "python_stdlib/platform.md#command-line-usage",
+    "heading": "Command-line usage",
+    "level": 3,
+    "start": 10595,
+    "end": 11277
+  },
+  {
+    "document_id": "python_stdlib/queue.md",
+    "span_id": "python_stdlib/queue.md#python-standard-library-queue",
+    "heading": "Python standard library: `queue`",
+    "level": 1,
+    "start": 0,
+    "end": 99
+  },
+  {
+    "document_id": "python_stdlib/queue.md",
+    "span_id": "python_stdlib/queue.md#queue-objects",
+    "heading": "Queue Objects",
+    "level": 3,
+    "start": 99,
+    "end": 3450
+  },
+  {
+    "document_id": "python_stdlib/queue.md",
+    "span_id": "python_stdlib/queue.md#waiting-for-task-completion",
+    "heading": "Waiting for task completion",
+    "level": 4,
+    "start": 3450,
+    "end": 3933
+  },
+  {
+    "document_id": "python_stdlib/queue.md",
+    "span_id": "python_stdlib/queue.md#terminating-queues",
+    "heading": "Terminating queues",
+    "level": 4,
+    "start": 3933,
+    "end": 5181
+  },
+  {
+    "document_id": "python_stdlib/queue.md",
+    "span_id": "python_stdlib/queue.md#simplequeue-objects",
+    "heading": "SimpleQueue Objects",
+    "level": 3,
+    "start": 5181,
+    "end": 7172
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#python-standard-library-re",
+    "heading": "Python standard library: `re`",
+    "level": 1,
+    "start": 0,
+    "end": 93
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#regular-expression-syntax",
+    "heading": "Regular Expression Syntax",
+    "level": 3,
+    "start": 93,
+    "end": 22048
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#module-contents",
+    "heading": "Module Contents",
+    "level": 3,
+    "start": 22048,
+    "end": 22306
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#flags",
+    "heading": "Flags",
+    "level": 4,
+    "start": 22306,
+    "end": 26887
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#functions",
+    "heading": "Functions",
+    "level": 4,
+    "start": 26887,
+    "end": 37564
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#exceptions",
+    "heading": "Exceptions",
+    "level": 4,
+    "start": 37564,
+    "end": 38425
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#regular-expression-objects",
+    "heading": "Regular Expression Objects",
+    "level": 3,
+    "start": 38425,
+    "end": 42672
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#match-objects",
+    "heading": "Match Objects",
+    "level": 3,
+    "start": 42672,
+    "end": 49263
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#checking-for-a-pair",
+    "heading": "Checking for a Pair",
+    "level": 4,
+    "start": 49263,
+    "end": 51095
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#simulating-scanf",
+    "heading": "Simulating scanf()",
+    "level": 4,
+    "start": 51095,
+    "end": 51879
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#search-vs-match",
+    "heading": "search() vs. match()",
+    "level": 4,
+    "start": 51879,
+    "end": 53095
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#making-a-phonebook",
+    "heading": "Making a Phonebook",
+    "level": 4,
+    "start": 53095,
+    "end": 55094
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#text-munging",
+    "heading": "Text Munging",
+    "level": 4,
+    "start": 55094,
+    "end": 55810
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#finding-all-adverbs",
+    "heading": "Finding all Adverbs",
+    "level": 4,
+    "start": 55810,
+    "end": 56180
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#finding-all-adverbs-and-their-positions",
+    "heading": "Finding all Adverbs and their Positions",
+    "level": 4,
+    "start": 56180,
+    "end": 56761
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#raw-string-notation",
+    "heading": "Raw String Notation",
+    "level": 4,
+    "start": 56761,
+    "end": 57588
+  },
+  {
+    "document_id": "python_stdlib/re.md",
+    "span_id": "python_stdlib/re.md#writing-a-tokenizer",
+    "heading": "Writing a Tokenizer",
+    "level": 4,
+    "start": 57588,
+    "end": 60455
+  },
+  {
+    "document_id": "python_stdlib/secrets.md",
+    "span_id": "python_stdlib/secrets.md#python-standard-library-secrets",
+    "heading": "Python standard library: `secrets`",
+    "level": 1,
+    "start": 0,
+    "end": 103
+  },
+  {
+    "document_id": "python_stdlib/secrets.md",
+    "span_id": "python_stdlib/secrets.md#random-numbers",
+    "heading": "Random numbers",
+    "level": 3,
+    "start": 103,
+    "end": 673
+  },
+  {
+    "document_id": "python_stdlib/secrets.md",
+    "span_id": "python_stdlib/secrets.md#generating-tokens",
+    "heading": "Generating tokens",
+    "level": 3,
+    "start": 673,
+    "end": 1680
+  },
+  {
+    "document_id": "python_stdlib/secrets.md",
+    "span_id": "python_stdlib/secrets.md#how-many-bytes-should-tokens-use",
+    "heading": "How many bytes should tokens use?",
+    "level": 4,
+    "start": 1680,
+    "end": 2649
+  },
+  {
+    "document_id": "python_stdlib/secrets.md",
+    "span_id": "python_stdlib/secrets.md#other-functions",
+    "heading": "Other functions",
+    "level": 3,
+    "start": 2649,
+    "end": 2902
+  },
+  {
+    "document_id": "python_stdlib/secrets.md",
+    "span_id": "python_stdlib/secrets.md#recipes-and-best-practices",
+    "heading": "Recipes and best practices",
+    "level": 3,
+    "start": 2902,
+    "end": 4372
+  },
+  {
+    "document_id": "python_stdlib/selectors.md",
+    "span_id": "python_stdlib/selectors.md#python-standard-library-selectors",
+    "heading": "Python standard library: `selectors`",
+    "level": 1,
+    "start": 0,
+    "end": 107
+  },
+  {
+    "document_id": "python_stdlib/selectors.md",
+    "span_id": "python_stdlib/selectors.md#introduction",
+    "heading": "Introduction",
+    "level": 3,
+    "start": 107,
+    "end": 1252
+  },
+  {
+    "document_id": "python_stdlib/selectors.md",
+    "span_id": "python_stdlib/selectors.md#classes",
+    "heading": "Classes",
+    "level": 3,
+    "start": 1252,
+    "end": 6410
+  },
+  {
+    "document_id": "python_stdlib/selectors.md",
+    "span_id": "python_stdlib/selectors.md#examples",
+    "heading": "Examples",
+    "level": 3,
+    "start": 6410,
+    "end": 7178
+  },
+  {
+    "document_id": "python_stdlib/shutil.md",
+    "span_id": "python_stdlib/shutil.md#python-standard-library-shutil",
+    "heading": "Python standard library: `shutil`",
+    "level": 1,
+    "start": 0,
+    "end": 101
+  },
+  {
+    "document_id": "python_stdlib/shutil.md",
+    "span_id": "python_stdlib/shutil.md#directory-and-files-operations",
+    "heading": "Directory and files operations",
+    "level": 3,
+    "start": 101,
+    "end": 18399
+  },
+  {
+    "document_id": "python_stdlib/shutil.md",
+    "span_id": "python_stdlib/shutil.md#platform-dependent-efficient-copy-operations",
+    "heading": "Platform-dependent efficient copy operations",
+    "level": 4,
+    "start": 18399,
+    "end": 19538
+  },
+  {
+    "document_id": "python_stdlib/shutil.md",
+    "span_id": "python_stdlib/shutil.md#copytree-example",
+    "heading": "copytree example",
+    "level": 4,
+    "start": 19538,
+    "end": 20088
+  },
+  {
+    "document_id": "python_stdlib/shutil.md",
+    "span_id": "python_stdlib/shutil.md#rmtree-example",
+    "heading": "rmtree example",
+    "level": 4,
+    "start": 20088,
+    "end": 20550
+  },
+  {
+    "document_id": "python_stdlib/shutil.md",
+    "span_id": "python_stdlib/shutil.md#archiving-operations",
+    "heading": "Archiving operations",
+    "level": 3,
+    "start": 20550,
+    "end": 27955
+  },
+  {
+    "document_id": "python_stdlib/shutil.md",
+    "span_id": "python_stdlib/shutil.md#archiving-example",
+    "heading": "Archiving example",
+    "level": 4,
+    "start": 27955,
+    "end": 28900
+  },
+  {
+    "document_id": "python_stdlib/shutil.md",
+    "span_id": "python_stdlib/shutil.md#archiving-example-with-basedir",
+    "heading": "Archiving example with base_dir",
+    "level": 4,
+    "start": 28900,
+    "end": 29735
+  },
+  {
+    "document_id": "python_stdlib/shutil.md",
+    "span_id": "python_stdlib/shutil.md#querying-the-size-of-the-output-terminal",
+    "heading": "Querying the size of the output terminal",
+    "level": 3,
+    "start": 29735,
+    "end": 30762
+  },
+  {
+    "document_id": "python_stdlib/signal.md",
+    "span_id": "python_stdlib/signal.md#python-standard-library-signal",
+    "heading": "Python standard library: `signal`",
+    "level": 1,
+    "start": 0,
+    "end": 101
+  },
+  {
+    "document_id": "python_stdlib/signal.md",
+    "span_id": "python_stdlib/signal.md#general-rules",
+    "heading": "General rules",
+    "level": 3,
+    "start": 101,
+    "end": 902
+  },
+  {
+    "document_id": "python_stdlib/signal.md",
+    "span_id": "python_stdlib/signal.md#execution-of-python-signal-handlers",
+    "heading": "Execution of Python signal handlers",
+    "level": 4,
+    "start": 902,
+    "end": 2022
+  },
+  {
+    "document_id": "python_stdlib/signal.md",
+    "span_id": "python_stdlib/signal.md#signals-and-threads",
+    "heading": "Signals and threads",
+    "level": 4,
+    "start": 2022,
+    "end": 2593
+  },
+  {
+    "document_id": "python_stdlib/signal.md",
+    "span_id": "python_stdlib/signal.md#module-contents",
+    "heading": "Module contents",
+    "level": 3,
+    "start": 2593,
+    "end": 19548
+  },
+  {
+    "document_id": "python_stdlib/signal.md",
+    "span_id": "python_stdlib/signal.md#examples",
+    "heading": "Examples",
+    "level": 3,
+    "start": 19548,
+    "end": 20381
+  },
+  {
+    "document_id": "python_stdlib/signal.md",
+    "span_id": "python_stdlib/signal.md#note-on-sigpipe",
+    "heading": "Note on SIGPIPE",
+    "level": 3,
+    "start": 20381,
+    "end": 21496
+  },
+  {
+    "document_id": "python_stdlib/signal.md",
+    "span_id": "python_stdlib/signal.md#note-on-signal-handlers-and-exceptions",
+    "heading": "Note on Signal Handlers and Exceptions",
+    "level": 3,
+    "start": 21496,
+    "end": 23596
+  },
+  {
+    "document_id": "python_stdlib/socket.md",
+    "span_id": "python_stdlib/socket.md#python-standard-library-socket",
+    "heading": "Python standard library: `socket`",
+    "level": 1,
+    "start": 0,
+    "end": 101
+  },
+  {
+    "document_id": "python_stdlib/socket.md",
+    "span_id": "python_stdlib/socket.md#socket-families",
+    "heading": "Socket families",
+    "level": 3,
+    "start": 101,
+    "end": 10065
+  },
+  {
+    "document_id": "python_stdlib/socket.md",
+    "span_id": "python_stdlib/socket.md#module-contents",
+    "heading": "Module contents",
+    "level": 3,
+    "start": 10065,
+    "end": 10137
+  },
+  {
+    "document_id": "python_stdlib/socket.md",
+    "span_id": "python_stdlib/socket.md#exceptions",
+    "heading": "Exceptions",
+    "level": 4,
+    "start": 10137,
+    "end": 11753
+  },
+  {
+    "document_id": "python_stdlib/socket.md",
+    "span_id": "python_stdlib/socket.md#constants",
+    "heading": "Constants",
+    "level": 4,
+    "start": 11753,
+    "end": 22449
+  },
+  {
+    "document_id": "python_stdlib/socket.md",
+    "span_id": "python_stdlib/socket.md#creating-sockets",
+    "heading": "Creating sockets",
+    "level": 5,
+    "start": 22449,
+    "end": 27116
+  },
+  {
+    "document_id": "python_stdlib/socket.md",
+    "span_id": "python_stdlib/socket.md#other-functions",
+    "heading": "Other functions",
+    "level": 5,
+    "start": 27116,
+    "end": 42949
+  },
+  {
+    "document_id": "python_stdlib/socket.md",
+    "span_id": "python_stdlib/socket.md#socket-objects",
+    "heading": "Socket Objects",
+    "level": 3,
+    "start": 42949,
+    "end": 67469
+  },
+  {
+    "document_id": "python_stdlib/socket.md",
+    "span_id": "python_stdlib/socket.md#notes-on-socket-timeouts",
+    "heading": "Notes on socket timeouts",
+    "level": 3,
+    "start": 67469,
+    "end": 68578
+  },
+  {
+    "document_id": "python_stdlib/socket.md",
+    "span_id": "python_stdlib/socket.md#timeouts-and-the-connect-method",
+    "heading": "Timeouts and the connect method",
+    "level": 4,
+    "start": 68578,
+    "end": 68949
+  },
+  {
+    "document_id": "python_stdlib/socket.md",
+    "span_id": "python_stdlib/socket.md#timeouts-and-the-accept-method",
+    "heading": "Timeouts and the accept method",
+    "level": 4,
+    "start": 68949,
+    "end": 69532
+  },
+  {
+    "document_id": "python_stdlib/socket.md",
+    "span_id": "python_stdlib/socket.md#example",
+    "heading": "Example",
+    "level": 3,
+    "start": 69532,
+    "end": 70097
+  },
+  {
+    "document_id": "python_stdlib/socket.md",
+    "span_id": "python_stdlib/socket.md#echo-server-program-import-socket-host-symbolic-name-meaning-all-available-interfaces-port-50007-arbitrary-non-privileged-port-with-socket-socket-socket-afinet-socket-sockstream-as-s-s-bind-host-port-s-listen-1-conn-addr-s-accept-with-conn-print-connected-by-addr-while-true-data-conn-recv-1024-if-not-data-break-conn-sendall-data",
+    "heading": "Echo server program import socket HOST = '' # Symbolic name meaning all available interfaces PORT = 50007 # Arbitrary non-privileged port with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: s.bind((HOST, PORT)) s.listen(1) conn, addr = s.accept() with conn: print('Connected by', addr) while True: data = conn.recv(1024) if not data: break conn.sendall(data)",
+    "level": 1,
+    "start": 70097,
+    "end": 70468
+  },
+  {
+    "document_id": "python_stdlib/socket.md",
+    "span_id": "python_stdlib/socket.md#echo-client-program-import-socket-host-daring-cwi-nl-the-remote-host-port-50007-the-same-port-as-used-by-the-server-with-socket-socket-socket-afinet-socket-sockstream-as-s-s-connect-host-port-s-sendall-b-hello-world-data-s-recv-1024-print-received-repr-data",
+    "heading": "Echo client program import socket HOST = 'daring.cwi.nl' # The remote host PORT = 50007 # The same port as used by the server with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: s.connect((HOST, PORT)) s.sendall(b'Hello, world') data = s.recv(1024) print('Received', repr(data))",
+    "level": 1,
+    "start": 70468,
+    "end": 71210
+  },
+  {
+    "document_id": "python_stdlib/socket.md",
+    "span_id": "python_stdlib/socket.md#echo-server-program-import-socket-import-sys-host-none-symbolic-name-meaning-all-available-interfaces-port-50007-arbitrary-non-privileged-port-s-none-for-res-in-socket-getaddrinfo-host-port-socket-afunspec-socket-sockstream-0-socket-aipassive-af-socktype-proto-canonname-sa-res-try-s-socket-socket-af-socktype-proto-except-oserror-as-msg-s-none-continue-try-s-bind-sa-s-listen-1-except-oserror-as-msg-s-close-s-none-continue-break-if-s-is-none-print-could-not-open-socket-sys-exit-1-conn-addr-s-accept-with-conn-print-connected-by-addr-while-true-data-conn-recv-1024-if-not-data-break-conn-send-data",
+    "heading": "Echo server program import socket import sys HOST = None # Symbolic name meaning all available interfaces PORT = 50007 # Arbitrary non-privileged port s = None for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM, 0, socket.AI_PASSIVE): af, socktype, proto, canonname, sa = res try: s = socket.socket(af, socktype, proto) except OSError as msg: s = None continue try: s.bind(sa) s.listen(1) except OSError as msg: s.close() s = None continue break if s is None: print('could not open socket') sys.exit(1) conn, addr = s.accept() with conn: print('Connected by', addr) while True: data = conn.recv(1024) if not data: break conn.send(data)",
+    "level": 1,
+    "start": 71210,
+    "end": 71877
+  },
+  {
+    "document_id": "python_stdlib/socket.md",
+    "span_id": "python_stdlib/socket.md#echo-client-program-import-socket-import-sys-host-daring-cwi-nl-the-remote-host-port-50007-the-same-port-as-used-by-the-server-s-none-for-res-in-socket-getaddrinfo-host-port-socket-afunspec-socket-sockstream-af-socktype-proto-canonname-sa-res-try-s-socket-socket-af-socktype-proto-except-oserror-as-msg-s-none-continue-try-s-connect-sa-except-oserror-as-msg-s-close-s-none-continue-break-if-s-is-none-print-could-not-open-socket-sys-exit-1-with-s-s-sendall-b-hello-world-data-s-recv-1024-print-received-repr-data",
+    "heading": "Echo client program import socket import sys HOST = 'daring.cwi.nl' # The remote host PORT = 50007 # The same port as used by the server s = None for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM): af, socktype, proto, canonname, sa = res try: s = socket.socket(af, socktype, proto) except OSError as msg: s = None continue try: s.connect(sa) except OSError as msg: s.close() s = None continue break if s is None: print('could not open socket') sys.exit(1) with s: s.sendall(b'Hello, world') data = s.recv(1024) print('Received', repr(data))",
+    "level": 1,
+    "start": 71877,
+    "end": 75810
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#python-standard-library-sqlite3",
+    "heading": "Python standard library: `sqlite3`",
+    "level": 1,
+    "start": 0,
+    "end": 103
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#tutorial",
+    "heading": "Tutorial",
+    "level": 3,
+    "start": 103,
+    "end": 5169
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#module-functions",
+    "heading": "Module functions",
+    "level": 4,
+    "start": 5169,
+    "end": 10613
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#module-constants",
+    "heading": "Module constants",
+    "level": 4,
+    "start": 10613,
+    "end": 15135
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#connection-objects",
+    "heading": "Connection objects",
+    "level": 4,
+    "start": 15135,
+    "end": 21235
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#example-taken-from-https-www-sqlite-org-windowfunctions-html-udfwinfunc-class-windowsumint-def-init-self-self-count-0-def-step-self-value-add-a-row-to-the-current-window-self-count-value-def-value-self-return-the-current-value-of-the-aggregate-return-self-count-def-inverse-self-value-remove-a-row-from-the-current-window-self-count-value-def-finalize-self-return-the-final-value-of-the-aggregate-any-clean-up-actions-should-be-placed-here-return-self-count-con-sqlite3-connect-memory-cur-con-execute-create-table-test-x-y-values-a-4-b-5-c-3-d-8-e-1-cur-executemany-insert-into-test-values-values-con-createwindowfunction-sumint-1-windowsumint-cur-execute-select-x-sumint-y-over-order-by-x-rows-between-1-preceding-and-1-following-as-sumy-from-test-order-by-x-print-cur-fetchall-con-close",
+    "heading": "Example taken from https://www.sqlite.org/windowfunctions.html#udfwinfunc class WindowSumInt: def __init__(self): self.count = 0 def step(self, value): \"\"\"Add a row to the current window.\"\"\" self.count += value def value(self): \"\"\"Return the current value of the aggregate.\"\"\" return self.count def inverse(self, value): \"\"\"Remove a row from the current window.\"\"\" self.count -= value def finalize(self): \"\"\"Return the final value of the aggregate. Any clean-up actions should be placed here. \"\"\" return self.count con = sqlite3.connect(\":memory:\") cur = con.execute(\"CREATE TABLE test(x, y)\") values = [ (\"a\", 4), (\"b\", 5), (\"c\", 3), (\"d\", 8), (\"e\", 1), ] cur.executemany(\"INSERT INTO test VALUES(?, ?)\", values) con.create_window_function(\"sumint\", 1, WindowSumInt) cur.execute(\"\"\" SELECT x, sumint(y) OVER ( ORDER BY x ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING ) AS sum_y FROM test ORDER BY x \"\"\") print(cur.fetchall()) con.close()",
+    "level": 1,
+    "start": 21235,
+    "end": 28983
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#convert-file-example-db-to-sql-dump-file-dump-sql-con-sqlite3-connect-example-db-with-open-dump-sql-w-as-f-for-line-in-con-iterdump-f-write-s-n-line-con-close",
+    "heading": "Convert file example.db to SQL dump file dump.sql con = sqlite3.connect('example.db') with open('dump.sql', 'w') as f: for line in con.iterdump(): f.write('%s\\n' % line) con.close()",
+    "level": 1,
+    "start": 28983,
+    "end": 36395
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#cursor-objects",
+    "heading": "Cursor objects",
+    "level": 4,
+    "start": 36395,
+    "end": 39186
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#cur-is-an-sqlite3-cursor-object-cur-executescript-begin-create-table-person-firstname-lastname-age-create-table-book-title-author-published-create-table-publisher-name-address-commit",
+    "heading": "cur is an sqlite3.Cursor object cur.executescript(\"\"\" BEGIN; CREATE TABLE person(firstname, lastname, age); CREATE TABLE book(title, author, published); CREATE TABLE publisher(name, address); COMMIT; \"\"\")",
+    "level": 1,
+    "start": 39186,
+    "end": 43190
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#row-objects",
+    "heading": "Row objects",
+    "level": 4,
+    "start": 43190,
+    "end": 43728
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#blob-objects",
+    "heading": "Blob objects",
+    "level": 4,
+    "start": 43728,
+    "end": 45576
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#prepareprotocol-objects",
+    "heading": "PrepareProtocol objects",
+    "level": 4,
+    "start": 45576,
+    "end": 45789
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#exceptions",
+    "heading": "Exceptions",
+    "level": 4,
+    "start": 45789,
+    "end": 48604
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#sqlite-and-python-types",
+    "heading": "SQLite and Python types",
+    "level": 4,
+    "start": 48604,
+    "end": 49307
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#default-adapters-and-converters-deprecated",
+    "heading": "Default adapters and converters (deprecated)",
+    "level": 4,
+    "start": 49307,
+    "end": 50226
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#command-line-interface",
+    "heading": "Command-line interface",
+    "level": 4,
+    "start": 50226,
+    "end": 50616
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#how-to-use-placeholders-to-bind-values-in-sql-queries",
+    "heading": "How to use placeholders to bind values in SQL queries",
+    "level": 4,
+    "start": 50616,
+    "end": 52534
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#how-to-adapt-custom-python-types-to-sqlite-values",
+    "heading": "How to adapt custom Python types to SQLite values",
+    "level": 4,
+    "start": 52534,
+    "end": 53155
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#how-to-write-adaptable-objects",
+    "heading": "How to write adaptable objects",
+    "level": 5,
+    "start": 53155,
+    "end": 53887
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#how-to-register-adapter-callables",
+    "heading": "How to register adapter callables",
+    "level": 5,
+    "start": 53887,
+    "end": 54395
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#how-to-convert-sqlite-values-to-custom-python-types",
+    "heading": "How to convert SQLite values to custom Python types",
+    "level": 4,
+    "start": 54395,
+    "end": 56545
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#adapter-and-converter-recipes",
+    "heading": "Adapter and converter recipes",
+    "level": 4,
+    "start": 56545,
+    "end": 57741
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#how-to-use-connection-shortcut-methods",
+    "heading": "How to use connection shortcut methods",
+    "level": 4,
+    "start": 57741,
+    "end": 58230
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#create-and-fill-the-table-con-sqlite3-connect-memory-con-execute-create-table-lang-name-firstappeared-data-c-1985-objective-c-1984-con-executemany-insert-into-lang-name-firstappeared-values-data-print-the-table-contents-for-row-in-con-execute-select-name-firstappeared-from-lang-print-row-print-i-just-deleted-con-execute-delete-from-lang-rowcount-rows-close-is-not-a-shortcut-method-and-it-s-not-called-automatically-the-connection-object-should-be-closed-manually-con-close",
+    "heading": "Create and fill the table. con = sqlite3.connect(\":memory:\") con.execute(\"CREATE TABLE lang(name, first_appeared)\") data = [ (\"C++\", 1985), (\"Objective-C\", 1984), ] con.executemany(\"INSERT INTO lang(name, first_appeared) VALUES(?, ?)\", data) # Print the table contents for row in con.execute(\"SELECT name, first_appeared FROM lang\"): print(row) print(\"I just deleted\", con.execute(\"DELETE FROM lang\").rowcount, \"rows\") # close() is not a shortcut method and it's not called automatically; # the connection object should be closed manually con.close()",
+    "level": 1,
+    "start": 58230,
+    "end": 58784
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#how-to-use-the-connection-context-manager",
+    "heading": "How to use the connection context manager",
+    "level": 4,
+    "start": 58784,
+    "end": 60277
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#how-to-work-with-sqlite-uris",
+    "heading": "How to work with SQLite URIs",
+    "level": 4,
+    "start": 60277,
+    "end": 61360
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#how-to-create-and-use-row-factories",
+    "heading": "How to create and use row factories",
+    "level": 4,
+    "start": 61360,
+    "end": 63702
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#how-to-handle-non-utf-8-text-encodings",
+    "heading": "How to handle non-UTF-8 text encodings",
+    "level": 4,
+    "start": 63702,
+    "end": 64800
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#transaction-control",
+    "heading": "Transaction control",
+    "level": 4,
+    "start": 64800,
+    "end": 65105
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#transaction-control-via-the-autocommit-attribute",
+    "heading": "Transaction control via the autocommit attribute",
+    "level": 5,
+    "start": 65105,
+    "end": 66479
+  },
+  {
+    "document_id": "python_stdlib/sqlite3.md",
+    "span_id": "python_stdlib/sqlite3.md#transaction-control-via-the-isolationlevel-attribute",
+    "heading": "Transaction control via the isolation_level attribute",
+    "level": 5,
+    "start": 66479,
+    "end": 68155
+  },
+  {
+    "document_id": "python_stdlib/statistics.md",
+    "span_id": "python_stdlib/statistics.md#python-standard-library-statistics",
+    "heading": "Python standard library: `statistics`",
+    "level": 1,
+    "start": 0,
+    "end": 109
+  },
+  {
+    "document_id": "python_stdlib/statistics.md",
+    "span_id": "python_stdlib/statistics.md#averages-and-measures-of-central-location",
+    "heading": "Averages and measures of central location",
+    "level": 3,
+    "start": 109,
+    "end": 962
+  },
+  {
+    "document_id": "python_stdlib/statistics.md",
+    "span_id": "python_stdlib/statistics.md#measures-of-spread",
+    "heading": "Measures of spread",
+    "level": 3,
+    "start": 962,
+    "end": 1289
+  },
+  {
+    "document_id": "python_stdlib/statistics.md",
+    "span_id": "python_stdlib/statistics.md#statistics-for-relations-between-two-inputs",
+    "heading": "Statistics for relations between two inputs",
+    "level": 3,
+    "start": 1289,
+    "end": 1605
+  },
+  {
+    "document_id": "python_stdlib/statistics.md",
+    "span_id": "python_stdlib/statistics.md#function-details",
+    "heading": "Function details",
+    "level": 3,
+    "start": 1605,
+    "end": 19202
+  },
+  {
+    "document_id": "python_stdlib/statistics.md",
+    "span_id": "python_stdlib/statistics.md#decile-cut-points-for-empirically-sampled-data-data-105-129-87-86-111-111-89-81-108-92-110-100-75-105-103-109-76-119-99-91-103-129-106-101-84-111-74-87-86-103-103-106-86-111-75-87-102-121-111-88-89-101-106-95-103-107-101-81-109-104-round-q-1-for-q-in-quantiles-data-n-10-81-0-86-2-89-0-99-4-102-5-103-6-106-0-109-8-111-0",
+    "heading": "Decile cut points for empirically sampled data >>> data = [105, 129, 87, 86, 111, 111, 89, 81, 108, 92, 110, ... 100, 75, 105, 103, 109, 76, 119, 99, 91, 103, 129, ... 106, 101, 84, 111, 74, 87, 86, 103, 103, 106, 86, ... 111, 75, 87, 102, 121, 111, 88, 89, 101, 106, 95, ... 103, 107, 101, 81, 109, 104] >>> [round(q, 1) for q in quantiles(data, n=10)] [81.0, 86.2, 89.0, 99.4, 102.5, 103.6, 106.0, 109.8, 111.0]",
+    "level": 1,
+    "start": 19202,
+    "end": 24260
+  },
+  {
+    "document_id": "python_stdlib/statistics.md",
+    "span_id": "python_stdlib/statistics.md#exceptions",
+    "heading": "Exceptions",
+    "level": 3,
+    "start": 24260,
+    "end": 24405
+  },
+  {
+    "document_id": "python_stdlib/statistics.md",
+    "span_id": "python_stdlib/statistics.md#normaldist-objects",
+    "heading": "NormalDist objects",
+    "level": 3,
+    "start": 24405,
+    "end": 28873
+  },
+  {
+    "document_id": "python_stdlib/statistics.md",
+    "span_id": "python_stdlib/statistics.md#classic-probability-problems",
+    "heading": "Classic probability problems",
+    "level": 4,
+    "start": 28873,
+    "end": 29563
+  },
+  {
+    "document_id": "python_stdlib/statistics.md",
+    "span_id": "python_stdlib/statistics.md#monte-carlo-inputs-for-simulations",
+    "heading": "Monte Carlo inputs for simulations",
+    "level": 4,
+    "start": 29563,
+    "end": 30105
+  },
+  {
+    "document_id": "python_stdlib/statistics.md",
+    "span_id": "python_stdlib/statistics.md#approximating-binomial-distributions",
+    "heading": "Approximating binomial distributions",
+    "level": 4,
+    "start": 30105,
+    "end": 31312
+  },
+  {
+    "document_id": "python_stdlib/statistics.md",
+    "span_id": "python_stdlib/statistics.md#naive-bayesian-classifier",
+    "heading": "Naive bayesian classifier",
+    "level": 4,
+    "start": 31312,
+    "end": 32956
+  },
+  {
+    "document_id": "python_stdlib/string.md",
+    "span_id": "python_stdlib/string.md#python-standard-library-string",
+    "heading": "Python standard library: `string`",
+    "level": 1,
+    "start": 0,
+    "end": 101
+  },
+  {
+    "document_id": "python_stdlib/string.md",
+    "span_id": "python_stdlib/string.md#string-constants",
+    "heading": "String constants",
+    "level": 3,
+    "start": 101,
+    "end": 1354
+  },
+  {
+    "document_id": "python_stdlib/string.md",
+    "span_id": "python_stdlib/string.md#custom-string-formatting",
+    "heading": "Custom string formatting",
+    "level": 3,
+    "start": 1354,
+    "end": 5600
+  },
+  {
+    "document_id": "python_stdlib/string.md",
+    "span_id": "python_stdlib/string.md#format-string-syntax",
+    "heading": "Format string syntax",
+    "level": 3,
+    "start": 5600,
+    "end": 10282
+  },
+  {
+    "document_id": "python_stdlib/string.md",
+    "span_id": "python_stdlib/string.md#format-specification-mini-language",
+    "heading": "Format specification mini-language",
+    "level": 4,
+    "start": 10282,
+    "end": 22049
+  },
+  {
+    "document_id": "python_stdlib/string.md",
+    "span_id": "python_stdlib/string.md#format-examples",
+    "heading": "Format examples",
+    "level": 4,
+    "start": 22049,
+    "end": 26169
+  },
+  {
+    "document_id": "python_stdlib/string.md",
+    "span_id": "python_stdlib/string.md#template-strings-strings",
+    "heading": "Template strings ($-strings)",
+    "level": 3,
+    "start": 26169,
+    "end": 32845
+  },
+  {
+    "document_id": "python_stdlib/string.md",
+    "span_id": "python_stdlib/string.md#helper-functions",
+    "heading": "Helper functions",
+    "level": 3,
+    "start": 32845,
+    "end": 33256
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#python-standard-library-subprocess",
+    "heading": "Python standard library: `subprocess`",
+    "level": 1,
+    "start": 0,
+    "end": 109
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#using-the-subprocess-module",
+    "heading": "Using the subprocess Module",
+    "level": 3,
+    "start": 109,
+    "end": 7323
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#frequently-used-arguments",
+    "heading": "Frequently Used Arguments",
+    "level": 4,
+    "start": 7323,
+    "end": 10693
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#popen-constructor",
+    "heading": "Popen Constructor",
+    "level": 4,
+    "start": 10693,
+    "end": 25416
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#exceptions",
+    "heading": "Exceptions",
+    "level": 4,
+    "start": 25416,
+    "end": 26478
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#security-considerations",
+    "heading": "Security Considerations",
+    "level": 3,
+    "start": 26478,
+    "end": 27459
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#popen-objects",
+    "heading": "Popen Objects",
+    "level": 3,
+    "start": 27459,
+    "end": 33116
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#windows-popen-helpers",
+    "heading": "Windows Popen Helpers",
+    "level": 3,
+    "start": 33116,
+    "end": 35598
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#windows-constants",
+    "heading": "Windows Constants",
+    "level": 4,
+    "start": 35598,
+    "end": 39264
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#older-high-level-api",
+    "heading": "Older high-level API",
+    "level": 3,
+    "start": 39264,
+    "end": 44002
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#replacing-older-functions-with-the-subprocess-module",
+    "heading": "Replacing Older Functions with the subprocess Module",
+    "level": 3,
+    "start": 44002,
+    "end": 44644
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#replacing-bin-sh-shell-command-substitution",
+    "heading": "Replacing /bin/sh shell command substitution",
+    "level": 4,
+    "start": 44644,
+    "end": 44771
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#replacing-shell-pipeline",
+    "heading": "Replacing shell pipeline",
+    "level": 4,
+    "start": 44771,
+    "end": 45338
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#replacing-os-system",
+    "heading": "Replacing os.system()",
+    "level": 4,
+    "start": 45338,
+    "end": 46076
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#replacing-the-os-spawn-family",
+    "heading": "Replacing the os.spawn family",
+    "level": 4,
+    "start": 46076,
+    "end": 46594
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#replacing-os-popen",
+    "heading": "Replacing os.popen()",
+    "level": 4,
+    "start": 46594,
+    "end": 46897
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#legacy-shell-invocation-functions",
+    "heading": "Legacy Shell Invocation Functions",
+    "level": 3,
+    "start": 46897,
+    "end": 48720
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#timeout-behavior",
+    "heading": "Timeout Behavior",
+    "level": 4,
+    "start": 48720,
+    "end": 49377
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#converting-an-argument-sequence-to-a-string-on-windows",
+    "heading": "Converting an argument sequence to a string on Windows",
+    "level": 4,
+    "start": 49377,
+    "end": 50373
+  },
+  {
+    "document_id": "python_stdlib/subprocess.md",
+    "span_id": "python_stdlib/subprocess.md#disable-use-of-posixspawn",
+    "heading": "Disable use of posix_spawn()",
+    "level": 4,
+    "start": 50373,
+    "end": 51120
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#python-standard-library-sys",
+    "heading": "Python standard library: `sys`",
+    "level": 1,
+    "start": 0,
+    "end": 95
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-1",
+    "heading": "Reference overview 1",
+    "level": 2,
+    "start": 95,
+    "end": 1686
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-2",
+    "heading": "Reference overview 2",
+    "level": 2,
+    "start": 1686,
+    "end": 3013
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-3",
+    "heading": "Reference overview 3",
+    "level": 2,
+    "start": 3013,
+    "end": 4443
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-4",
+    "heading": "Reference overview 4",
+    "level": 2,
+    "start": 4443,
+    "end": 5205
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-5",
+    "heading": "Reference overview 5",
+    "level": 2,
+    "start": 5205,
+    "end": 6205
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-6",
+    "heading": "Reference overview 6",
+    "level": 2,
+    "start": 6205,
+    "end": 6832
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-7",
+    "heading": "Reference overview 7",
+    "level": 2,
+    "start": 6832,
+    "end": 7971
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-8",
+    "heading": "Reference overview 8",
+    "level": 2,
+    "start": 7971,
+    "end": 9738
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-9",
+    "heading": "Reference overview 9",
+    "level": 2,
+    "start": 9738,
+    "end": 10255
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-10",
+    "heading": "Reference overview 10",
+    "level": 2,
+    "start": 10255,
+    "end": 11672
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-11",
+    "heading": "Reference overview 11",
+    "level": 2,
+    "start": 11672,
+    "end": 12187
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-12",
+    "heading": "Reference overview 12",
+    "level": 2,
+    "start": 12187,
+    "end": 13148
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-13",
+    "heading": "Reference overview 13",
+    "level": 2,
+    "start": 13148,
+    "end": 14625
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-14",
+    "heading": "Reference overview 14",
+    "level": 2,
+    "start": 14625,
+    "end": 16389
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-15",
+    "heading": "Reference overview 15",
+    "level": 2,
+    "start": 16389,
+    "end": 18756
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-16",
+    "heading": "Reference overview 16",
+    "level": 2,
+    "start": 18756,
+    "end": 19045
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-17",
+    "heading": "Reference overview 17",
+    "level": 2,
+    "start": 19045,
+    "end": 19473
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-18",
+    "heading": "Reference overview 18",
+    "level": 2,
+    "start": 19473,
+    "end": 20142
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-19",
+    "heading": "Reference overview 19",
+    "level": 2,
+    "start": 20142,
+    "end": 21004
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-20",
+    "heading": "Reference overview 20",
+    "level": 2,
+    "start": 21004,
+    "end": 21604
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-21",
+    "heading": "Reference overview 21",
+    "level": 2,
+    "start": 21604,
+    "end": 22501
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-22",
+    "heading": "Reference overview 22",
+    "level": 2,
+    "start": 22501,
+    "end": 23570
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-23",
+    "heading": "Reference overview 23",
+    "level": 2,
+    "start": 23570,
+    "end": 24042
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-24",
+    "heading": "Reference overview 24",
+    "level": 2,
+    "start": 24042,
+    "end": 25278
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-25",
+    "heading": "Reference overview 25",
+    "level": 2,
+    "start": 25278,
+    "end": 26079
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-26",
+    "heading": "Reference overview 26",
+    "level": 2,
+    "start": 26079,
+    "end": 27182
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-27",
+    "heading": "Reference overview 27",
+    "level": 2,
+    "start": 27182,
+    "end": 28129
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-28",
+    "heading": "Reference overview 28",
+    "level": 2,
+    "start": 28129,
+    "end": 29150
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-29",
+    "heading": "Reference overview 29",
+    "level": 2,
+    "start": 29150,
+    "end": 30329
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-30",
+    "heading": "Reference overview 30",
+    "level": 2,
+    "start": 30329,
+    "end": 31434
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-31",
+    "heading": "Reference overview 31",
+    "level": 2,
+    "start": 31434,
+    "end": 32201
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-32",
+    "heading": "Reference overview 32",
+    "level": 2,
+    "start": 32201,
+    "end": 33031
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-33",
+    "heading": "Reference overview 33",
+    "level": 2,
+    "start": 33031,
+    "end": 33583
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-34",
+    "heading": "Reference overview 34",
+    "level": 2,
+    "start": 33583,
+    "end": 34304
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-35",
+    "heading": "Reference overview 35",
+    "level": 2,
+    "start": 34304,
+    "end": 36185
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-36",
+    "heading": "Reference overview 36",
+    "level": 2,
+    "start": 36185,
+    "end": 37134
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-37",
+    "heading": "Reference overview 37",
+    "level": 2,
+    "start": 37134,
+    "end": 37634
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-38",
+    "heading": "Reference overview 38",
+    "level": 2,
+    "start": 37634,
+    "end": 38826
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-39",
+    "heading": "Reference overview 39",
+    "level": 2,
+    "start": 38826,
+    "end": 39431
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-40",
+    "heading": "Reference overview 40",
+    "level": 2,
+    "start": 39431,
+    "end": 41316
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-41",
+    "heading": "Reference overview 41",
+    "level": 2,
+    "start": 41316,
+    "end": 41896
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-42",
+    "heading": "Reference overview 42",
+    "level": 2,
+    "start": 41896,
+    "end": 43274
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-43",
+    "heading": "Reference overview 43",
+    "level": 2,
+    "start": 43274,
+    "end": 44504
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-44",
+    "heading": "Reference overview 44",
+    "level": 2,
+    "start": 44504,
+    "end": 45488
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-45",
+    "heading": "Reference overview 45",
+    "level": 2,
+    "start": 45488,
+    "end": 46505
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-46",
+    "heading": "Reference overview 46",
+    "level": 2,
+    "start": 46505,
+    "end": 47567
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-47",
+    "heading": "Reference overview 47",
+    "level": 2,
+    "start": 47567,
+    "end": 48796
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-48",
+    "heading": "Reference overview 48",
+    "level": 2,
+    "start": 48796,
+    "end": 50672
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-49",
+    "heading": "Reference overview 49",
+    "level": 2,
+    "start": 50672,
+    "end": 51664
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-50",
+    "heading": "Reference overview 50",
+    "level": 2,
+    "start": 51664,
+    "end": 52922
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-51",
+    "heading": "Reference overview 51",
+    "level": 2,
+    "start": 52922,
+    "end": 54113
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-52",
+    "heading": "Reference overview 52",
+    "level": 2,
+    "start": 54113,
+    "end": 56212
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-53",
+    "heading": "Reference overview 53",
+    "level": 2,
+    "start": 56212,
+    "end": 57321
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-54",
+    "heading": "Reference overview 54",
+    "level": 2,
+    "start": 57321,
+    "end": 58316
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-55",
+    "heading": "Reference overview 55",
+    "level": 2,
+    "start": 58316,
+    "end": 58769
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-56",
+    "heading": "Reference overview 56",
+    "level": 2,
+    "start": 58769,
+    "end": 59111
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-57",
+    "heading": "Reference overview 57",
+    "level": 2,
+    "start": 59111,
+    "end": 60498
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-58",
+    "heading": "Reference overview 58",
+    "level": 2,
+    "start": 60498,
+    "end": 61198
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-59",
+    "heading": "Reference overview 59",
+    "level": 2,
+    "start": 61198,
+    "end": 61928
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-60",
+    "heading": "Reference overview 60",
+    "level": 2,
+    "start": 61928,
+    "end": 63988
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-61",
+    "heading": "Reference overview 61",
+    "level": 2,
+    "start": 63988,
+    "end": 65157
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-62",
+    "heading": "Reference overview 62",
+    "level": 2,
+    "start": 65157,
+    "end": 65534
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-63",
+    "heading": "Reference overview 63",
+    "level": 2,
+    "start": 65534,
+    "end": 66324
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-64",
+    "heading": "Reference overview 64",
+    "level": 2,
+    "start": 66324,
+    "end": 66840
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-65",
+    "heading": "Reference overview 65",
+    "level": 2,
+    "start": 66840,
+    "end": 68093
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-66",
+    "heading": "Reference overview 66",
+    "level": 2,
+    "start": 68093,
+    "end": 69680
+  },
+  {
+    "document_id": "python_stdlib/sys.md",
+    "span_id": "python_stdlib/sys.md#reference-overview-67",
+    "heading": "Reference overview 67",
+    "level": 2,
+    "start": 69680,
+    "end": 70062
+  },
+  {
+    "document_id": "python_stdlib/tempfile.md",
+    "span_id": "python_stdlib/tempfile.md#python-standard-library-tempfile",
+    "heading": "Python standard library: `tempfile`",
+    "level": 1,
+    "start": 0,
+    "end": 105
+  },
+  {
+    "document_id": "python_stdlib/tempfile.md",
+    "span_id": "python_stdlib/tempfile.md#examples",
+    "heading": "Examples",
+    "level": 3,
+    "start": 105,
+    "end": 1251
+  },
+  {
+    "document_id": "python_stdlib/tempfile.md",
+    "span_id": "python_stdlib/tempfile.md#deprecated-functions-and-variables",
+    "heading": "Deprecated functions and variables",
+    "level": 3,
+    "start": 1251,
+    "end": 2611
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#python-standard-library-threading",
+    "heading": "Python standard library: `threading`",
+    "level": 1,
+    "start": 0,
+    "end": 107
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#introduction",
+    "heading": "Introduction",
+    "level": 3,
+    "start": 107,
+    "end": 2623
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#gil-and-performance-considerations",
+    "heading": "GIL and performance considerations",
+    "level": 3,
+    "start": 2623,
+    "end": 3289
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#reference",
+    "heading": "Reference",
+    "level": 3,
+    "start": 3289,
+    "end": 9735
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#thread-local-data",
+    "heading": "Thread-local data",
+    "level": 4,
+    "start": 9735,
+    "end": 12393
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#thread-objects",
+    "heading": "Thread objects",
+    "level": 4,
+    "start": 12393,
+    "end": 21222
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#lock-objects",
+    "heading": "Lock objects",
+    "level": 4,
+    "start": 21222,
+    "end": 24344
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#rlock-objects",
+    "heading": "RLock objects",
+    "level": 4,
+    "start": 24344,
+    "end": 27937
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#condition-objects",
+    "heading": "Condition objects",
+    "level": 4,
+    "start": 27937,
+    "end": 29752
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#consume-one-item-with-cv-while-not-anitemisavailable-cv-wait-getanavailableitem-produce-one-item-with-cv-makeanitemavailable-cv-notify",
+    "heading": "Consume one item with cv: while not an_item_is_available(): cv.wait() get_an_available_item() # Produce one item with cv: make_an_item_available() cv.notify()",
+    "level": 1,
+    "start": 29752,
+    "end": 30273
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#consume-an-item-with-cv-cv-waitfor-anitemisavailable-getanavailableitem",
+    "heading": "Consume an item with cv: cv.wait_for(an_item_is_available) get_an_available_item()",
+    "level": 1,
+    "start": 30273,
+    "end": 34389
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#semaphore-objects",
+    "heading": "Semaphore objects",
+    "level": 4,
+    "start": 34389,
+    "end": 37230
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#semaphore-example",
+    "heading": "Semaphore example",
+    "level": 4,
+    "start": 37230,
+    "end": 37981
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#event-objects",
+    "heading": "Event objects",
+    "level": 4,
+    "start": 37981,
+    "end": 39653
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#timer-objects",
+    "heading": "Timer objects",
+    "level": 4,
+    "start": 39653,
+    "end": 40834
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#barrier-objects",
+    "heading": "Barrier objects",
+    "level": 4,
+    "start": 40834,
+    "end": 43839
+  },
+  {
+    "document_id": "python_stdlib/threading.md",
+    "span_id": "python_stdlib/threading.md#using-locks-conditions-and-semaphores-in-the-with-statement",
+    "heading": "Using locks, conditions, and semaphores in the with statement",
+    "level": 3,
+    "start": 43839,
+    "end": 44436
+  },
+  {
+    "document_id": "python_stdlib/time.md",
+    "span_id": "python_stdlib/time.md#python-standard-library-time",
+    "heading": "Python standard library: `time`",
+    "level": 1,
+    "start": 0,
+    "end": 97
+  },
+  {
+    "document_id": "python_stdlib/time.md",
+    "span_id": "python_stdlib/time.md#functions",
+    "heading": "Functions",
+    "level": 3,
+    "start": 97,
+    "end": 7828
+  },
+  {
+    "document_id": "python_stdlib/time.md",
+    "span_id": "python_stdlib/time.md#windows-implementation",
+    "heading": "Windows implementation",
+    "level": 3,
+    "start": 7828,
+    "end": 8257
+  },
+  {
+    "document_id": "python_stdlib/time.md",
+    "span_id": "python_stdlib/time.md#unix-implementation",
+    "heading": "Unix implementation",
+    "level": 3,
+    "start": 8257,
+    "end": 20689
+  },
+  {
+    "document_id": "python_stdlib/time.md",
+    "span_id": "python_stdlib/time.md#clock-id-constants",
+    "heading": "Clock ID Constants",
+    "level": 3,
+    "start": 20689,
+    "end": 23574
+  },
+  {
+    "document_id": "python_stdlib/time.md",
+    "span_id": "python_stdlib/time.md#timezone-constants",
+    "heading": "Timezone Constants",
+    "level": 3,
+    "start": 23574,
+    "end": 24998
+  },
+  {
+    "document_id": "python_stdlib/traceback.md",
+    "span_id": "python_stdlib/traceback.md#python-standard-library-traceback",
+    "heading": "Python standard library: `traceback`",
+    "level": 1,
+    "start": 0,
+    "end": 107
+  },
+  {
+    "document_id": "python_stdlib/traceback.md",
+    "span_id": "python_stdlib/traceback.md#module-level-functions",
+    "heading": "Module-Level Functions",
+    "level": 3,
+    "start": 107,
+    "end": 7172
+  },
+  {
+    "document_id": "python_stdlib/traceback.md",
+    "span_id": "python_stdlib/traceback.md#tracebackexception-objects",
+    "heading": "TracebackException Objects",
+    "level": 3,
+    "start": 7172,
+    "end": 11678
+  },
+  {
+    "document_id": "python_stdlib/traceback.md",
+    "span_id": "python_stdlib/traceback.md#stacksummary-objects",
+    "heading": "StackSummary Objects",
+    "level": 3,
+    "start": 11678,
+    "end": 13560
+  },
+  {
+    "document_id": "python_stdlib/traceback.md",
+    "span_id": "python_stdlib/traceback.md#framesummary-objects",
+    "heading": "FrameSummary Objects",
+    "level": 3,
+    "start": 13560,
+    "end": 15269
+  },
+  {
+    "document_id": "python_stdlib/traceback.md",
+    "span_id": "python_stdlib/traceback.md#examples-of-using-the-module-level-functions",
+    "heading": "Examples of Using the Module-Level Functions",
+    "level": 3,
+    "start": 15269,
+    "end": 19765
+  },
+  {
+    "document_id": "python_stdlib/traceback.md",
+    "span_id": "python_stdlib/traceback.md#examples-of-using-tracebackexception",
+    "heading": "Examples of Using TracebackException",
+    "level": 3,
+    "start": 19765,
+    "end": 21841
+  },
+  {
+    "document_id": "python_stdlib/types.md",
+    "span_id": "python_stdlib/types.md#python-standard-library-types",
+    "heading": "Python standard library: `types`",
+    "level": 1,
+    "start": 0,
+    "end": 99
+  },
+  {
+    "document_id": "python_stdlib/types.md",
+    "span_id": "python_stdlib/types.md#dynamic-type-creation",
+    "heading": "Dynamic Type Creation",
+    "level": 3,
+    "start": 99,
+    "end": 3420
+  },
+  {
+    "document_id": "python_stdlib/types.md",
+    "span_id": "python_stdlib/types.md#standard-interpreter-types",
+    "heading": "Standard Interpreter Types",
+    "level": 3,
+    "start": 3420,
+    "end": 10690
+  },
+  {
+    "document_id": "python_stdlib/types.md",
+    "span_id": "python_stdlib/types.md#additional-utility-classes-and-functions",
+    "heading": "Additional Utility Classes and Functions",
+    "level": 3,
+    "start": 10690,
+    "end": 12924
+  },
+  {
+    "document_id": "python_stdlib/types.md",
+    "span_id": "python_stdlib/types.md#coroutine-utility-functions",
+    "heading": "Coroutine Utility Functions",
+    "level": 3,
+    "start": 12924,
+    "end": 13611
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#python-standard-library-typing",
+    "heading": "Python standard library: `typing`",
+    "level": 1,
+    "start": 0,
+    "end": 101
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#specification-for-the-python-type-system",
+    "heading": "Specification for the Python Type System",
+    "level": 3,
+    "start": 101,
+    "end": 272
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#type-aliases",
+    "heading": "Type aliases",
+    "level": 3,
+    "start": 272,
+    "end": 1557
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#newtype",
+    "heading": "NewType",
+    "level": 3,
+    "start": 1557,
+    "end": 2288
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#output-is-of-type-int-not-userid-output-userid-23413-userid-54341",
+    "heading": "'output' is of type 'int', not 'UserId' output = UserId(23413) + UserId(54341)",
+    "level": 1,
+    "start": 2288,
+    "end": 4237
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#annotating-callable-objects",
+    "heading": "Annotating callable objects",
+    "level": 3,
+    "start": 4237,
+    "end": 6764
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#generics",
+    "heading": "Generics",
+    "level": 3,
+    "start": 6764,
+    "end": 7890
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#annotating-tuples",
+    "heading": "Annotating tuples",
+    "level": 3,
+    "start": 7890,
+    "end": 8957
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#ok-x-is-assigned-to-a-tuple-of-length-1-where-the-sole-element-is-an-int-x-tuple-int-5-ok-y-is-assigned-to-a-tuple-of-length-2-element-1-is-an-int-element-2-is-a-str-y-tuple-int-str-5-foo-error-the-type-annotation-indicates-a-tuple-of-length-1-but-z-has-been-assigned-to-a-tuple-of-length-3-z-tuple-int-1-2-3",
+    "heading": "OK: ``x`` is assigned to a tuple of length 1 where the sole element is an int x: tuple[int] = (5,) # OK: ``y`` is assigned to a tuple of length 2; # element 1 is an int, element 2 is a str y: tuple[int, str] = (5, \"foo\") # Error: the type annotation indicates a tuple of length 1, # but ``z`` has been assigned to a tuple of length 3 z: tuple[int] = (1, 2, 3)",
+    "level": 1,
+    "start": 8957,
+    "end": 10000
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#the-type-of-class-objects",
+    "heading": "The type of class objects",
+    "level": 3,
+    "start": 10000,
+    "end": 11337
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#annotating-generators-and-coroutines",
+    "heading": "Annotating generators and coroutines",
+    "level": 3,
+    "start": 11337,
+    "end": 13346
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#user-defined-generic-types",
+    "heading": "User-defined generic types",
+    "level": 3,
+    "start": 13346,
+    "end": 18330
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#the-any-type",
+    "heading": "The Any type",
+    "level": 3,
+    "start": 18330,
+    "end": 20415
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#nominal-vs-structural-subtyping",
+    "heading": "Nominal vs structural subtyping",
+    "level": 3,
+    "start": 20415,
+    "end": 21827
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#module-contents",
+    "heading": "Module contents",
+    "level": 3,
+    "start": 21827,
+    "end": 21924
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#special-types",
+    "heading": "Special types",
+    "level": 5,
+    "start": 21924,
+    "end": 22984
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#invalid-use-of-anystr-the-type-variable-is-used-only-once-in-the-function-signature-so-cannot-be-solved-by-the-type-checker-def-greetbad-cond-bool-anystr-return-hi-there-if-cond-else-b-greetings-the-better-way-of-annotating-this-function-def-greetproper-cond-bool-str-bytes-return-hi-there-if-cond-else-b-greetings",
+    "heading": "Invalid use of AnyStr: # The type variable is used only once in the function signature, # so cannot be \"solved\" by the type checker def greet_bad(cond: bool) -> AnyStr: return \"hi there!\" if cond else b\"greetings!\" # The better way of annotating this function: def greet_proper(cond: bool) -> str | bytes: return \"hi there!\" if cond else b\"greetings!\"",
+    "level": 1,
+    "start": 22984,
+    "end": 28326
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#special-forms",
+    "heading": "Special forms",
+    "level": 5,
+    "start": 28326,
+    "end": 46232
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#in-older-versions-of-python-typevartuple-and-unpack-are-located-in-the-typingextensions-backports-package-from-typingextensions-import-typevartuple-unpack-ts-typevartuple-ts-tup-tuple-ts-syntax-error-on-python-3-10-tup-tuple-unpack-ts-semantically-equivalent-and-backwards-compatible",
+    "heading": "In older versions of Python, TypeVarTuple and Unpack # are located in the `typing_extensions` backports package. from typing_extensions import TypeVarTuple, Unpack Ts = TypeVarTuple('Ts') tup: tuple[*Ts] # Syntax error on Python <= 3.10! tup: tuple[Unpack[Ts]] # Semantically equivalent, and backwards-compatible",
+    "level": 1,
+    "start": 46232,
+    "end": 46954
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#building-generic-types-and-type-aliases",
+    "heading": "Building generic types and type aliases",
+    "level": 5,
+    "start": 46954,
+    "end": 50851
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#can-be-anything-with-an-abs-method-def-printabs-t-supportsabs-arg-t-none-print-absolute-value-abs-arg-u-typevar-u-bound-str-bytes-can-be-any-subtype-of-the-union-str-bytes-v-typevar-v-bound-supportsabs-can-be-anything-with-an-abs-method",
+    "heading": "Can be anything with an __abs__ method def print_abs[T: SupportsAbs](arg: T) -> None: print(\"Absolute value:\", abs(arg)) U = TypeVar('U', bound=str|bytes) # Can be any subtype of the union str|bytes V = TypeVar('V', bound=SupportsAbs) # Can be anything with an __abs__ method",
+    "level": 1,
+    "start": 50851,
+    "end": 55058
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#t-is-bound-to-int-ts-is-bound-to-return-value-is-1-which-has-type-tuple-int-movefirstelementtolast-tup-1-t-is-bound-to-int-ts-is-bound-to-str-return-value-is-spam-1-which-has-type-tuple-str-int-movefirstelementtolast-tup-1-spam-t-is-bound-to-int-ts-is-bound-to-str-float-return-value-is-spam-3-0-1-which-has-type-tuple-str-float-int-movefirstelementtolast-tup-1-spam-3-0-this-fails-to-type-check-and-fails-at-runtime-because-tuple-is-not-compatible-with-tuple-t-ts-at-least-one-element-is-required-movefirstelementtolast-tup",
+    "heading": "T is bound to int, Ts is bound to () # Return value is (1,), which has type tuple[int] move_first_element_to_last(tup=(1,)) # T is bound to int, Ts is bound to (str,) # Return value is ('spam', 1), which has type tuple[str, int] move_first_element_to_last(tup=(1, 'spam')) # T is bound to int, Ts is bound to (str, float) # Return value is ('spam', 3.0, 1), which has type tuple[str, float, int] move_first_element_to_last(tup=(1, 'spam', 3.0)) # This fails to type check (and fails at runtime) # because tuple[()] is not compatible with tuple[T, *Ts] # (at least one element is required) move_first_element_to_last(tup=())",
+    "level": 1,
+    "start": 55058,
+    "end": 65168
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#unpacking",
+    "heading": "Unpacking",
+    "level": 3,
+    "start": 65168,
+    "end": 65452
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#other-special-directives",
+    "heading": "Other special directives",
+    "level": 5,
+    "start": 65452,
+    "end": 66708
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#for-creating-a-generic-namedtuple-on-python-3-11-t-typevar-t-class-group-namedtuple-generic-t-key-t-group-list-t-a-functional-syntax-is-also-supported-employee-namedtuple-employee-name-str-id-int",
+    "heading": "For creating a generic NamedTuple on Python 3.11 T = TypeVar(\"T\") class Group(NamedTuple, Generic[T]): key: T group: list[T] # A functional syntax is also supported Employee = NamedTuple('Employee', [('name', str), ('id', int)])",
+    "level": 1,
+    "start": 66708,
+    "end": 73230
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#raises-syntaxerror-class-point2d-typeddict-in-int-in-is-a-keyword-x-y-int-name-with-hyphens-class-definition-typeddict-schema-str-mangled-to-definitionschema-ok-functional-syntax-point2d-typeddict-point2d-in-int-x-y-int-definition-typeddict-definition-schema-str-not-mangled",
+    "heading": "raises SyntaxError class Point2D(TypedDict): in: int # 'in' is a keyword x-y: int # name with hyphens class Definition(TypedDict): __schema: str # mangled to `_Definition__schema` # OK, functional syntax Point2D = TypedDict('Point2D', {'in': int, 'x-y': int}) Definition = TypedDict('Definition', {'__schema': str}) # not mangled",
+    "level": 1,
+    "start": 73230,
+    "end": 79045
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#protocols",
+    "heading": "Protocols",
+    "level": 4,
+    "start": 79045,
+    "end": 79789
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#abcs-and-protocols-for-working-with-i-o",
+    "heading": "ABCs and Protocols for working with I/O",
+    "level": 4,
+    "start": 79789,
+    "end": 80568
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#functions-and-decorators",
+    "heading": "Functions and decorators",
+    "level": 4,
+    "start": 80568,
+    "end": 93088
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#introspection-helpers",
+    "heading": "Introspection helpers",
+    "level": 4,
+    "start": 93088,
+    "end": 99823
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#constant",
+    "heading": "Constant",
+    "level": 4,
+    "start": 99823,
+    "end": 100975
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#deprecated-aliases",
+    "heading": "Deprecated aliases",
+    "level": 4,
+    "start": 100975,
+    "end": 102035
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#aliases-to-built-in-types",
+    "heading": "Aliases to built-in types",
+    "level": 5,
+    "start": 102035,
+    "end": 103831
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#aliases-to-types-in-collections",
+    "heading": "Aliases to types in collections",
+    "level": 5,
+    "start": 103831,
+    "end": 105137
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#aliases-to-other-concrete-types",
+    "heading": "Aliases to other concrete types",
+    "level": 5,
+    "start": 105137,
+    "end": 106242
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#aliases-to-container-abcs-in-collections-abc",
+    "heading": "Aliases to container ABCs in collections.abc",
+    "level": 5,
+    "start": 106242,
+    "end": 109882
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#aliases-to-asynchronous-abcs-in-collections-abc",
+    "heading": "Aliases to asynchronous ABCs in collections.abc",
+    "level": 5,
+    "start": 109882,
+    "end": 111598
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#aliases-to-other-abcs-in-collections-abc",
+    "heading": "Aliases to other ABCs in collections.abc",
+    "level": 5,
+    "start": 111598,
+    "end": 113462
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#aliases-to-contextlib-abcs",
+    "heading": "Aliases to contextlib ABCs",
+    "level": 5,
+    "start": 113462,
+    "end": 114650
+  },
+  {
+    "document_id": "python_stdlib/typing.md",
+    "span_id": "python_stdlib/typing.md#deprecation-timeline-of-major-features",
+    "heading": "Deprecation Timeline of Major Features",
+    "level": 3,
+    "start": 114650,
+    "end": 115367
+  },
+  {
+    "document_id": "python_stdlib/unicodedata.md",
+    "span_id": "python_stdlib/unicodedata.md#python-standard-library-unicodedata",
+    "heading": "Python standard library: `unicodedata`",
+    "level": 1,
+    "start": 0,
+    "end": 111
+  },
+  {
+    "document_id": "python_stdlib/unicodedata.md",
+    "span_id": "python_stdlib/unicodedata.md#reference-overview-1",
+    "heading": "Reference overview 1",
+    "level": 2,
+    "start": 111,
+    "end": 1002
+  },
+  {
+    "document_id": "python_stdlib/unicodedata.md",
+    "span_id": "python_stdlib/unicodedata.md#reference-overview-2",
+    "heading": "Reference overview 2",
+    "level": 2,
+    "start": 1002,
+    "end": 1796
+  },
+  {
+    "document_id": "python_stdlib/unicodedata.md",
+    "span_id": "python_stdlib/unicodedata.md#reference-overview-3",
+    "heading": "Reference overview 3",
+    "level": 2,
+    "start": 1796,
+    "end": 2597
+  },
+  {
+    "document_id": "python_stdlib/unicodedata.md",
+    "span_id": "python_stdlib/unicodedata.md#reference-overview-4",
+    "heading": "Reference overview 4",
+    "level": 2,
+    "start": 2597,
+    "end": 3487
+  },
+  {
+    "document_id": "python_stdlib/unicodedata.md",
+    "span_id": "python_stdlib/unicodedata.md#reference-overview-5",
+    "heading": "Reference overview 5",
+    "level": 2,
+    "start": 3487,
+    "end": 4533
+  },
+  {
+    "document_id": "python_stdlib/unicodedata.md",
+    "span_id": "python_stdlib/unicodedata.md#reference-overview-6",
+    "heading": "Reference overview 6",
+    "level": 2,
+    "start": 4533,
+    "end": 5946
+  },
+  {
+    "document_id": "python_stdlib/unicodedata.md",
+    "span_id": "python_stdlib/unicodedata.md#reference-overview-7",
+    "heading": "Reference overview 7",
+    "level": 2,
+    "start": 5946,
+    "end": 6290
+  },
+  {
+    "document_id": "python_stdlib/urllib_parse.md",
+    "span_id": "python_stdlib/urllib_parse.md#python-standard-library-urllib-parse",
+    "heading": "Python standard library: `urllib.parse`",
+    "level": 1,
+    "start": 0,
+    "end": 113
+  },
+  {
+    "document_id": "python_stdlib/urllib_parse.md",
+    "span_id": "python_stdlib/urllib_parse.md#url-parsing",
+    "heading": "URL Parsing",
+    "level": 3,
+    "start": 113,
+    "end": 12768
+  },
+  {
+    "document_id": "python_stdlib/urllib_parse.md",
+    "span_id": "python_stdlib/urllib_parse.md#url-parsing-security",
+    "heading": "URL parsing security",
+    "level": 3,
+    "start": 12768,
+    "end": 14092
+  },
+  {
+    "document_id": "python_stdlib/urllib_parse.md",
+    "span_id": "python_stdlib/urllib_parse.md#parsing-ascii-encoded-bytes",
+    "heading": "Parsing ASCII Encoded Bytes",
+    "level": 3,
+    "start": 14092,
+    "end": 15885
+  },
+  {
+    "document_id": "python_stdlib/urllib_parse.md",
+    "span_id": "python_stdlib/urllib_parse.md#structured-parse-results",
+    "heading": "Structured Parse Results",
+    "level": 3,
+    "start": 15885,
+    "end": 18458
+  },
+  {
+    "document_id": "python_stdlib/urllib_parse.md",
+    "span_id": "python_stdlib/urllib_parse.md#url-quoting",
+    "heading": "URL Quoting",
+    "level": 3,
+    "start": 18458,
+    "end": 25244
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#python-standard-library-urllib-request",
+    "heading": "Python standard library: `urllib.request`",
+    "level": 1,
+    "start": 0,
+    "end": 117
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#request-objects",
+    "heading": "Request Objects",
+    "level": 3,
+    "start": 117,
+    "end": 3880
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#openerdirector-objects",
+    "heading": "OpenerDirector Objects",
+    "level": 3,
+    "start": 3880,
+    "end": 7217
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#basehandler-objects",
+    "heading": "BaseHandler Objects",
+    "level": 3,
+    "start": 7217,
+    "end": 10953
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#httpredirecthandler-objects",
+    "heading": "HTTPRedirectHandler Objects",
+    "level": 3,
+    "start": 10953,
+    "end": 13124
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#httpcookieprocessor-objects",
+    "heading": "HTTPCookieProcessor Objects",
+    "level": 3,
+    "start": 13124,
+    "end": 13298
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#proxyhandler-objects",
+    "heading": "ProxyHandler Objects",
+    "level": 3,
+    "start": 13298,
+    "end": 13669
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#httppasswordmgr-objects",
+    "heading": "HTTPPasswordMgr Objects",
+    "level": 3,
+    "start": 13669,
+    "end": 14695
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#httppasswordmgrwithpriorauth-objects",
+    "heading": "HTTPPasswordMgrWithPriorAuth Objects",
+    "level": 3,
+    "start": 14695,
+    "end": 15621
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#abstractbasicauthhandler-objects",
+    "heading": "AbstractBasicAuthHandler Objects",
+    "level": 3,
+    "start": 15621,
+    "end": 16347
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#httpbasicauthhandler-objects",
+    "heading": "HTTPBasicAuthHandler Objects",
+    "level": 3,
+    "start": 16347,
+    "end": 16510
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#proxybasicauthhandler-objects",
+    "heading": "ProxyBasicAuthHandler Objects",
+    "level": 3,
+    "start": 16510,
+    "end": 16675
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#abstractdigestauthhandler-objects",
+    "heading": "AbstractDigestAuthHandler Objects",
+    "level": 3,
+    "start": 16675,
+    "end": 17028
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#httpdigestauthhandler-objects",
+    "heading": "HTTPDigestAuthHandler Objects",
+    "level": 3,
+    "start": 17028,
+    "end": 17193
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#proxydigestauthhandler-objects",
+    "heading": "ProxyDigestAuthHandler Objects",
+    "level": 3,
+    "start": 17193,
+    "end": 17360
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#httphandler-objects",
+    "heading": "HTTPHandler Objects",
+    "level": 3,
+    "start": 17360,
+    "end": 17492
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#httpshandler-objects",
+    "heading": "HTTPSHandler Objects",
+    "level": 3,
+    "start": 17492,
+    "end": 17628
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#filehandler-objects",
+    "heading": "FileHandler Objects",
+    "level": 3,
+    "start": 17628,
+    "end": 17896
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#datahandler-objects",
+    "heading": "DataHandler Objects",
+    "level": 3,
+    "start": 17896,
+    "end": 18376
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#ftphandler-objects",
+    "heading": "FTPHandler Objects",
+    "level": 3,
+    "start": 18376,
+    "end": 18522
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#cacheftphandler-objects",
+    "heading": "CacheFTPHandler Objects",
+    "level": 3,
+    "start": 18522,
+    "end": 18791
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#unknownhandler-objects",
+    "heading": "UnknownHandler Objects",
+    "level": 3,
+    "start": 18791,
+    "end": 18879
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#httperrorprocessor-objects",
+    "heading": "HTTPErrorProcessor Objects",
+    "level": 3,
+    "start": 18879,
+    "end": 19417
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#examples",
+    "heading": "Examples",
+    "level": 3,
+    "start": 19417,
+    "end": 26099
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#legacy-interface",
+    "heading": "Legacy interface",
+    "level": 3,
+    "start": 26099,
+    "end": 28770
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#urllib-request-restrictions",
+    "heading": "urllib.request Restrictions",
+    "level": 3,
+    "start": 28770,
+    "end": 30887
+  },
+  {
+    "document_id": "python_stdlib/urllib_request.md",
+    "span_id": "python_stdlib/urllib_request.md#urllib-response-response-classes-used-by-urllib",
+    "heading": "urllib.response — Response classes used by urllib",
+    "level": 2,
+    "start": 30887,
+    "end": 31786
+  },
+  {
+    "document_id": "python_stdlib/uuid.md",
+    "span_id": "python_stdlib/uuid.md#python-standard-library-uuid",
+    "heading": "Python standard library: `uuid`",
+    "level": 1,
+    "start": 0,
+    "end": 97
+  },
+  {
+    "document_id": "python_stdlib/uuid.md",
+    "span_id": "python_stdlib/uuid.md#command-line-usage",
+    "heading": "Command-Line Usage",
+    "level": 3,
+    "start": 97,
+    "end": 993
+  },
+  {
+    "document_id": "python_stdlib/uuid.md",
+    "span_id": "python_stdlib/uuid.md#example",
+    "heading": "Example",
+    "level": 3,
+    "start": 993,
+    "end": 2785
+  },
+  {
+    "document_id": "python_stdlib/uuid.md",
+    "span_id": "python_stdlib/uuid.md#command-line-example",
+    "heading": "Command-Line Example",
+    "level": 3,
+    "start": 2785,
+    "end": 2888
+  },
+  {
+    "document_id": "python_stdlib/uuid.md",
+    "span_id": "python_stdlib/uuid.md#generate-a-random-uuid-by-default-uuid4-is-used-python-m-uuid-generate-a-uuid-using-uuid1-python-m-uuid-u-uuid1-generate-a-uuid-using-uuid5-python-m-uuid-u-uuid5-n-url-n-example-com-generate-42-random-uuids-python-m-uuid-c-42",
+    "heading": "generate a random UUID - by default uuid4() is used $ python -m uuid # generate a UUID using uuid1() $ python -m uuid -u uuid1 # generate a UUID using uuid5 $ python -m uuid -u uuid5 -n @url -N example.com # generate 42 random UUIDs $ python -m uuid -C 42",
+    "level": 1,
+    "start": 2888,
+    "end": 3146
+  },
+  {
+    "document_id": "python_stdlib/venv.md",
+    "span_id": "python_stdlib/venv.md#python-standard-library-venv",
+    "heading": "Python standard library: `venv`",
+    "level": 1,
+    "start": 0,
+    "end": 97
+  },
+  {
+    "document_id": "python_stdlib/venv.md",
+    "span_id": "python_stdlib/venv.md#creating-virtual-environments",
+    "heading": "Creating virtual environments",
+    "level": 3,
+    "start": 97,
+    "end": 4207
+  },
+  {
+    "document_id": "python_stdlib/venv.md",
+    "span_id": "python_stdlib/venv.md#how-venvs-work",
+    "heading": "How venvs work",
+    "level": 3,
+    "start": 4207,
+    "end": 7781
+  },
+  {
+    "document_id": "python_stdlib/venv.md",
+    "span_id": "python_stdlib/venv.md#api",
+    "heading": "API",
+    "level": 3,
+    "start": 7781,
+    "end": 15806
+  },
+  {
+    "document_id": "python_stdlib/venv.md",
+    "span_id": "python_stdlib/venv.md#an-example-of-extending-envbuilder",
+    "heading": "An example of extending EnvBuilder",
+    "level": 3,
+    "start": 15806,
+    "end": 22206
+  },
+  {
+    "document_id": "python_stdlib/warnings.md",
+    "span_id": "python_stdlib/warnings.md#python-standard-library-warnings",
+    "heading": "Python standard library: `warnings`",
+    "level": 1,
+    "start": 0,
+    "end": 105
+  },
+  {
+    "document_id": "python_stdlib/warnings.md",
+    "span_id": "python_stdlib/warnings.md#warning-categories",
+    "heading": "Warning Categories",
+    "level": 3,
+    "start": 105,
+    "end": 2204
+  },
+  {
+    "document_id": "python_stdlib/warnings.md",
+    "span_id": "python_stdlib/warnings.md#the-warnings-filter",
+    "heading": "The Warnings Filter",
+    "level": 3,
+    "start": 2204,
+    "end": 4352
+  },
+  {
+    "document_id": "python_stdlib/warnings.md",
+    "span_id": "python_stdlib/warnings.md#repeated-warning-suppression-criteria",
+    "heading": "Repeated Warning Suppression Criteria",
+    "level": 4,
+    "start": 4352,
+    "end": 4870
+  },
+  {
+    "document_id": "python_stdlib/warnings.md",
+    "span_id": "python_stdlib/warnings.md#describing-warning-filters",
+    "heading": "Describing Warning Filters",
+    "level": 4,
+    "start": 4870,
+    "end": 6339
+  },
+  {
+    "document_id": "python_stdlib/warnings.md",
+    "span_id": "python_stdlib/warnings.md#default-warning-filter",
+    "heading": "Default Warning Filter",
+    "level": 4,
+    "start": 6339,
+    "end": 7254
+  },
+  {
+    "document_id": "python_stdlib/warnings.md",
+    "span_id": "python_stdlib/warnings.md#overriding-the-default-filter",
+    "heading": "Overriding the default filter",
+    "level": 4,
+    "start": 7254,
+    "end": 8488
+  },
+  {
+    "document_id": "python_stdlib/warnings.md",
+    "span_id": "python_stdlib/warnings.md#temporarily-suppressing-warnings",
+    "heading": "Temporarily Suppressing Warnings",
+    "level": 3,
+    "start": 8488,
+    "end": 9402
+  },
+  {
+    "document_id": "python_stdlib/warnings.md",
+    "span_id": "python_stdlib/warnings.md#testing-warnings",
+    "heading": "Testing Warnings",
+    "level": 3,
+    "start": 9402,
+    "end": 11200
+  },
+  {
+    "document_id": "python_stdlib/warnings.md",
+    "span_id": "python_stdlib/warnings.md#updating-code-for-new-versions-of-dependencies",
+    "heading": "Updating Code For New Versions of Dependencies",
+    "level": 3,
+    "start": 11200,
+    "end": 12437
+  },
+  {
+    "document_id": "python_stdlib/warnings.md",
+    "span_id": "python_stdlib/warnings.md#available-functions",
+    "heading": "Available Functions",
+    "level": 3,
+    "start": 12437,
+    "end": 13908
+  },
+  {
+    "document_id": "python_stdlib/warnings.md",
+    "span_id": "python_stdlib/warnings.md#example-lower-py-warnskips-os-path-dirname-file-def-oneway-rluxuryyacht-none-twobblermangrove-none-if-rluxuryyacht-warnings-warn-please-migrate-to-twobblermangrove-skipfileprefixes-warnskips-example-higher-py-from-import-lower-def-anotherway-kw-lower-oneway-kw",
+    "heading": "example/lower.py _warn_skips = (os.path.dirname(__file__),) def one_way(r_luxury_yacht=None, t_wobbler_mangrove=None): if r_luxury_yacht: warnings.warn(\"Please migrate to t_wobbler_mangrove=.\", skip_file_prefixes=_warn_skips) # example/higher.py from . import lower def another_way(**kw): lower.one_way(**kw)",
+    "level": 1,
+    "start": 13908,
+    "end": 19230
+  },
+  {
+    "document_id": "python_stdlib/warnings.md",
+    "span_id": "python_stdlib/warnings.md#available-context-managers",
+    "heading": "Available Context Managers",
+    "level": 3,
+    "start": 19230,
+    "end": 21109
+  },
+  {
+    "document_id": "python_stdlib/warnings.md",
+    "span_id": "python_stdlib/warnings.md#concurrent-safety-of-context-managers",
+    "heading": "Concurrent safety of Context Managers",
+    "level": 3,
+    "start": 21109,
+    "end": 23726
+  },
+  {
+    "document_id": "python_stdlib/weakref.md",
+    "span_id": "python_stdlib/weakref.md#python-standard-library-weakref",
+    "heading": "Python standard library: `weakref`",
+    "level": 1,
+    "start": 0,
+    "end": 103
+  },
+  {
+    "document_id": "python_stdlib/weakref.md",
+    "span_id": "python_stdlib/weakref.md#weak-reference-objects",
+    "heading": "Weak Reference Objects",
+    "level": 3,
+    "start": 103,
+    "end": 743
+  },
+  {
+    "document_id": "python_stdlib/weakref.md",
+    "span_id": "python_stdlib/weakref.md#r-is-a-weak-reference-object-o-r-if-o-is-none-referent-has-been-garbage-collected-print-object-has-been-deallocated-can-t-frobnicate-else-print-object-is-still-live-o-dosomethinguseful",
+    "heading": "r is a weak reference object o = r() if o is None: # referent has been garbage collected print(\"Object has been deallocated; can't frobnicate.\") else: print(\"Object is still live!\") o.do_something_useful()",
+    "level": 1,
+    "start": 743,
+    "end": 2198
+  },
+  {
+    "document_id": "python_stdlib/weakref.md",
+    "span_id": "python_stdlib/weakref.md#example",
+    "heading": "Example",
+    "level": 3,
+    "start": 2198,
+    "end": 2659
+  },
+  {
+    "document_id": "python_stdlib/weakref.md",
+    "span_id": "python_stdlib/weakref.md#finalizer-objects",
+    "heading": "Finalizer Objects",
+    "level": 3,
+    "start": 2659,
+    "end": 4206
+  },
+  {
+    "document_id": "python_stdlib/weakref.md",
+    "span_id": "python_stdlib/weakref.md#comparing-finalizers-with-del-methods",
+    "heading": "Comparing finalizers with __del__() methods",
+    "level": 3,
+    "start": 4206,
+    "end": 6571
+  },
+  {
+    "document_id": "python_stdlib/zipfile.md",
+    "span_id": "python_stdlib/zipfile.md#python-standard-library-zipfile",
+    "heading": "Python standard library: `zipfile`",
+    "level": 1,
+    "start": 0,
+    "end": 103
+  },
+  {
+    "document_id": "python_stdlib/zipfile.md",
+    "span_id": "python_stdlib/zipfile.md#zipfile-objects",
+    "heading": "ZipFile objects",
+    "level": 3,
+    "start": 103,
+    "end": 13952
+  },
+  {
+    "document_id": "python_stdlib/zipfile.md",
+    "span_id": "python_stdlib/zipfile.md#path-objects",
+    "heading": "Path objects",
+    "level": 3,
+    "start": 13952,
+    "end": 17602
+  },
+  {
+    "document_id": "python_stdlib/zipfile.md",
+    "span_id": "python_stdlib/zipfile.md#pyzipfile-objects",
+    "heading": "PyZipFile objects",
+    "level": 3,
+    "start": 17602,
+    "end": 20129
+  },
+  {
+    "document_id": "python_stdlib/zipfile.md",
+    "span_id": "python_stdlib/zipfile.md#zipinfo-objects",
+    "heading": "ZipInfo objects",
+    "level": 3,
+    "start": 20129,
+    "end": 23480
+  },
+  {
+    "document_id": "python_stdlib/zipfile.md",
+    "span_id": "python_stdlib/zipfile.md#command-line-interface",
+    "heading": "Command-line interface",
+    "level": 3,
+    "start": 23480,
+    "end": 24110
+  },
+  {
+    "document_id": "python_stdlib/zipfile.md",
+    "span_id": "python_stdlib/zipfile.md#command-line-options",
+    "heading": "Command-line options",
+    "level": 4,
+    "start": 24110,
+    "end": 24597
+  },
+  {
+    "document_id": "python_stdlib/zipfile.md",
+    "span_id": "python_stdlib/zipfile.md#decompression-pitfalls",
+    "heading": "Decompression pitfalls",
+    "level": 3,
+    "start": 24597,
+    "end": 24705
+  },
+  {
+    "document_id": "python_stdlib/zipfile.md",
+    "span_id": "python_stdlib/zipfile.md#from-file-itself",
+    "heading": "From file itself",
+    "level": 4,
+    "start": 24705,
+    "end": 24854
+  },
+  {
+    "document_id": "python_stdlib/zipfile.md",
+    "span_id": "python_stdlib/zipfile.md#file-system-limitations",
+    "heading": "File system limitations",
+    "level": 4,
+    "start": 24854,
+    "end": 25118
+  },
+  {
+    "document_id": "python_stdlib/zipfile.md",
+    "span_id": "python_stdlib/zipfile.md#resources-limitations",
+    "heading": "Resources limitations",
+    "level": 4,
+    "start": 25118,
+    "end": 25329
+  },
+  {
+    "document_id": "python_stdlib/zipfile.md",
+    "span_id": "python_stdlib/zipfile.md#interruption",
+    "heading": "Interruption",
+    "level": 4,
+    "start": 25329,
+    "end": 25507
+  },
+  {
+    "document_id": "python_stdlib/zipfile.md",
+    "span_id": "python_stdlib/zipfile.md#default-behaviors-of-extraction",
+    "heading": "Default behaviors of extraction",
+    "level": 4,
+    "start": 25507,
+    "end": 25723
+  }
+]

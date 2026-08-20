@@ -228,6 +228,7 @@ class GroupedLTR:
                 max_depth=4,
                 learning_rate=0.08,
                 random_state=self.random_state,
+                n_jobs=1,
                 tree_method="hist",
             )
         self.backend_name = "sklearn-random-forest-regression-fallback"

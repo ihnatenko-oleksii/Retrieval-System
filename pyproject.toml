@@ -43,6 +43,9 @@ dev = [
 phase3 = [
     "FlagEmbedding>=1.4.0",
 ]
+phase5 = [
+    "xgboost>=2.1.0",
+]
 
 [tool.ruff]
 line-length = 120

@@ -39,7 +39,9 @@ def test_grouped_query_folds_never_split_a_query_between_train_and_validation():
 
 
 def test_grouped_ltr_fits_and_predicts_with_query_groups():
-    ranker = GroupedLTR(n_estimators=8, random_state=1729)
+    # Keep this tiny behavioral fixture backend-independent.  Real XGBoost
+    # LambdaMART is exercised explicitly by the Phase 5 grouped-CV worker.
+    ranker = GroupedLTR(model_name="pairwise-linear", n_estimators=8, random_state=1729)
     features = np.asarray([[1.0, 0.0], [0.0, 1.0], [0.9, 0.1], [0.1, 0.9]])
     labels = np.asarray([3.0, 0.0, 3.0, 0.0])
     query_ids = ["q1", "q1", "q2", "q2"]
