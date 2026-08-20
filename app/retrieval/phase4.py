@@ -1,9 +1,9 @@
 """Modular Phase 4 retrieval primitives.
 
-The Phase 3 retriever remains the compatibility path for the application. This
-module provides an experimentable, in-memory path for Phase 4: every dense
-model is a separate stream, sparse retrieval is field-aware BM25, and all
-routing decisions are made from the query and the observed stream signals.
+The validated simple retriever remains the application path. This module
+provides an experimentable, in-memory path for the historical Phase 4 work:
+every dense model is a separate stream, sparse retrieval is field-aware BM25,
+and all routing decisions are made from the query and observed stream signals.
 """
 
 from __future__ import annotations

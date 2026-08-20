@@ -46,7 +46,7 @@ def _list_ollama_models() -> list[str]:
                 seen.add(n)
         return out
     except Exception:
-        return ["llama3.2:latest", "qwen3:8b", "deepseek-coder-v2:latest"]
+        return [settings.llm_model, "qwen3:8b", "deepseek-coder-v2:latest"]
 
 
 def _empty_figure(title: str) -> go.Figure:

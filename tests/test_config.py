@@ -1,11 +1,19 @@
 import pytest
 
-from app.core.config import Settings, settings
+from app.core.config import DEFAULT_QWEN3_QUERY_INSTRUCTION, Settings, settings
 from app.core.runtime_config import RetrievalConfig
 
 
 class TestSettingsDefaults:
     def test_default_hybrid_weights_sum_to_one(self):
+        assert settings.embedding_model == "Qwen/Qwen3-Embedding-0.6B"
+        assert settings.embedding_query_instruction == DEFAULT_QWEN3_QUERY_INSTRUCTION
+        assert settings.chunk_size == 1000
+        assert settings.chunk_overlap == 200
+        assert settings.hybrid_search_weights_dense == 0.7
+        assert settings.hybrid_search_weights_sparse == 0.3
+        assert settings.fusion_strategy == "weighted_linear"
+        assert settings.adaptive_routing is False
         assert settings.hybrid_search_weights_dense + settings.hybrid_search_weights_sparse == 1.0
 
     def test_reranker_and_query_features_default_off(self):
@@ -41,6 +49,11 @@ class TestRetrievalConfigFromSettings:
         assert cfg.candidate_depth == settings.retrieval_candidate_depth
         assert cfg.fusion_strategy == settings.fusion_strategy
         assert cfg.rerank_candidate_pool == settings.rerank_candidate_pool
+        assert cfg.embedding_model == settings.embedding_model
+        assert cfg.chunk_size == settings.chunk_size
+        assert cfg.chunk_overlap == settings.chunk_overlap
+        assert cfg.embedding_query_instruction == settings.embedding_query_instruction
+        assert cfg.adaptive_routing is False
 
     def test_is_independent_of_later_settings_mutation(self, monkeypatch):
         cfg = RetrievalConfig.from_settings()

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from app.core.config import settings
+from app.core.config import DEFAULT_QWEN3_QUERY_INSTRUCTION, settings
 
 
 @dataclass
@@ -31,7 +31,7 @@ class RetrievalConfig:
     confidence_threshold: float = 0.35
     candidate_depth: int | None = None
     rerank_candidate_pool: int | None = None
-    adaptive_routing: bool = True
+    adaptive_routing: bool = False
     rrf_k: int = 60
     prf_on: bool = False
     prf_depth: int = 1
@@ -45,7 +45,7 @@ class RetrievalConfig:
     ltr_on: bool = False
     ltr_model: str = "auto"
     ltr_candidate_depth: int = 50
-    embedding_query_instruction: str | None = None
+    embedding_query_instruction: str | None = DEFAULT_QWEN3_QUERY_INSTRUCTION
     diversity_on: bool = False
     diversity_relevance_weight: float = 0.7
     lexical_overlap_weight: float = 0.0
@@ -83,7 +83,7 @@ class RetrievalConfig:
                 self.native_bge_colbert_weight,
             )
         ):
-            raise ValueError("Phase 3 retrieval weights cannot be negative")
+            raise ValueError("retrieval component weights cannot be negative")
         if self.fusion_strategy not in {"weighted_linear", "rrf", "weighted_rrf"}:
             raise ValueError(f"Unsupported fusion strategy: {self.fusion_strategy}")
         if self.rewrite_policy not in {"never", "always", "selective"}:
@@ -130,6 +130,9 @@ class RetrievalConfig:
             candidate_depth=settings.retrieval_candidate_depth,
             rerank_candidate_pool=settings.rerank_candidate_pool,
             adaptive_routing=settings.adaptive_routing,
+            embedding_model=settings.embedding_model,
+            chunk_size=settings.chunk_size,
+            chunk_overlap=settings.chunk_overlap,
             prf_on=settings.prf_on,
             prf_depth=settings.prf_depth,
             prf_min_confidence=settings.prf_min_confidence,

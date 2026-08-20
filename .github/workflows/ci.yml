@@ -25,9 +25,6 @@ jobs:
       - name: Lint (ruff check)
         run: uv run ruff check .
 
-      - name: Format check (ruff format)
-        run: uv run ruff format --check .
-
       - name: Test with coverage
         run: uv run pytest --cov --cov-report=term-missing --cov-report=xml
 

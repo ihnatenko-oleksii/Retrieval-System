@@ -1,7 +1,7 @@
 [project]
 name = "retrieval-system"
 version = "0.1.0"
-description = "Local-first, modular RAG system with hybrid dense+BM25 retrieval, reranking, query rewriting, grounded citation generation, and a built-in evaluation/tuning harness."
+description = "Local-first RAG retrieval engine with Qwen3 + BM25 hybrid search, reproducible evaluation, and held-out benchmarks."
 readme = "README.md"
 requires-python = ">=3.12"
 keywords = ["rag", "retrieval-augmented-generation", "information-retrieval", "chromadb", "bm25", "ollama", "llm"]

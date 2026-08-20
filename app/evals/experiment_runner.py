@@ -18,6 +18,8 @@ from app.core.runtime_config import RetrievalConfig
 from app.evals.benchmark_protocol import BenchmarkSplit, load_jsonl, load_or_create_split
 from app.retrieval.ltr import GroupedLTR, LTRFeatureExtractor, grouped_query_folds
 
+# Historical E5 control for the experiment matrix; production defaults live
+# in app.core.config.Settings and use the validated Qwen3 hybrid.
 DEFAULT_EMBEDDING_MODEL = "intfloat/multilingual-e5-base"
 DEFAULT_RERANKER_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 DEFAULT_BGE_RERANKER_MODEL = "BAAI/bge-reranker-v2-m3"
@@ -213,7 +215,7 @@ def previous_final_spec() -> ExperimentSpec:
 
 
 def phase2_final_spec() -> ExperimentSpec:
-    """Frozen Phase 2 winner used as the current-main control in TEST."""
+    """Frozen historical Phase 2 control retained for TEST comparisons."""
     return ExperimentSpec(
         name="bge-m3-hybrid-adaptive",
         embedding_model="BAAI/bge-m3",

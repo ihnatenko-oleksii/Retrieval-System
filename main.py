@@ -53,7 +53,7 @@ def ask(query: str, top_k: int = settings.retrieval_top_k, model: str = settings
     bm25_store = BM25Store()
     retriever = Retriever(store, bm25_store)
 
-    typer.echo("Retrieving and reranking chunks...")
+    typer.echo("Retrieving hybrid evidence...")
     retrieved_chunks = retriever.retrieve(query, top_k=top_k)
 
     if not retrieved_chunks:

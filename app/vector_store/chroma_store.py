@@ -22,7 +22,13 @@ class VectorStore:
             path=persist_dir or settings.vector_db_path,
             settings=Settings(allow_reset=True),
         )
-        self.embedding_function = get_embedding_function(embedding_model, query_instruction=query_instruction)
+        effective_query_instruction = (
+            settings.embedding_query_instruction if query_instruction is None else query_instruction
+        )
+        self.embedding_function = get_embedding_function(
+            embedding_model,
+            query_instruction=effective_query_instruction,
+        )
         self.collection_name = collection_name
         self.collection = self.client.get_or_create_collection(
             name=self.collection_name, embedding_function=self.embedding_function, metadata={"hnsw:space": "cosine"}

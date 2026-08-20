@@ -2,12 +2,7 @@ from collections.abc import Sequence
 
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
 
-from app.core.config import settings
-
-DEFAULT_QWEN3_QUERY_INSTRUCTION = (
-    "Given a technical support or engineering question, retrieve passages that directly answer the question "
-    "or contain the necessary implementation details."
-)
+from app.core.config import DEFAULT_QWEN3_QUERY_INSTRUCTION, settings
 
 
 def _is_e5_model(model_name: str | None) -> bool:

@@ -7,95 +7,67 @@ app/
   api/           # FastAPI endpoints
   chunking/      # Chunk splitting logic
   core/          # Config + shared data models
-  embeddings/    # Embedding adapters
+  embeddings/    # Model-aware embedding adapters
   evals/         # Evaluation pipeline
-  generation/    # LLM prompting and answer generation
+  generation/    # Grounded answer generation
   ingestion/     # File loaders and ingestion pipeline
-  retrieval/     # Retriever, rewriter, reranker
+  retrieval/     # Hybrid retriever and optional experiments
   ui/            # Gradio applications
   vector_store/  # Chroma + BM25 stores
-data/            # Put your source documents here
-storage/         # Persistent indexes (Chroma + BM25)
-docs/            # Extended docs, benchmark corpus and results
-scripts/         # Benchmark runner
-main.py          # CLI entrypoint
+data/             # Put source documents here
+storage/          # Persistent indexes
+docs/             # Documentation, benchmark corpora, and results
+scripts/          # Reproducible evaluation runners
+main.py           # CLI entrypoint
 ```
 
-## Request flow
+## Validated default request flow
 
 ```mermaid
 flowchart LR
-    subgraph Ingestion
-        L["15+ format loaders"] --> CH["Recursive chunker"]
-    end
-    CH --> VS[("ChromaDB\ndense vectors")]
-    CH --> BM[("BM25 index\nsparse")]
-
-    Q["User query"] --> QR["Query rewrite / expansion\n(optional, LLM)"]
-    QR --> VS
-    QR --> BM
-    VS --> FU["Hybrid fusion\nnormalize + weight + dedup"]
+    D["Documents"] --> CH["Recursive chunker\n1000 / 200"]
+    CH --> VE["Qwen3 embeddings\nChromaDB"]
+    CH --> BM["BM25 index"]
+    Q["Query"] --> QE["Qwen3 query embedding\nexact generic instruction"]
+    QE --> VE
+    Q --> BM
+    VE --> FU["Weighted linear fusion\n0.7 dense / 0.3 BM25"]
     BM --> FU
-    FU --> RR["Reranker\n(cross-encoder, optional)"]
-    RR --> GEN["Generator (Ollama)"]
+    FU --> P["Top passages"]
+    P --> GEN["Optional Ollama generation"]
     GEN --> AN["Grounded answer + citations"]
-
-    CLI["CLI"] -.-> Q
-    API["FastAPI"] -.-> Q
-    UI["Gradio UI"] -.-> Q
 ```
 
-1. Documents are loaded and chunked with metadata (`app/ingestion`, `app/chunking`).
-2. Chunks are embedded and stored in ChromaDB (dense) and tokenized into a
-   BM25 index (sparse) — `app/vector_store`.
-3. At query time, the query is optionally rewritten (standalone-ified from
-   chat history, or LLM-clarified) and optionally expanded into a few
-   alternate phrasings — `app/retrieval/rewriter.py`.
-4. Dense and sparse candidates are retrieved for every query variant.
-5. Each side is independently min-max normalized, then fused with
-   configurable weights (default 0.7 dense / 0.3 sparse); acronym-style
-   queries are automatically re-weighted toward the lexical side. Chunks are
-   deduplicated by a stable `(file_path, chunk_index)` identity rather than
-   raw text, so two different chunks that happen to share similar wording
-   aren't silently merged — `app/retrieval/retriever.py`.
-6. The fused candidates are optionally reranked with a cross-encoder for a
-   sharper final ordering — `app/retrieval/reranker.py`.
-7. The top chunks are formatted into a grounded prompt with numbered source
-   markers and sent to the local LLM via Ollama; the response is returned
-   together with per-chunk citations (source file, chunk index, score) —
-   `app/generation/generator.py`.
+The application defaults to `Qwen/Qwen3-Embedding-0.6B`, the generic instruction defined in `app/core/config.py`, fixed 0.7/0.3 dense/BM25 weights, weighted-linear fusion, and 1000/200 character chunking. The instruction is applied to query embeddings only; document embeddings are unprompted. Changing the embedding model or chunking settings requires re-ingestion.
+
+Reranking, query rewriting, query expansion, pseudo-relevance feedback, adaptive routing, diversity selection, and LTR are implemented as optional experimental components. They are disabled in the recommended path.
+
+## Request implementation
+
+1. Documents are loaded with format-specific loaders and split into chunks with stable source metadata (`app/ingestion`, `app/chunking`).
+2. Chunks are embedded into ChromaDB and tokenized into a BM25 index (`app/vector_store`).
+3. A query is embedded with Qwen3's query-only instruction. The raw query is also sent to BM25.
+4. Dense and sparse candidates are independently normalized and combined with fixed 0.7/0.3 weighted-linear fusion. Stable chunk identity prevents duplicate results from collapsing unrelated passages.
+5. The top passages are formatted into a grounded prompt with numbered source markers and optionally sent to the configured local Ollama-compatible model (`app/generation`).
+
+## Optional experimental path
+
+The retriever supports per-request `RetrievalConfig` overrides for experiments. These can enable rewriting, expansion, reranking, adaptive routing, PRF, diversity selection, or LTR without mutating global settings. Such settings are useful for controlled development comparisons but are not part of the validated default.
 
 ## Evaluation
 
-`app/evals/evaluator.py` runs a labeled JSONL file through the same
-retriever + generator path used at query time and reports:
+`app/evals/evaluator.py` evaluates labeled JSONL cases through the retriever and reports:
 
-- **recall@k** / **precision@k** — whether/how much of the top-k came from the expected source.
-- **mrr** — reciprocal rank of the first relevant chunk.
-- **ndcg** — rank-discounted score against the best achievable ordering of
-  the relevant chunks actually found (not a fixed constant — a case with
-  two relevant chunks has a different ideal DCG than a case with one).
-- **keyword_hit_rate** — fraction of expected keywords present in the generated answer.
+- **Recall@K** — the fraction of all positively labeled relevant evidence retrieved in the top K.
+- **Precision@K** — the fraction of the top K that is relevant.
+- **MRR** — the reciprocal rank of the first relevant result.
+- **nDCG** — graded, rank-discounted retrieval quality normalized against the ideal ordering constructed from all labeled relevant evidence, not only evidence retrieved by the system. The result is normalized to 0–1.
+- **keyword_hit_rate** — an optional answer-generation metric requiring the configured local LLM.
 
-Retrieval metrics (recall/precision/mrr/ndcg) don't require an LLM;
-`Evaluator(..., skip_generation=True)` skips generation entirely so retrieval
-quality can be measured without Ollama running — this is what
-[`scripts/benchmark.py`](../scripts/benchmark.py) uses for the
-`--skip-generation` mode. See [docs/benchmark.md](benchmark.md) for a
-reproducible run comparing dense-only, hybrid, and hybrid+reranked
-retrieval.
+Retrieval metrics do not require an LLM; `Evaluator(..., skip_generation=True)` measures retrieval only. The benchmark hierarchy and final result are documented in [docs/evaluation.md](evaluation.md).
 
 ## Configuration boundaries
 
-Global defaults live in one `pydantic-settings` model (`app/core/config.py`),
-loaded from `.env`. A `RetrievalConfig` dataclass
-(`app/core/runtime_config.py`) mirrors those fields and lets any caller — the
-Gradio chat UI, the FastAPI `/ask` endpoint, or the tuning sweep — override
-them for a single request or trial without mutating global state shared
-across concurrent requests.
+Global defaults live in the `pydantic-settings` model in `app/core/config.py`, loaded from `.env`. `RetrievalConfig` in `app/core/runtime_config.py` mirrors the request-level knobs so the API, Gradio UI, and evaluation harness can override a trial without mutating process-wide settings.
 
-The FastAPI app builds its `VectorStore`/`BM25Store`/`Retriever` singletons
-lazily via `Depends(...)`-injected, `lru_cache`d providers
-(`app/api/endpoints.py`) rather than at import time, so importing the module
-(e.g. in tests) never triggers an embedding-model download, and tests can
-swap in fakes via `app.dependency_overrides`.
+FastAPI builds its `VectorStore`, `BM25Store`, and `Retriever` lazily through cached dependency providers. Importing the API module therefore does not trigger model loading, and tests can replace dependencies with fakes.

@@ -1,91 +1,63 @@
-# Recommended Workflow (Best Quality)
+# Recommended workflow
 
-1) **Preprocess your source data for RAG.** Retrieval quality depends
-   heavily on source quality — usually a bigger lever than any retrieval
-   parameter. Aim for: one topic per chunk-sized section, no duplicate or
-   stale content, acronyms expanded on first use, clear stable headings, and
-   important facts kept close to the heading that names them. Prefer a
-   local/private LLM for this step if your documents are sensitive.
+The repository's validated path is intentionally small: prepare documents, ingest them with the Qwen3 + BM25 defaults, retrieve grounded passages, and optionally generate an answer. Benchmark-v4 is already final and is not a tuning set.
 
-   Suggested prompt for an LLM data-prep pass:
+## 1. Prepare and inspect source documents
 
-   ```text
-   Rewrite this document to be RAG-ready in Markdown.
-   Rules:
-   - Keep all factual information (do not invent or remove facts).
-   - Use clear section headings and short, self-contained paragraphs.
-   - Expand acronyms on first use: "ACRONYM (full name)".
-   - Remove boilerplate, duplicated lines, and irrelevant fluff.
-   - Keep critical entities exact: IDs, URLs, versions, statuses, enum values.
-   - If a section mixes topics, split it into separate sections.
-   Return only the improved Markdown.
-   ```
+Keep one topic per section, preserve exact identifiers and URLs, remove duplicated boilerplate, and keep important facts close to the heading that describes them. Retrieval quality depends heavily on source quality.
 
-2) **Ingest your prepared data.**
+## 2. Configure the validated defaults
 
-   ```bash
-   uv run main.py ingest "./data"
-   ```
+```bash
+cp .env.example .env
+```
 
-3) **Create an evaluation set** (`evals-json.jsonl`). Use an LLM to draft
-   cases, then review them by hand — don't trust generated evals blindly.
-   Include edge cases and negative cases, not just easy glossary lookups.
+The default configuration uses `Qwen/Qwen3-Embedding-0.6B`, the generic query-only instruction, 0.7 dense / 0.3 BM25 weighted-linear fusion, and 1000/200 chunking. Reranking, rewriting, expansion, PRF, adaptive routing, and LTR are disabled.
 
-   ```text
-   You are creating an evaluation dataset for a RAG system.
-   Given the documents, generate JSONL lines with schema:
-   {"question":"...","expected_keywords":["..."],"relevance":{"docs/a.md::0":3}}
+If `EMBEDDING_MODEL`, `CHUNK_SIZE`, or `CHUNK_OVERLAP` changes, re-ingest the corpus. Existing Chroma vectors are not interchangeable across embedding models. The query-only `EMBEDDING_QUERY_INSTRUCTION` changes future query encoding but does not change stored document vectors.
 
-   Requirements:
-   - Create diverse questions: definitions, process steps, URLs, statuses, technical details.
-   - Include both easy and hard questions.
-   - relevance should map one or more corpus-relative chunk IDs to positive graded gains.
-   - expected_chunk_ids is supported as a binary shorthand; expected_source remains a legacy document-level fallback.
-   - expected_keywords should contain key terms that must appear in a correct answer.
-   - Keep questions unambiguous and answerable from one or few sources.
-   - Output only valid JSONL (one JSON object per line, no markdown).
-   Produce at least 30-100 cases depending on corpus size.
-   ```
+## 3. Ingest and use the system
 
-4) **Run hyperparameter tuning** to find the best `top_k`, hybrid
-   dense/sparse weight, reranker, query rewriting, and query expansion
-   settings for your corpus:
+```bash
+uv sync
+uv run main.py ingest "./data"
+uv run main.py ask "What is dependency injection?"
+```
 
-   ```bash
-   uv run main.py tuning-ui
-   ```
+The embedding model is required for retrieval. Answer generation is separate: install and run an Ollama-compatible local model configured by `LLM_MODEL` if grounded answer generation is needed.
 
-5) **Apply the winning config** in the production chat UI — set the same
-   values in the sidebar and use them for real Q&A:
+The same core is available through:
 
-   ```bash
-   uv run main.py ui
-   ```
+```bash
+uv run main.py api
+uv run main.py ui
+```
 
-See [docs/benchmark.md](benchmark.md) for a fully worked, reproducible
-example of steps 2–4 on a small sample corpus.
+## 4. Evaluate custom data
 
-## Setting up an AI coding agent to run this project end-to-end
+Create a reviewed JSONL evaluation set with graded `relevance` labels where possible, then run retrieval-only evaluation without an LLM:
 
-If you're using a coding agent (Claude Code, Cursor, etc.) to stand this
-project up in a new environment, this prompt works well once your source
-files are in `./data`:
+```bash
+uv run main.py evals "./evals-json.jsonl" --top-k 5
+```
+
+Use the optional `tuning-ui` only for a clearly scoped experiment on your own development data. Its trials are not the validated default and should not be confused with benchmark-v4.
+
+See [docs/evaluation.md](evaluation.md) for the historical/development/final benchmark hierarchy and the exact verification commands.
+
+## Setting up an AI coding agent
 
 ```text
-Set up and run this Retrieval System project end-to-end.
+Set up this Retrieval System project locally.
 
-Follow these steps exactly:
-1) Install dependencies:
-   - Run: uv sync
-2) Ensure Ollama model is available:
-   - Run: ollama pull <the model configured by LLM_MODEL>
-3) Ingest documents from ./data:
-   - Run: uv run main.py ingest "./data"
-4) Run a quick sanity question:
-   - Run: uv run main.py ask "What is OOP?"
-5) Launch the main UI:
-   - Run: uv run main.py ui
+1. Run `uv sync`.
+2. Copy `.env.example` to `.env` and review the configured embedding and LLM models.
+3. Put source documents in `./data`.
+4. Run `uv run main.py ingest "./data"`.
+5. Run `uv run main.py ask "What is OOP?"` as a sanity check.
+6. Launch `uv run main.py ui` only after the previous steps succeed.
 
-After each step, report success/failure and the key output.
-If a step fails, diagnose and fix it before continuing.
+Retrieval requires the configured Qwen3 embedding model. Generation requires
+the optional local Ollama-compatible model configured by `LLM_MODEL`.
+Report each command and its key output; do not run benchmark-v4 as tuning data.
 ```

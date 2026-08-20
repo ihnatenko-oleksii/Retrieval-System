@@ -16,7 +16,7 @@ uv run main.py --help
 | `evals <file.jsonl>` | Run JSONL evaluation and print metrics. |
 | `ui` | Main Gradio chat UI. |
 | `evals-ui` | Gradio dashboard for single-config eval runs + charts. |
-| `tuning-ui` | Gradio sweep UI to find the best runtime hyperparameters. |
+| `tuning-ui` | Optional Gradio sweep UI for experimental runtime comparisons. |
 | `embeddings-ui` | 2D t-SNE explorer for stored embeddings. |
 | `api` | Start the FastAPI server. |
 
@@ -24,7 +24,7 @@ Examples:
 
 ```bash
 uv run main.py ingest "./data"
-uv run main.py ask "What is SOLID?" --top-k 5 --model llama3.2
+uv run main.py ask "What is SOLID?" --top-k 3 --model qwen3.5:4b-mlx
 uv run main.py evals "./evals-json.jsonl" --top-k 5
 uv run main.py api --host 0.0.0.0 --port 8000
 ```
@@ -50,25 +50,28 @@ POST /ask
 {
   "query": "What is dependency injection?",
   "top_k": 5,
-  "model": "llama3.2"
+  "model": "qwen3.5:4b-mlx"
 }
 ```
 
 `query` must be non-blank and `top_k` must be `>= 1`; invalid input returns
 `422`. Ingesting a directory that doesn't exist returns `400`.
 
+The API example explicitly requests five results; omitting `top_k` uses the
+configured interactive default of three.
+
 ## Configuration (`.env`)
 
-Create a `.env` file in the project root. All values are loaded by
+Copy `.env.example` to `.env` in the project root. All values are loaded by
 `app/core/config.py` via `pydantic-settings`.
 
 ```env
 # Models
-# Default is multilingual E5 base (~280 MB, strong Polish+English).
-# Alternatives: intfloat/multilingual-e5-small (fastest) or BAAI/bge-m3 (best, heavier).
-# IMPORTANT: after changing this value, re-ingest your corpus.
-EMBEDDING_MODEL=intfloat/multilingual-e5-base
-LLM_MODEL=llama3.2
+# Validated retrieval default. Changing the embedding model requires re-ingestion.
+EMBEDDING_MODEL=Qwen/Qwen3-Embedding-0.6B
+EMBEDDING_QUERY_INSTRUCTION=Given a technical support or engineering question, retrieve passages that directly answer the question or contain the necessary implementation details.
+# Generation is optional and uses a separate local Ollama-compatible model.
+LLM_MODEL=qwen3.5:4b-mlx
 
 # Storage
 VECTOR_DB_PATH=./storage/chroma
@@ -78,9 +81,12 @@ CHUNK_SIZE=1000
 CHUNK_OVERLAP=200
 
 # Retrieval
-RETRIEVAL_TOP_K=5
+RETRIEVAL_TOP_K=3
 HYBRID_SEARCH_WEIGHTS_DENSE=0.7
 HYBRID_SEARCH_WEIGHTS_SPARSE=0.3
+FUSION_STRATEGY=weighted_linear
+ADAPTIVE_ROUTING=false
+RETRIEVAL_CANDIDATE_DEPTH=20
 
 # Rewriting / expansion
 QUERY_REWRITING_ON=false
@@ -88,8 +94,15 @@ QUERY_EXPANSION_ON=false
 
 # Reranking
 RERANKER_ON=false
-RERANK_TOP_N=5
+RERANK_TOP_N=3
+
+# The benchmark reports @5; the interactive default returns three chunks.
+# Set RETRIEVAL_TOP_K explicitly when a caller needs a different UX value.
 ```
+
+If an existing `storage/chroma` index was built with another embedding model,
+do not query it with the new default. Follow the [safe re-ingestion procedure](troubleshooting.md#embedding-model-or-chunking-changed)
+and keep the old production indexes as a backup until the new index is checked.
 
 ## Evaluation file format (JSONL)
 
@@ -104,6 +117,10 @@ Metrics reported: `recall@k`, `precision@k`, `mrr`, `ndcg`, `keyword_hit_rate`.
 See [docs/benchmark.md](benchmark.md) for a worked example and
 [docs/architecture.md](architecture.md#evaluation) for how each metric is
 computed.
+
+The final independent validation is benchmark-v4; see
+[docs/evaluation.md](evaluation.md) for the benchmark hierarchy and
+reproduction commands.
 
 ## Extending the system
 

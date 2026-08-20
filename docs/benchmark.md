@@ -1,4 +1,28 @@
-# Retrieval Benchmark
+# Benchmark history and final validation
+
+> **Final result:** `benchmark-v4` is the authoritative independent validation
+> for the current retrieval recommendation. Start with the [evaluation
+> hierarchy](evaluation.md), then read the [Phase 5 final report](retrieval_results/phase5_final_results.md)
+> and [benchmark-v4 manifest](benchmark_v4/manifest.json).
+
+## Evaluation hierarchy
+
+1. **Historical original benchmark** — the Atlas/support corpus and harness
+   below document the first retrieval-system comparisons and remain preserved
+   for provenance.
+2. **Development experiments** — [benchmark-v2](benchmark_v2/),
+   [benchmark-v3](benchmark_v3/), and the Phase 3–5 result files record
+   held-out development comparisons, selection decisions, and rejected
+   approaches. They are not the final independent validation.
+3. **Final benchmark-v4** — the sealed 50-document, 125-query evaluation is
+   the current evidence for the recommended Qwen3 hybrid configuration. Its
+   [manifest](benchmark_v4/manifest.json) and [Phase 5 report](retrieval_results/phase5_final_results.md)
+   define the corpus, labels, and recorded metrics.
+
+The historical harness and numbers below are intentionally retained; they are
+not rewritten to look like benchmark-v4.
+
+## Historical benchmark harness
 
 This benchmark compares three retrieval configurations on the same indexed
 corpus and evaluation cases:
@@ -13,7 +37,7 @@ The benchmark is an evaluation harness, not a leaderboard. It keeps the
 corpus, questions, labels, embedding model, top-k, chunking settings, and
 retrieval configuration visible so a result can be reproduced and challenged.
 
-## Corpus and evaluation set
+## Historical corpus and evaluation set
 
 The redesigned corpus is a deliberately confusable Atlas support knowledge
 base mixed with the original retrieval-system design notes:
@@ -71,9 +95,10 @@ keyword_hit_rate remains an optional answer-generation metric. It checks
 whether expected terms appear in the generated answer and requires the
 configured local Ollama model; it is omitted by --skip-generation.
 
-## Running it
+## Running the historical harness
 
-The retrieval-only comparison is the practical default:
+For investigating this historical harness, the retrieval-only comparison is
+the practical default:
 
 ~~~bash
 uv run scripts/benchmark.py --skip-generation
@@ -125,7 +150,7 @@ configuration. Its primary value is verifying the end-to-end harness
 and report writing); it is not discriminative evidence that hybrid retrieval
 or reranking improves quality.
 
-## Latest recorded run
+## Latest historical recorded run
 
 The block below is generated in place by scripts/benchmark.py. It is kept
 separate from the preserved first-run history so later runs cannot erase the
@@ -145,3 +170,12 @@ _keyword_hit_rate omitted (`--skip-generation`): no LLM calls were made; configu
 | B. Hybrid (dense + BM25) | 0.8169 | 0.3233 | 0.9047 | 0.8109 |
 | C. Hybrid + reranking | 0.8175 | 0.3233 | 0.8625 | 0.8021 |
 <!-- BENCHMARK_RESULTS_END -->
+
+## Final independent validation
+
+Do not use benchmark-v4 to tune a new configuration. It was sealed before
+final scoring and is reported once as independent validation. The development
+selection record is in [phase5_development.md](retrieval_results/phase5_development.md);
+the final comparison and uncertainty analysis are in
+[phase5_final_results.md](retrieval_results/phase5_final_results.md), with the
+corpus and query-label contract in [benchmark_v4/manifest.json](benchmark_v4/manifest.json).

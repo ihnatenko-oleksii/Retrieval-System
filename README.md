@@ -1,78 +1,102 @@
 # Retrieval System
 
-A local-first RAG engine that combines dense + BM25 hybrid retrieval, optional reranking and LLM query rewriting, and grounded citation-backed generation — with a built-in evaluation and hyperparameter-tuning harness, served over a CLI, FastAPI, and Gradio UI.
+Local-first RAG retrieval engine for finding reliable evidence for LLMs and agents. It combines Qwen3 semantic retrieval with BM25 lexical matching, then exposes grounded passages and citations through a CLI, FastAPI, or Gradio UI.
 
 [![CI](https://github.com/ihnatenko-oleksii/Retrieval-System/actions/workflows/ci.yml/badge.svg)](https://github.com/ihnatenko-oleksii/Retrieval-System/actions/workflows/ci.yml)
 
-## Key capabilities
+## Why it exists
 
-- **15+ ingestible formats** — `.txt`, `.md`, `.pdf`, `.docx`, `.pptx`, `.csv`, `.json`, and source code (`.py`, `.java`, `.js`, `.ts`, `.yml`, `.yaml`, `.xml`, `.properties`), recursively, with per-chunk metadata.
-- **Hybrid dense + BM25 retrieval** — ChromaDB dense vectors and a BM25 lexical index, independently score-normalized and fused with configurable weights.
-- **Reranking** — optional cross-encoder second-pass scoring, with a safe fallback to the hybrid order if the model is unavailable.
-- **Query rewriting & expansion** — optional LLM-driven query clarification, conversational follow-up rewriting, and multi-phrasing expansion.
-- **Grounded generation with citations** — answers are built strictly from retrieved context, with numbered inline citations back to source file, chunk, and score.
-- **Evaluation & tuning built in** — Recall@K, Precision@K, MRR, nDCG, and keyword hit rate, plus a Gradio sweep UI that ranks hyperparameter combinations by a composite score.
-- **Three interfaces** — CLI, FastAPI, and Gradio, all sharing the same retrieval/generation core.
-- **Local-first** — persistent on-disk indexes, runs entirely against a local Ollama model; no data leaves the machine.
+RAG systems fail when retrieval fails. Dense semantic search handles paraphrases well; lexical BM25 search protects exact technical terms, identifiers, and codes. This project combines both and evaluates retrieval empirically instead of treating generation quality as a substitute for evidence quality.
 
-## Architecture
+## Results
+
+Final benchmark-v4 results, evaluated after the architecture was frozen:
+
+| System | Recall@5 | MRR | nDCG |
+|---|---:|---:|---:|
+| Original E5 dense | 0.784 | 0.630 | 0.636 |
+| Qwen3 hybrid | 0.936 | 0.812 | 0.808 |
+
+The validated hybrid achieved a **27.0% relative improvement in nDCG**, **29.0% relative improvement in MRR**, and **19.4% relative improvement in Recall@5** over the dense E5 baseline. These are retrieval metrics, not answer-accuracy percentages.
+
+The final comparison used a separate 50-document Python standard-library corpus, 125 held-out span-labeled questions, a frozen architecture, and paired bootstrap uncertainty. See the [full final methodology and confidence intervals](docs/retrieval_results/phase5_final_results.md) and the [sealed benchmark manifest](docs/benchmark_v4/manifest.json).
+
+## Validated retrieval path
 
 ```mermaid
 flowchart LR
-    D["Documents\n(15+ formats)"] --> CH["Chunker"]
-    CH --> VS[("ChromaDB\ndense")]
-    CH --> BM[("BM25\nsparse")]
-
-    Q["Query"] --> QR["Rewrite / expand\n(optional)"]
-    QR --> VS
-    QR --> BM
-    VS --> FU["Hybrid fusion\n+ dedup"]
+    D["Documents"] --> CH["Chunking\n1000 chars / 200 overlap"]
+    CH --> VE["Qwen3 embeddings\nChromaDB"]
+    CH --> BM["BM25 lexical index"]
+    Q["Query"] --> IQ["Qwen3 query embedding\nwith generic instruction"]
+    IQ --> VE
+    Q --> BM
+    VE --> FU["Weighted linear fusion\n0.7 dense / 0.3 BM25"]
     BM --> FU
-    FU --> RR["Reranker\n(optional)"]
-    RR --> GEN["Ollama LLM"]
-    GEN --> AN["Answer + citations"]
+    FU --> P["Top passages"]
+    P --> G["Optional local generation"]
+    G --> C["Grounded answer + citations"]
 ```
 
-CLI, FastAPI, and Gradio all drive the same pipeline. Full breakdown, including how score fusion, deduplication, and evaluation work, in [docs/architecture.md](docs/architecture.md).
+The recommended default has no reranking, query rewriting, pseudo-relevance feedback, learned ranking, or Phase 4 cascade. The Qwen instruction is applied to query embeddings only; stored document embeddings remain unprompted. Changing the embedding model or chunking settings requires re-ingestion.
 
-## Benchmark
+## Capabilities
 
-`scripts/benchmark.py` runs a reproducible A/B/C comparison — **dense-only** vs **hybrid (dense + BM25)** vs **hybrid + reranking** — against a fixed sample corpus and eval set, reporting Recall@K, Precision@K, MRR, nDCG, and keyword hit rate.
+### Validated default / recommended retrieval
 
-**No benchmark numbers are published here** — running it requires downloading the embedding model and, for keyword hit rate, a local Ollama install, neither of which this repository assumes you have yet. See [docs/benchmark.md](docs/benchmark.md) for the exact one-command run, the methodology, and why fabricated numbers aren't an acceptable substitute for real ones.
+- 15+ document formats, including Markdown, PDF, DOCX, PPTX, CSV, JSON, and source code
+- Qwen3 dense retrieval plus BM25 lexical retrieval
+- Stable chunk metadata and grounded source citations
+- Local persistent ChromaDB and BM25 indexes
+- CLI, FastAPI, and Gradio interfaces
+- Retrieval evaluation with Recall@K, Precision@K, MRR, graded nDCG, and bootstrap analysis
 
-## Technical highlights
+### Optional experimental features
 
-- Hybrid fusion dedups on a stable `(file_path, chunk_index)` chunk identity, not raw text — two unrelated chunks with similar wording no longer silently collapse into one result.
-- nDCG is computed correctly for multiple relevant chunks per query (the ideal ranking is derived from the chunks actually found, not a hardcoded constant that let the metric exceed 1.0).
-- FastAPI dependency injection with lazy, `lru_cache`d singletons — importing the API module never triggers a model download, and tests swap in fakes via `dependency_overrides`.
-- 113 tests / ~92% coverage on core logic (retrieval, fusion, reranking, rewriting, evaluation, ingestion, API), all offline — no network or GPU required to run the suite.
-- Ruff-linted and formatted, with GitHub Actions CI running lint + tests + coverage on every push/PR.
+Cross-encoder or Qwen reranking, query rewriting and expansion, pseudo-relevance feedback, adaptive routing, diversity selection, and learning-to-rank remain implemented as opt-in experiments. They were evaluated, but the more complex variants did not generalize better than the final simple hybrid path.
 
-## Screenshot
+## Evaluation
 
-![Retrieval augmented generation (RAG)](retrieval-system.png)
+Recall@K measures how much labeled relevant evidence appears in the top K; MRR emphasizes the rank of the first relevant passage. Graded nDCG compares the retrieved ranking with the ideal ordering built from **all** labeled relevant evidence, applies rank discounting, and normalizes the result to 0–1.
+
+The [evaluation index](docs/evaluation.md) explains historical benchmarks, development data, the final independent validation, and reproduction commands. The [architecture guide](docs/architecture.md) covers request flow and metric implementation.
 
 ## Quick start
 
-Requires Python 3.12+, [uv](https://docs.astral.sh/uv/), and [Ollama](https://ollama.com/) running locally.
+Requirements: Python 3.12+, [uv](https://docs.astral.sh/uv/), and a local Hugging Face cache or network access for the embedding model. Ollama is optional for answer generation.
 
 ```bash
 uv sync
-ollama pull llama3.2
+cp .env.example .env
 
-# put your documents in ./data, then:
+# Put source documents in ./data, then build the Qwen3 + BM25 indexes.
 uv run main.py ingest "./data"
-uv run main.py ask "What is OOP?"
+
+# Retrieval plus optional generation using LLM_MODEL from .env.
+uv run main.py ask "What is dependency injection?"
+
+# Other interfaces.
+uv run main.py api
 uv run main.py ui
 ```
 
-## Learn more
+Retrieval requires `Qwen/Qwen3-Embedding-0.6B`. Generation is separate and requires an optional Ollama-compatible local model; configure it with `LLM_MODEL` (the example uses `qwen3.5:4b-mlx`).
 
-- [docs/usage.md](docs/usage.md) — full CLI/API reference, `.env` configuration, eval file format
-- [docs/workflow.md](docs/workflow.md) — recommended data-prep → ingest → eval → tune workflow
-- [docs/architecture.md](docs/architecture.md) — request flow, score fusion, evaluation internals
-- [docs/benchmark.md](docs/benchmark.md) — reproducible retrieval benchmark
-- [docs/troubleshooting.md](docs/troubleshooting.md) — common issues
+Run the local quality gates with:
 
-This codebase is structured to be extended toward stronger production usage (richer evals, auth, observability, etc.) — see [Extending the system](docs/usage.md#extending-the-system).
+```bash
+uv run pytest
+uv run ruff check .
+```
+
+The repository has **193 passing tests** in the offline suite; CI runs Ruff and
+the same test suite without downloading model-heavy benchmarks.
+
+## Project documentation
+
+- [docs/usage.md](docs/usage.md) — CLI, API, configuration, and evaluation-file reference
+- [docs/architecture.md](docs/architecture.md) — request flow, validated defaults, optional components, and metrics
+- [docs/evaluation.md](docs/evaluation.md) — benchmark hierarchy and reproducible evaluation map
+- [docs/benchmark.md](docs/benchmark.md) — historical benchmark harness and preserved results
+- [docs/workflow.md](docs/workflow.md) — recommended ingest, evaluate, and usage workflow
+- [docs/troubleshooting.md](docs/troubleshooting.md) — model, index, and local-runtime troubleshooting
