@@ -10,6 +10,10 @@ from app.embeddings.embedder import get_embedding_function
 logger = logging.getLogger(__name__)
 
 
+class IncompatibleEmbeddingIndexError(RuntimeError):
+    """Raised before querying vectors created by a different embedding model."""
+
+
 class VectorStore:
     def __init__(
         self,
@@ -22,17 +26,85 @@ class VectorStore:
             path=persist_dir or settings.vector_db_path,
             settings=Settings(allow_reset=True),
         )
+        self.embedding_model = embedding_model or settings.embedding_model
         effective_query_instruction = (
             settings.embedding_query_instruction if query_instruction is None else query_instruction
         )
         self.embedding_function = get_embedding_function(
-            embedding_model,
+            self.embedding_model,
             query_instruction=effective_query_instruction,
         )
         self.collection_name = collection_name
         self.collection = self.client.get_or_create_collection(
-            name=self.collection_name, embedding_function=self.embedding_function, metadata={"hnsw:space": "cosine"}
+            name=self.collection_name,
+            embedding_function=self.embedding_function,
+            metadata={"hnsw:space": "cosine", "embedding_model": self.embedding_model},
         )
+        self._validate_existing_index()
+
+    def _configured_embedding_dimension(self) -> int | None:
+        dimension_getter = getattr(self.embedding_function, "embedding_dimension", None)
+        if callable(dimension_getter):
+            dimension = dimension_getter()
+            if dimension is not None:
+                return int(dimension)
+
+        # The embedding model is already loaded by VectorStore construction.
+        # Encoding an empty probe does not query or mutate the persisted index.
+        embed_query = getattr(self.embedding_function, "embed_query", None)
+        if callable(embed_query):
+            return len(embed_query(""))
+        return None
+
+    def _stored_embedding_dimension(self) -> int | None:
+        if self.collection.count() == 0:
+            return None
+        try:
+            embeddings = self.collection.peek(limit=1).get("embeddings")
+        except Exception as exc:
+            raise IncompatibleEmbeddingIndexError(
+                "Existing index could not be inspected safely. Re-ingest the corpus or use the original model; "
+                "the persisted vectors were not queried or modified."
+            ) from exc
+        if embeddings is None or len(embeddings) == 0:
+            raise IncompatibleEmbeddingIndexError(
+                "Existing index has data but no inspectable embedding dimension. Re-ingest the corpus or use the "
+                "original model; the persisted vectors were not queried or modified."
+            )
+        return len(embeddings[0])
+
+    def _validate_existing_index(self) -> None:
+        """Fail closed when persisted vectors cannot be verified for this model."""
+        stored_model = (self.collection.metadata or {}).get("embedding_model")
+        if stored_model and stored_model != self.embedding_model:
+            raise IncompatibleEmbeddingIndexError(
+                f"Existing index was created with embedding model '{stored_model}', but this process is configured "
+                f"for '{self.embedding_model}'. Re-ingest the corpus or set EMBEDDING_MODEL to the original model."
+            )
+
+        stored_dimension = self._stored_embedding_dimension()
+        if stored_dimension is None:
+            return
+
+        configured_dimension = self._configured_embedding_dimension()
+        if configured_dimension is None:
+            raise IncompatibleEmbeddingIndexError(
+                f"Existing index has {stored_dimension}-dimensional vectors, but the configured model "
+                f"'{self.embedding_model}' could not be verified. Re-ingest the corpus or use the original model."
+            )
+        if stored_dimension != configured_dimension:
+            raise IncompatibleEmbeddingIndexError(
+                f"Existing index was created with a different embedding model (stored dimension "
+                f"{stored_dimension}, configured '{self.embedding_model}' dimension {configured_dimension}). "
+                "Re-ingest the corpus or use the original model. The persisted vectors were not queried or modified."
+            )
+
+        if not stored_model:
+            logger.warning(
+                "Existing embedding index has no model metadata; dimension %s matches configured model '%s'.",
+                stored_dimension,
+                self.embedding_model,
+            )
 
     def add_chunks(self, chunks: list[Chunk]):
         if not chunks:

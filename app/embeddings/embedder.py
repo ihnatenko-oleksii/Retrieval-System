@@ -53,6 +53,15 @@ class PrefixedSentenceTransformerEmbeddingFunction:
         # SentenceTransformers may return numpy scalars (np.float32), so cast.
         return [float(x) for x in vectors[0]]
 
+    def embedding_dimension(self) -> int | None:
+        """Return the loaded model dimension when SentenceTransformers exposes it."""
+        model = getattr(self._inner, "_model", None)
+        getter = getattr(model, "get_sentence_embedding_dimension", None)
+        if not callable(getter):
+            return None
+        dimension = getter()
+        return int(dimension) if dimension is not None else None
+
     def name(self) -> str:
         return f"prefixed::{self.model_name}"
 

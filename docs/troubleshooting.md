@@ -22,6 +22,12 @@ Keep the `.previous` paths until the new index has been checked; they are
 recoverable local backups. Other benchmark indexes under `storage/` are left
 untouched.
 
+When a process is configured for Qwen3 but finds an E5 (or other incompatible)
+index, it raises an error beginning with `Existing index was created with a
+different embedding model`. This check happens before retrieval and does not
+reset, delete, or convert the persisted vectors. Set `EMBEDDING_MODEL` to the
+original model if you need to keep using that index.
+
 ## UI chat errors after multiple messages
 
 This project normalizes chat history content before sending it to the

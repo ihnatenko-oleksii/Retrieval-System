@@ -1,7 +1,9 @@
 from unittest.mock import MagicMock
 
+import pytest
+
 from app.core.models import Chunk, ChunkMetadata
-from app.vector_store.chroma_store import VectorStore
+from app.vector_store.chroma_store import IncompatibleEmbeddingIndexError, VectorStore
 from tests.conftest import make_chunk
 
 
@@ -97,3 +99,34 @@ class TestQuery:
 
         _, kwargs = collection.query.call_args
         assert kwargs["n_results"] == 7
+
+
+def make_compatibility_store(collection, *, model="Qwen/Qwen3-Embedding-0.6B", dimension=1024) -> VectorStore:
+    store = make_store(collection=collection)
+    store.embedding_model = model
+    store.embedding_function = MagicMock()
+    store.embedding_function.embedding_dimension.return_value = dimension
+    return store
+
+
+def test_rejects_existing_index_with_a_different_embedding_dimension():
+    collection = MagicMock()
+    collection.metadata = {}
+    collection.count.return_value = 1
+    collection.peek.return_value = {"embeddings": [[0.0] * 768]}
+    store = make_compatibility_store(collection, dimension=1024)
+
+    with pytest.raises(IncompatibleEmbeddingIndexError, match="Re-ingest the corpus"):
+        store._validate_existing_index()
+
+    collection.query.assert_not_called()
+
+
+def test_accepts_existing_unmarked_index_when_configured_model_dimension_matches():
+    collection = MagicMock()
+    collection.metadata = {}
+    collection.count.return_value = 1
+    collection.peek.return_value = {"embeddings": [[0.0] * 768]}
+    store = make_compatibility_store(collection, model="intfloat/multilingual-e5-base", dimension=768)
+
+    store._validate_existing_index()

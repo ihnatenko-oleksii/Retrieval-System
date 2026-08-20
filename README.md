@@ -40,6 +40,8 @@ flowchart LR
 
 The recommended default has no reranking, query rewriting, pseudo-relevance feedback, learned ranking, or Phase 4 cascade. The Qwen instruction is applied to query embeddings only; stored document embeddings remain unprompted. Changing the embedding model or chunking settings requires re-ingestion.
 
+> **Index compatibility:** an existing index created with E5 or another embedding model must not be queried with Qwen3. The application checks persisted vectors and fails clearly on a mismatch; preserve the old index and re-ingest the corpus before switching. To keep an existing E5 index instead, set `EMBEDDING_MODEL=intfloat/multilingual-e5-base`.
+
 ## Capabilities
 
 ### Validated default / recommended retrieval
@@ -89,7 +91,7 @@ uv run pytest
 uv run ruff check .
 ```
 
-The repository has **193 passing tests** in the offline suite; CI runs Ruff and
+The repository has **195 passing tests** in the offline suite; CI runs Ruff and
 the same test suite without downloading model-heavy benchmarks.
 
 ## Project documentation

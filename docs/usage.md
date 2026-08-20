@@ -103,6 +103,10 @@ RERANK_TOP_N=3
 If an existing `storage/chroma` index was built with another embedding model,
 do not query it with the new default. Follow the [safe re-ingestion procedure](troubleshooting.md#embedding-model-or-chunking-changed)
 and keep the old production indexes as a backup until the new index is checked.
+The compatibility guard raises an explicit error before retrieval if the
+persisted vector dimension or recorded model does not match. If you want to
+keep an existing E5 index, set `EMBEDDING_MODEL=intfloat/multilingual-e5-base`
+instead of switching the index to Qwen3.
 
 ## Evaluation file format (JSONL)
 
