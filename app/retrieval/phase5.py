@@ -660,7 +660,7 @@ def evaluate_folded_lambdamart(
     folds = grouped_query_folds(groups, n_splits=5, seed=seed)
     details: list[dict[str, Any]] = []
     backend = "unknown"
-    worker_path = Path(__file__).resolve().parents[2] / "scripts" / "phase5_ltr_worker.py"
+    worker_path = Path(__file__).resolve().parents[2] / "scripts" / "experiments" / "phase5_ltr_worker.py"
     for fold_number, (train_indexes, validation_indexes) in enumerate(folds, start=1):
         train_feature_rows: list[np.ndarray] = []
         train_labels: list[float] = []

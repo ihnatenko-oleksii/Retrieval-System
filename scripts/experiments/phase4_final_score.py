@@ -12,13 +12,13 @@ import json
 import sys
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
 from app.evals.benchmark_protocol import load_jsonl  # noqa: E402
 from app.ingestion.pipeline import IngestionPipeline  # noqa: E402
 from app.retrieval.phase4 import Phase4Config, Phase4Retriever  # noqa: E402
-from scripts.phase4_retrieval import (  # noqa: E402
+from scripts.experiments.phase4_retrieval import (  # noqa: E402
     CORPUS_ROOT,
     OUTPUT_ROOT,
     V3_ROOT,
@@ -91,7 +91,7 @@ def main() -> None:
         "index. This corrected pass uses per-trial sparse variants; selection parameters were unchanged and v3 "
         "was not consulted for selection."
     )
-    from scripts.phase4_retrieval import _write_outputs
+    from scripts.experiments.phase4_retrieval import _write_outputs
 
     _write_outputs(previous)
     print(json.dumps(corrected, sort_keys=True))

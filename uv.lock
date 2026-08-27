@@ -3028,10 +3028,10 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
-phase3 = [
+bge = [
     { name = "flagembedding" },
 ]
-phase5 = [
+ltr = [
     { name = "xgboost" },
 ]
 
@@ -3047,7 +3047,7 @@ dev = [
 requires-dist = [
     { name = "chromadb", specifier = ">=1.5.6" },
     { name = "fastapi", specifier = ">=0.135.3" },
-    { name = "flagembedding", marker = "extra == 'phase3'", specifier = ">=1.4.0" },
+    { name = "flagembedding", marker = "extra == 'bge'", specifier = ">=1.4.0" },
     { name = "gradio", specifier = ">=5.0.0" },
     { name = "ollama", specifier = ">=0.5.0" },
     { name = "pandas", specifier = ">=3.0.2" },
@@ -3063,9 +3063,9 @@ requires-dist = [
     { name = "sentence-transformers", specifier = ">=5.3.0" },
     { name = "typer", specifier = ">=0.24.1" },
     { name = "uvicorn", specifier = ">=0.44.0" },
-    { name = "xgboost", marker = "extra == 'phase5'", specifier = ">=2.1.0" },
+    { name = "xgboost", marker = "extra == 'ltr'", specifier = ">=2.1.0" },
 ]
-provides-extras = ["phase3", "phase5"]
+provides-extras = ["bge", "ltr"]
 
 [package.metadata.requires-dev]
 dev = [

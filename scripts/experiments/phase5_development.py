@@ -16,7 +16,7 @@ from typing import Any
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
 from app.evals.benchmark_protocol import load_jsonl  # noqa: E402
@@ -573,7 +573,7 @@ def run(args: argparse.Namespace) -> None:
     selected["relative_mrr_vs_phase3_cv"] = (
         float(selected["summary"]["mean"]["mrr"]) - float(baseline["summary"]["mean"]["mrr"])
     ) / float(baseline["summary"]["mean"]["mrr"])
-    command = " ".join(["uv", "run", "scripts/phase5_development.py", *sys.argv[1:]])
+    command = " ".join(["uv", "run", "scripts/experiments/phase5_development.py", *sys.argv[1:]])
     _write_outputs(
         cases=cases,
         results=results,

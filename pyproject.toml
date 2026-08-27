@@ -40,10 +40,10 @@ dev = [
 ]
 
 [project.optional-dependencies]
-phase3 = [
+bge = [
     "FlagEmbedding>=1.4.0",
 ]
-phase5 = [
+ltr = [
     "xgboost>=2.1.0",
 ]
 

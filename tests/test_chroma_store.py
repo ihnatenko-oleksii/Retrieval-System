@@ -64,6 +64,17 @@ class TestAddChunks:
         assert kwargs["documents"] == ["first", "second"]
         assert len(kwargs["metadatas"]) == 2
 
+    def test_upsert_failure_is_logged_and_propagated(self):
+        collection = MagicMock()
+        failure = RuntimeError("database is unavailable")
+        collection.upsert.side_effect = failure
+        store = make_store(collection=collection)
+
+        with pytest.raises(RuntimeError, match="database is unavailable"):
+            store.add_chunks([make_chunk("content", file_path="a.md", chunk_index=0)])
+
+        collection.upsert.assert_called_once()
+
 
 class TestQuery:
     def test_uses_precomputed_query_embedding_when_available(self):

@@ -102,3 +102,4 @@ the same test suite without downloading model-heavy benchmarks.
 - [docs/benchmark.md](docs/benchmark.md) — historical benchmark harness and preserved results
 - [docs/workflow.md](docs/workflow.md) — recommended ingest, evaluate, and usage workflow
 - [docs/troubleshooting.md](docs/troubleshooting.md) — model, index, and local-runtime troubleshooting
+- [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) — benchmark-v4 corpus attribution and license boundaries

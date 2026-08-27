@@ -129,8 +129,9 @@ class VectorStore:
                     metadatas=clean_metadatas[i : i + batch_size],
                 )
                 logger.info(f"Inserted batch {i // batch_size + 1}")
-            except Exception as e:
-                logger.error(f"Failed to insert batch {i // batch_size + 1}: {e}")
+            except Exception:
+                logger.exception("Failed to insert batch %d", i // batch_size + 1)
+                raise
 
     def query(self, query_text: str, n_results: int = None) -> dict:
         if n_results is None:

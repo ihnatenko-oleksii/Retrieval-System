@@ -18,6 +18,7 @@ data/             # Put source documents here
 storage/          # Persistent indexes
 docs/             # Documentation, benchmark corpora, and results
 scripts/          # Reproducible evaluation runners
+  experiments/    # Historical Phase 3/4/5 research utilities
 main.py           # CLI entrypoint
 ```
 

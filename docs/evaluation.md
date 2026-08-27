@@ -39,6 +39,12 @@ uv run scripts/benchmark.py --skip-generation
 
 That command evaluates the historical corpus and may append a history record; it is not the final benchmark-v4 comparison. The one-shot v4 scorer is preserved in `scripts/phase5_final_score.py` and refuses to overwrite an existing final artifact.
 
+Historical Phase 3/4/5 ablation utilities are grouped under
+`scripts/experiments/`. The root-level scripts remain the easy-to-find
+benchmark and reproducibility entry points. Their optional dependencies use
+semantic extras: `uv sync --extra bge` enables FlagEmbedding experiments, and
+`uv sync --extra ltr` enables XGBoost LambdaMART experiments.
+
 ## Metric contract
 
 - Recall@K measures the fraction of all positively labeled relevant evidence retrieved in the top K.
